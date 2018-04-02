@@ -14,10 +14,8 @@ percy-agent has stopped.
     force: flags.boolean({char: 'f'}),
   }
 
-  static args = [{name: 'file'}]
-
   async run() {
-    const {args, flags} = this.parse(Stop)
+    const {flags} = this.parse(Stop)
 
     if (flags.force) {
       this.log(`forcefully stopping percy-agent...`)
