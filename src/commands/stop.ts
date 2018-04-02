@@ -1,17 +1,16 @@
 import {Command, flags} from '@oclif/command'
 
 export default class Stop extends Command {
-  static description = 'describe the command here'
+  static description = 'Stops the percy-agent process.'
 
   static examples = [
     `$ percy-agent stop
-hello world from ./src/stop.ts!
+gracefully stopping percy-agent...
+percy-agent has stopped.
 `,
   ]
 
   static flags = {
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
     force: flags.boolean({char: 'f'}),
   }
 
@@ -20,10 +19,12 @@ hello world from ./src/stop.ts!
   async run() {
     const {args, flags} = this.parse(Stop)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from ${__filename}!`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    if (flags.force) {
+      this.log(`forcefully stopping percy-agent...`)
+    } else {
+      this.log(`gracefully stopping percy-agent...`)
     }
+
+    this.log(`percy-agent has stopped.`)
   }
 }

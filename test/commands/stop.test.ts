@@ -4,14 +4,16 @@ describe('stop', () => {
   test
   .stdout()
   .command(['stop'])
-  .it('runs hello', ctx => {
-    expect(ctx.stdout).to.contain('hello world')
+  .it('runs stop', ctx => {
+    expect(ctx.stdout).to.contain("gracefully stopping percy-agent...")
+    expect(ctx.stdout).to.contain("percy-agent has stopped.")
   })
 
   test
   .stdout()
-  .command(['stop', '--name', 'jeff'])
-  .it('runs hello --name jeff', ctx => {
-    expect(ctx.stdout).to.contain('hello jeff')
+  .command(['stop', '--force'])
+  .it('runs stop --force', ctx => {
+    expect(ctx.stdout).to.contain("forcefully stopping percy-agent...")
+    expect(ctx.stdout).to.contain("percy-agent has stopped.")
   })
 })
