@@ -18,11 +18,11 @@ percy-agent has stopped.
     const {flags} = this.parse(Stop)
 
     if (flags.force) {
-      this.warn(`forcefully stopping percy-agent...`)
+      this.warn('forcefully stopping percy-agent...')
     } else {
-      this.log(`gracefully stopping percy-agent...`)
+      this.log('gracefully stopping percy-agent...')
     }
 
-    this.log(`percy-agent has stopped.`)
+    this.log('percy-agent has stopped.')
   }
 }

@@ -4,14 +4,14 @@ describe('start', () => {
   test
   .stdout()
   .command(['start'])
-  .it('runs hello', ctx => {
-    expect(ctx.stdout).to.contain('hello world')
+  .it('runs start', ctx => {
+    expect(ctx.stdout).to.contain('percy-agent has started on port 5338')
   })
 
   test
   .stdout()
-  .command(['start', '--name', 'jeff'])
-  .it('runs hello --name jeff', ctx => {
-    expect(ctx.stdout).to.contain('hello jeff')
+  .command(['start', '--port', '55000'])
+  .it('runs start --port 55000', ctx => {
+    expect(ctx.stdout).to.contain('percy-agent has started on port 55000')
   })
 })
