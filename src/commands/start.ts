@@ -13,15 +13,12 @@ percy-agent has started on port 5338
     port: flags.string({
       char: 'p',
       description: 'port',
-      options: ['5338', '55000'],
       default: '5338',
     }),
-    force: flags.boolean({char: 'f'}),
   }
 
   async run() {
     const {flags} = this.parse(Start)
-
     this.log(`percy-agent has started on port ${flags.port}`)
   }
 }
