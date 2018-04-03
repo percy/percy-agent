@@ -1,0 +1,1 @@
+alert('hello from percy-agent.js');
