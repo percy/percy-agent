@@ -1,13 +1,12 @@
 import {Command, flags} from '@oclif/command'
 import HttpService from '../services/http-service'
-import ProcessCommand from '../process_command'
-const fs = require('fs')
+import ProcessService from '../services/process-service';
 
-export default class Start extends Command implements ProcessCommand {
+export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
 
   static examples = [
-    '$ percy-agent start' +
+    '$ percy-agent start\n' +
     'percy-agent has started on port 5338',
   ]
 
@@ -25,37 +24,22 @@ export default class Start extends Command implements ProcessCommand {
 
   async run() {
     const {flags} = this.parse(Start)
-
-    let port = parseInt(flags.port || '5338')
+    let port = flags.port || '5338'
 
     if (flags.attached) {
-      new HttpService(port).start()
+      new HttpService(parseInt(port)).start()
     } else {
-      if (fs.existsSync(ProcessCommand.pidFilePath)) {
-        let pidFileContents: Buffer = await fs.readFileSync(ProcessCommand.pidFilePath)
-        let pid: number = parseInt(pidFileContents.toString('utf8').trim())
+      let processService = new ProcessService()
 
-        if (pid) {
-          this.log(`percy-agent[${pid}] is already running`)
-          process.exit(0)
-        }
+      const pid = await processService.runDetached(
+        ['bin/run', 'start', '--attached', '--port', port]
+      )
+
+      if (pid) {
+        this.log(`percy-agent[${pid}] has started on port ${port}`)
+      } else {
+        this.log(`percy-agent is already running`)
       }
-
-      const spawn = require('child_process').spawn
-
-      const out = fs.openSync('./log/percy-agent.log', 'a')
-      const err = fs.openSync('./log/percy-agent.err.log', 'a')
-
-      const startProcess = spawn(process.argv[0], ['bin/run', 'start', '--attached', '--port', port], {
-        detached: false,
-        stdio: ['ignore', out, err]
-      })
-
-      await fs.writeFileSync('./tmp/percy-agent.pid', startProcess.pid)
-
-      this.log(`percy-agent[${startProcess.pid}] has started on port ${port}`)
-
-      startProcess.unref()
     }
   }
 }

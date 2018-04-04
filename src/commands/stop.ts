@@ -1,6 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import ProcessCommand from '../process_command'
-const fs = require('fs')
+import ProcessService from '../services/process-service';
 
 export default class Stop extends Command {
   static description = 'Stops the percy-agent process.'
@@ -16,33 +15,23 @@ export default class Stop extends Command {
 
   async run() {
     const {flags} = this.parse(Stop)
+    const processService = new ProcessService()
 
-    try {
-      let pidFileContents: Buffer = await fs.readFileSync(ProcessCommand.pidFilePath)
-      let pid: number = parseInt(pidFileContents.toString('utf8').trim())
-      await fs.unlinkSync(ProcessCommand.pidFilePath)
+    if (await processService.isRunning()) {
+      const pid = await processService.pid()
 
-      if (flags.force) {
-        this.warn(`forcefully stopping percy-agent[${pid}]...`)
-        process.kill(pid, 'SIGKILL')
-      } else {
-        this.log(`gracefully stopping percy-agent[${pid}]...`)
-        process.kill(pid, 'SIGHUP')
+      try {
+        let stopMethod = 'gracefully'
+        if (flags.force) { stopMethod = 'forcefully' }
+
+        this.log(`${stopMethod} stopping percy-agent[${pid}]...`)
+
+        await processService.stop(flags.force)
+      } catch (error) {
+        this.log(`error: #{error.code}`)
       }
-
-      this.log('percy-agent has stopped.')
-    } catch (error) {
-      this.handleError(error)
-    }
-  }
-
-  handleError(error: any) {
-    if (error.code === 'ENOENT' || error.code === 'ESRCH') {
-      this.log('percy-agent is already stopped.')
     } else {
-      this.log(error)
+      this.log('percy-agent is already stopped.')
     }
-
-    this.exit(0)
   }
 }
