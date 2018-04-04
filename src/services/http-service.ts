@@ -1,9 +1,9 @@
 const express = require('express')
 
-export class HttpService {
-  app: any
+export default class HttpService {
+  private app: any
 
-  constructor(port: number) {
+  public constructor(port: number) {
     this.app = express()
     this.app.use(express.static('src/public'))
 
@@ -11,7 +11,8 @@ export class HttpService {
       console.log(`percy-agent has started on port ${port}`)
     })
   }
-  stop() {
+
+  public stop(): void {
     this.app.stop
   }
 }
