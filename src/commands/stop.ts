@@ -4,10 +4,9 @@ const fs = require('fs')
 export default class Stop extends Command {
   static description = 'Stops the percy-agent process.'
   static examples = [
-    `$ percy-agent stop
-gracefully stopping percy-agent...
-percy-agent has stopped.
-`,
+    '$ percy-agent stop\n' +
+    'gracefully stopping percy-agent...\n' +
+    'percy-agent has stopped.',
   ]
 
   static flags = {

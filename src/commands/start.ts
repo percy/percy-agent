@@ -6,9 +6,8 @@ export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
 
   static examples = [
-    `$ percy-agent start
-percy-agent has started on port 5338
-`,
+    '$ percy-agent start' +
+    'percy-agent has started on port 5338',
   ]
 
   static flags = {
