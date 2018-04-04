@@ -28,8 +28,9 @@ export default class Start extends Command implements ProcessCommand {
 
     let port = parseInt(flags.port || '5338')
 
-    if (!flags.attached) {
-      // detached mode
+    if (flags.attached) {
+      new HttpService(port).start()
+    } else {
       if (fs.existsSync(ProcessCommand.pidFilePath)) {
         let pidFileContents: Buffer = await fs.readFileSync(ProcessCommand.pidFilePath)
         let pid: number = parseInt(pidFileContents.toString('utf8').trim())
@@ -55,9 +56,6 @@ export default class Start extends Command implements ProcessCommand {
       this.log(`percy-agent[${startProcess.pid}] has started on port ${port}`)
 
       startProcess.unref()
-    } else {
-      // attached mode
-      new HttpService(port)
     }
   }
 }
