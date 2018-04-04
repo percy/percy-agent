@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import ProcessCommand from './process_command'
+import ProcessCommand from '../process_command'
 const fs = require('fs')
 
 export default class Stop extends Command {

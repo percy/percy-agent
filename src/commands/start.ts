@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import HttpService from '../services/http-service'
-import ProcessCommand from './process_command'
+import ProcessCommand from '../process_command'
 const fs = require('fs')
 
 export default class Start extends Command implements ProcessCommand {
