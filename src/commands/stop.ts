@@ -17,6 +17,8 @@ percy-agent has stopped.
   static pidFilePath = './tmp/percy-agent.pid'
 
   async run() {
+    const {flags} = this.parse(Stop)
+
     try {
       let pidFileContents: Buffer = await fs.readFileSync(Stop.pidFilePath)
       let pid: number = parseInt(pidFileContents.toString('utf8').trim())

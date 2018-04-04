@@ -26,6 +26,7 @@ percy-agent has started on port 5338
 
   async run() {
     const {flags} = this.parse(Start)
+
     let port = parseInt(flags.port || '5338')
 
     if (!flags.attached) {
