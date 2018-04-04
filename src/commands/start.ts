@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import HttpService from '../services/http-service'
-import ProcessService from '../services/process-service';
+import ProcessService from '../services/process-service'
 
 export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
@@ -38,7 +38,7 @@ export default class Start extends Command {
       if (pid) {
         this.log(`percy-agent[${pid}] has started on port ${port}`)
       } else {
-        this.log(`percy-agent is already running`)
+        this.log('percy-agent is already running')
       }
     }
   }

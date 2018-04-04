@@ -5,8 +5,8 @@ export default class ProcessService {
   static pidPath = './tmp/percy-agent.pid'
   static logPath = './log/percy-agent.log'
   static errorLogPath = './log/percy-agent.err.log'
-  
-  public async runDetached(args : string[]) : Promise<number | null> {
+
+  public async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
 
     const out = fs.openSync(ProcessService.logPath, 'a')
@@ -23,11 +23,11 @@ export default class ProcessService {
     return spawnedProcess.pid
   }
 
-  public async isRunning() : Promise<boolean> {
-    return await fs.existsSync(ProcessService.pidPath)
+  public async isRunning(): Promise<boolean> {
+    return fs.existsSync(ProcessService.pidPath)
   }
 
-  public async pid() : Promise<number> {
+  public async pid(): Promise<number> {
     let pidFileContents: Buffer = await fs.readFileSync(ProcessService.pidPath)
     return parseInt(pidFileContents.toString('utf8').trim())
   }

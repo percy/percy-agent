@@ -1,8 +1,8 @@
 import * as express from 'express'
 
 export default class HttpService {
-  private express: express.Application
-  private port: number
+  private readonly express: express.Application
+  private readonly port: number
 
   public constructor(port: number) {
     this.express = express()
