@@ -1,8 +1,9 @@
 import {Command, flags} from '@oclif/command'
-import {HttpService} from '../services/http-service'
+import HttpService from '../services/http-service'
+import ProcessCommand from './process_command'
 const fs = require('fs')
 
-export default class Start extends Command {
+export default class Start extends Command implements ProcessCommand {
   static description = 'Starts the percy-agent process.'
 
   static examples = [
@@ -21,7 +22,6 @@ export default class Start extends Command {
       description: 'start as an attached process',
     }),
   }
-  static pidFilePath = './tmp/percy-agent.pid'
 
   async run() {
     const {flags} = this.parse(Start)
@@ -30,8 +30,8 @@ export default class Start extends Command {
 
     if (!flags.attached) {
       // detached mode
-      if (fs.existsSync(Start.pidFilePath)) {
-        let pidFileContents: Buffer = await fs.readFileSync(Start.pidFilePath)
+      if (fs.existsSync(ProcessCommand.pidFilePath)) {
+        let pidFileContents: Buffer = await fs.readFileSync(ProcessCommand.pidFilePath)
         let pid: number = parseInt(pidFileContents.toString('utf8').trim())
 
         if (pid) {

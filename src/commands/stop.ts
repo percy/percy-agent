@@ -1,4 +1,5 @@
 import {Command, flags} from '@oclif/command'
+import ProcessCommand from './process_command'
 const fs = require('fs')
 
 export default class Stop extends Command {
@@ -13,15 +14,13 @@ export default class Stop extends Command {
     force: flags.boolean({char: 'f'}),
   }
 
-  static pidFilePath = './tmp/percy-agent.pid'
-
   async run() {
     const {flags} = this.parse(Stop)
 
     try {
-      let pidFileContents: Buffer = await fs.readFileSync(Stop.pidFilePath)
+      let pidFileContents: Buffer = await fs.readFileSync(ProcessCommand.pidFilePath)
       let pid: number = parseInt(pidFileContents.toString('utf8').trim())
-      await fs.unlinkSync(Stop.pidFilePath)
+      await fs.unlinkSync(ProcessCommand.pidFilePath)
 
       if (flags.force) {
         this.warn(`forcefully stopping percy-agent[${pid}]...`)
