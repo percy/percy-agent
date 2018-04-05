@@ -25,4 +25,17 @@ describe('ProcessService', () => {
       await deletePidFile()
     })
   })
+
+  describe('#runDetached', () => {
+    it('returns pid of detached process', async () => {
+      expect(await subject.runDetached(['bin/run'])).to.be.a('number')
+      await deletePidFile()
+    })
+
+    it('returns null is process is already running', async () => {
+      await createPidFile(456)
+      expect(await subject.runDetached(['bin/run'])).to.equal(null)
+      await deletePidFile()
+    })
+  })
 })
