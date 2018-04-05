@@ -25,7 +25,7 @@ export default class Stop extends Command {
 
       this.log(`${stopMethod} stopping percy-agent[${pid}]...`)
 
-      await processService.stop(flags.force)
+      await processService.kill(flags.force)
       this.log('percy-agent has stopped.')
     } else {
       this.log('percy-agent is already stopped.')

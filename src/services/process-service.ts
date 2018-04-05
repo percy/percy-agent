@@ -32,7 +32,7 @@ export default class ProcessService {
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 
-  public async stop(force = false) {
+  public async kill(force = false) {
     if (await !this.isRunning()) {
       return
     } else {
