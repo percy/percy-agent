@@ -1,7 +1,5 @@
-*-debug.log
-*-error.log
+*.log
 .oclif.manifest.json
 /lib
 /node_modules
 /tmp
-/log
