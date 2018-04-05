@@ -4,13 +4,13 @@ import * as child_process from 'child_process'
 export default class ProcessService {
   static pidPath = './tmp/percy-agent.pid'
   static logPath = './log/percy-agent.log'
-  static errorLogPath = './log/percy-agent.err.log'
+  static errorLogPath = './log/percy-agent-error.log'
 
   public async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
 
-    const out = fs.openSync(ProcessService.logPath, 'a')
-    const err = fs.openSync(ProcessService.errorLogPath, 'a')
+    const out = fs.openSync(ProcessService.logPath, 'a+')
+    const err = fs.openSync(ProcessService.errorLogPath, 'a+')
 
     const spawnedProcess = child_process.spawn(process.argv[0], args, {
       detached: false,
