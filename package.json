@@ -40,9 +40,11 @@
   ],
   "homepage": "https://github.com/percy/percy-agent",
   "keywords": [
-    "oclif"
+    "oclif",
+    "percy",
+    "agent"
   ],
-  "license": "MIT",
+  "license": "TBD",
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
