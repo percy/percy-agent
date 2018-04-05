@@ -13,7 +13,9 @@
     "@oclif/plugin-help": "^1.2.2",
     "@oclif/plugin-not-found": "^1.0.5",
     "@types/express": "^4.11.1",
-    "express": "^4.16.3"
+    "@types/sinon": "^4.3.1",
+    "express": "^4.16.3",
+    "sinon": "^4.5.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.4.4",
