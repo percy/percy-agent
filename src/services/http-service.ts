@@ -7,7 +7,10 @@ export default class HttpService {
     this.express = express()
     this.express.use(express.static('src/public'))
   }
-  /** Starts serving the `/src/public/` directory on the supplied port */
+
+  /**
+   * Starts serving the `/src/public/` directory on the supplied port.
+   */
   public start(port: number) {
     this.express.listen(port, () => {
       console.log(`percy-agent has started on port ${port}`)
