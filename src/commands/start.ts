@@ -27,7 +27,7 @@ export default class Start extends Command {
     let port = flags.port || '5338'
 
     if (flags.attached) {
-      new HttpService(parseInt(port)).start()
+      new HttpService().start(parseInt(port))
     } else {
       let processService = new ProcessService()
 
