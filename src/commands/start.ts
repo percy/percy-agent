@@ -28,6 +28,7 @@ export default class Start extends Command {
 
     if (flags.attached) {
       new HttpService().start(parseInt(port))
+      this.log(`percy-agent has started on port ${port}`)
     } else {
       let processService = new ProcessService()
 
