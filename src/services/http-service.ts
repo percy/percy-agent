@@ -2,12 +2,12 @@ import * as express from 'express'
 import {Server} from 'http'
 
 export default class HttpService {
-  readonly express: express.Application
+  readonly app: express.Application
   server: Server | null
 
   constructor() {
-    this.express = express()
-    this.express.use(express.static('src/public'))
+    this.app = express()
+    this.app.use(express.static('src/public'))
     this.server = null
   }
 
@@ -15,7 +15,7 @@ export default class HttpService {
    * Starts serving the `/src/public/` directory on the supplied port.
    */
   start(port: number) {
-    this.server = this.express.listen(port)
+    this.server = this.app.listen(port)
   }
 
   /**
