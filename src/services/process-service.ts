@@ -10,7 +10,7 @@ export default class ProcessService {
    * Runs the given args as a spawned, detached child process and returns a pid.
    * If the process is already running, `null` is returned.
    */
-  public async runDetached(args: string[]): Promise<number | null> {
+  async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
 
     const out = fs.openSync(ProcessService.logPath, 'a+')
@@ -30,14 +30,14 @@ export default class ProcessService {
   /**
    * Allows you to find out if the process is running or not.
    */
-  public async isRunning(): Promise<boolean> {
+  async isRunning(): Promise<boolean> {
     return fs.existsSync(ProcessService.pidPath)
   }
 
   /**
    * Asynchronously fetches the process id from inside the pid file.
    */
-  public async pid(): Promise<number> {
+  async pid(): Promise<number> {
     let pidFileContents: Buffer = await fs.readFileSync(ProcessService.pidPath)
     return parseInt(pidFileContents.toString('utf8').trim())
   }
@@ -45,7 +45,7 @@ export default class ProcessService {
   /**
    * Kills the process regardless of if it's actually running or not.
    */
-  public async kill(force = false) {
+  async kill(force = false) {
     if (await !this.isRunning()) {
       return
     } else {
