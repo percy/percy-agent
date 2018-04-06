@@ -6,5 +6,9 @@ export async function createPidFile(pid: number) {
 }
 
 export async function deletePidFile() {
-  fs.unlinkSync(ProcessService.pidPath)
+  if (await pidFileExists()) { fs.unlinkSync(ProcessService.pidPath) }
+}
+
+export async function pidFileExists(): Promise<boolean> {
+  return fs.existsSync(ProcessService.pidPath)
 }

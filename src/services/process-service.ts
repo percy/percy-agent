@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import * as child_process from 'child_process'
+import * as childProcess from 'child_process'
 
 export default class ProcessService {
   static pidPath = './tmp/percy-agent.pid'
@@ -16,7 +16,7 @@ export default class ProcessService {
     const out = fs.openSync(ProcessService.logPath, 'a+')
     const err = fs.openSync(ProcessService.errorLogPath, 'a+')
 
-    const spawnedProcess = child_process.spawn(process.argv[0], args, {
+    const spawnedProcess = childProcess.spawn(process.argv[0], args, {
       detached: false,
       stdio: ['ignore', out, err]
     })
