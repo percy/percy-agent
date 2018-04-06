@@ -13,7 +13,7 @@ describe('ProcessService', () => {
     })
 
     it('returns true if running', async () => {
-      await createPidFile(123)
+      await createPidFile()
       expect(await subject.isRunning()).to.equal(true)
       await deletePidFile()
     })
@@ -21,8 +21,8 @@ describe('ProcessService', () => {
 
   describe('#pid', () => {
     it('returns the pid', async () => {
-      await createPidFile(456)
-      expect(await subject.pid()).to.equal(456)
+      await createPidFile(123)
+      expect(await subject.pid()).to.equal(123)
       await deletePidFile()
     })
   })
@@ -34,7 +34,7 @@ describe('ProcessService', () => {
     })
 
     it('returns null is process is already running', async () => {
-      await createPidFile(456)
+      await createPidFile()
       expect(await subject.runDetached(['bin/run'])).to.equal(null)
       await deletePidFile()
     })
