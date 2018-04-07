@@ -3,19 +3,16 @@
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
-    "module": "commonjs",
-    "outDir": "./lib",
     "pretty": true,
     "rootDirs": [
-      "./src"
+      "./"
     ],
     "strict": true,
-    "target": "es2017"
+    "target": "es3",
+    "module": "amd",
+    "outFile": "../public/percy-agent.js"
   },
   "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./src/agent/**/*"
+    "./**/*"
   ]
 }

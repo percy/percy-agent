@@ -60,7 +60,8 @@
   },
   "repository": "percy/percy-agent",
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf lib && tsc && yarn run build-agent",
+    "build-agent": "rm -rf src/public && tsc -p src/percy-agent-js",
     "clean": "rm -f .oclif.manifest.json",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
     "postpublish": "yarn run clean",
