@@ -16,6 +16,6 @@
     "./src/**/*"
   ],
   "exclude": [
-    "./src/agent/**/*"
+    "./src/percy-agent-js/**/*"
   ]
 }
