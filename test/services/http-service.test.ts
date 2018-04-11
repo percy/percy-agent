@@ -23,6 +23,19 @@ describe('HttpService', () => {
           expect(res).to.have.header('content-type', /application\/javascript/)
         })
     })
+
+    it('responds to /snapshots', async () => {
+      subject.start(port)
+
+      chai.request(`http://${host}`)
+        .post('/snapshots')
+        .end(function (err, res) {
+          expect(err).to.be.null
+          expect(res).to.have.status(200)
+          expect(res).to.have.header('content-type', /application\/json/)
+          expect(JSON.stringify(res.body)).to.equal('{"message":"Response from percy-agent. Your user agent was: node-superagent/3.8.2"}')
+        })
+    })
   })
 
   describe('#stops', () => {
