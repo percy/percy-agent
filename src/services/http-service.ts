@@ -14,16 +14,10 @@ export default class HttpService {
     this.app.post('/snapshots', this.handleSnapshots)
   }
 
-  /**
-   * Starts serving the `/src/public/` directory on the supplied port.
-   */
   start(port: number) {
     this.server = this.app.listen(port)
   }
 
-  /**
-   * Stops serving the `/src/public/` directory.
-   */
   stop() {
     if (this.server) { this.server.close() }
   }

@@ -1,15 +1,8 @@
 interface Request {
-   /**
-    * URL of the request.
-    * https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/name
-    */
   name: string
 }
 
 class RequestManifest {
-  /**
-   * Capture a list of URLs for resources requested by this page.
-   */
   capture(): string[] {
     let requests: Request[] = performance.getEntriesByType('resource')
     return requests.map(request => request.name)
@@ -85,9 +78,6 @@ class Percy {
   }
 }
 
-/**
- * PercyAgent is used for interacting with the PercyAgent webservice
- */
 class PercyAgent {
   post(url: string, data: any) {
     const xhr = new XMLHttpRequest()

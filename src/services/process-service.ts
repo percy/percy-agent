@@ -27,24 +27,15 @@ export default class ProcessService {
     return spawnedProcess.pid
   }
 
-  /**
-   * Allows you to find out if the process is running or not.
-   */
   async isRunning(): Promise<boolean> {
     return fs.existsSync(ProcessService.pidPath)
   }
 
-  /**
-   * Asynchronously fetches the process id from inside the pid file.
-   */
   async pid(): Promise<number> {
     let pidFileContents: Buffer = await fs.readFileSync(ProcessService.pidPath)
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 
-  /**
-   * Kills the process regardless of if it's actually running or not.
-   */
   async kill(force = false) {
     if (await !this.isRunning()) {
       return
@@ -59,9 +50,6 @@ export default class ProcessService {
     }
   }
 
-  /**
-   * Writes a pid file to disk for later use.
-   */
   private async writePidFile(pid: number) {
     await fs.writeFileSync(ProcessService.pidPath, pid)
   }
