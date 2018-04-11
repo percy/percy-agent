@@ -1,6 +1,7 @@
 import * as express from 'express'
 import * as cors from 'cors'
 import {Server} from 'http'
+import SnapshotService from './snapshot-service'
 
 export default class HttpService {
   readonly app: express.Application
@@ -33,6 +34,9 @@ export default class HttpService {
 
     let userAgent = request.headers['user-agent']
     let message = {message: `Response from percy-agent. Your user agent was: ${userAgent}`}
+
+    const snapshotService = new SnapshotService()
+    snapshotService.createSnapshot('test')
 
     response.json(message)
   }
