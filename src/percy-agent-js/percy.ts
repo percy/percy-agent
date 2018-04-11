@@ -36,17 +36,29 @@ class Percy {
     if (this.beforeSnapshot) { this.beforeSnapshot() }
     this.stabalizePage()
 
-    let requestManifest = new RequestManifest()
-
+    let requestManifest = new RequestManifest().capture()
+    let domSnapshot = this.domSnapshot()
     console.log(
       'TAKING SNAPSHOT\n' +
       `name: ${name}\n` +
       `enableJavascript: ${options.enableJavascript}.\n` +
       `widths: ${options.widths}.\n` +
       `clientUserAgent: ${this.clientUserAgent}.\n` +
-      `requestManifest: ${requestManifest.capture()}\n` +
-      `domSnapshot: ${this.domSnapshot()}`
+      `requestManifest: ${requestManifest}\n` +
+      `domSnapshot: ${domSnapshot}`
     )
+
+    let percyAgent = new PercyAgent()
+    percyAgent.post('http://localhost:5338/snapshots', {
+      name,
+      enableJavascript: options.enableJavascript,
+      widths: options.widths,
+      clientUserAgent: this.clientUserAgent,
+      requestManifest,
+      domSnapshot
+    })
+
+    console.log('after post.')
   }
 
   private domSnapshot(): string {
@@ -57,7 +69,7 @@ class Percy {
   }
 
   private getDoctype(): string {
-    return document.doctype.name ? this.doctypeToString(document.doctype) : this.defaultDoctype
+    return document.doctype ? this.doctypeToString(document.doctype) : this.defaultDoctype
   }
 
   private doctypeToString(doctype: DocumentType): string {
@@ -70,5 +82,18 @@ class Percy {
   private stabalizePage() {
     // Apply various hacks to the pages
     // freeze jQuery etc.
+  }
+}
+
+/**
+ * PercyAgent is used for interacting with the PercyAgent webservice
+ */
+class PercyAgent {
+  post(url: string, data: any) {
+    const xhr = new XMLHttpRequest()
+
+    xhr.open('post', url, false) // synchronous request
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.send(JSON.stringify(data))
   }
 }

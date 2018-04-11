@@ -27,3 +27,9 @@ declare class Percy {
     private doctypeToString(doctype);
     private stabalizePage();
 }
+/**
+ * PercyAgent is used for interacting with the PercyAgent webservice
+ */
+declare class PercyAgent {
+    post(url: string, data: any): void;
+}

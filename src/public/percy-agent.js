@@ -22,14 +22,25 @@ var Percy = /** @class */ (function () {
             this.beforeSnapshot();
         }
         this.stabalizePage();
-        var requestManifest = new RequestManifest();
+        var requestManifest = new RequestManifest().capture();
+        var domSnapshot = this.domSnapshot();
         console.log('TAKING SNAPSHOT\n' +
             ("name: " + name + "\n") +
             ("enableJavascript: " + options.enableJavascript + ".\n") +
             ("widths: " + options.widths + ".\n") +
             ("clientUserAgent: " + this.clientUserAgent + ".\n") +
-            ("requestManifest: " + requestManifest.capture() + "\n") +
-            ("domSnapshot: " + this.domSnapshot()));
+            ("requestManifest: " + requestManifest + "\n") +
+            ("domSnapshot: " + domSnapshot));
+        var percyAgent = new PercyAgent();
+        percyAgent.post('http://localhost:5338/snapshots', {
+            name: name,
+            enableJavascript: options.enableJavascript,
+            widths: options.widths,
+            clientUserAgent: this.clientUserAgent,
+            requestManifest: requestManifest,
+            domSnapshot: domSnapshot
+        });
+        console.log('after post.');
     };
     Percy.prototype.domSnapshot = function () {
         var doctype = this.getDoctype();
@@ -37,7 +48,7 @@ var Percy = /** @class */ (function () {
         return doctype + dom;
     };
     Percy.prototype.getDoctype = function () {
-        return document.doctype.name ? this.doctypeToString(document.doctype) : this.defaultDoctype;
+        return document.doctype ? this.doctypeToString(document.doctype) : this.defaultDoctype;
     };
     Percy.prototype.doctypeToString = function (doctype) {
         var publicDeclaration = doctype.publicId ? " PUBLIC \"" + doctype.publicId + "\" " : '';
@@ -50,7 +61,17 @@ var Percy = /** @class */ (function () {
     };
     return Percy;
 }());
-// Run this on test page:
-// var beforeSnapshot = function() { console.log('beforeSnapshot'); };
-// var percy = new Percy('dave agent');
-// percy.snapshot('my snapshot', { enable_javascript: false, widths: [300, 500] });
+/**
+ * PercyAgent is used for interacting with the PercyAgent webservice
+ */
+var PercyAgent = /** @class */ (function () {
+    function PercyAgent() {
+    }
+    PercyAgent.prototype.post = function (url, data) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', url, false); // synchronous request
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+    };
+    return PercyAgent;
+}());
