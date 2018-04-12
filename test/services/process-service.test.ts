@@ -19,10 +19,10 @@ describe('ProcessService', () => {
     })
   })
 
-  describe('#pid', () => {
+  describe('#getPid', () => {
     it('returns the pid', async () => {
       await createPidFile(123)
-      expect(await subject.pid()).to.equal(123)
+      expect(await subject.getPid()).to.equal(123)
       await deletePidFile()
     })
   })
