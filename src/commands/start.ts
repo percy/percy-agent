@@ -7,7 +7,7 @@ export default class Start extends Command {
 
   static examples = [
     '$ percy-agent start\n' +
-    'percy-agent has started on port 5338',
+    '[info] percy-agent has started on port 5338',
   ]
 
   static flags = {
@@ -19,7 +19,7 @@ export default class Start extends Command {
     attached: flags.boolean({
       char: 'a',
       description: 'start as an attached process',
-    }),
+    })
   }
 
   async run() {
@@ -27,8 +27,10 @@ export default class Start extends Command {
     let port = flags.port || '5338'
 
     if (flags.attached) {
-      new HttpService().start(parseInt(port))
-      this.log(`percy-agent has started on port ${port}`)
+      let httpService = new HttpService()
+      await httpService.start(parseInt(port))
+
+      this.log(`[info] percy-agent has started on port ${port}`)
     } else {
       let processService = new ProcessService()
 
@@ -37,9 +39,9 @@ export default class Start extends Command {
       )
 
       if (pid) {
-        this.log(`percy-agent[${pid}] has started on port ${port}`)
+        this.log(`[info] percy-agent[${pid}] has started on port ${port}`)
       } else {
-        this.log('percy-agent is already running')
+        this.log('[info] percy-agent is already running')
       }
     }
   }

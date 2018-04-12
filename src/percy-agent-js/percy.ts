@@ -31,18 +31,9 @@ class Percy {
 
     let requestManifest = new RequestManifest().capture()
     let domSnapshot = this.domSnapshot()
-    console.log(
-      'TAKING SNAPSHOT\n' +
-      `name: ${name}\n` +
-      `enableJavascript: ${options.enableJavascript}.\n` +
-      `widths: ${options.widths}.\n` +
-      `clientUserAgent: ${this.clientUserAgent}.\n` +
-      `requestManifest: ${requestManifest}\n` +
-      `domSnapshot: ${domSnapshot}`
-    )
 
     let percyAgent = new PercyAgent()
-    percyAgent.post('http://localhost:5338/snapshots', {
+    percyAgent.post('http://localhost:5338/percy/snapshot', {
       name,
       enableJavascript: options.enableJavascript,
       widths: options.widths,
@@ -50,8 +41,6 @@ class Percy {
       requestManifest,
       domSnapshot
     })
-
-    console.log('after post.')
   }
 
   private domSnapshot(): string {

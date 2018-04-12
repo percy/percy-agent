@@ -1,14 +1,7 @@
 interface Request {
-    /**
-     * URL of the request.
-     * https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/name
-     */
     name: string;
 }
 declare class RequestManifest {
-    /**
-     * Capture a list of URLs for resources requested by this page.
-     */
     capture(): string[];
 }
 interface SnapshotOptions {
@@ -27,9 +20,6 @@ declare class Percy {
     private doctypeToString(doctype);
     private stabalizePage();
 }
-/**
- * PercyAgent is used for interacting with the PercyAgent webservice
- */
 declare class PercyAgent {
     post(url: string, data: any): void;
 }

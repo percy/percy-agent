@@ -1,49 +1,47 @@
-export default class SnapshotService {
-  createSnapshot(
+import {PercyClientService} from './percy-client-service'
+
+export default class SnapshotService extends PercyClientService {
+  async createSnapshot(
+    buildId: number,
     name: string,
-    enableJavascript?: boolean,
+    domSnapshot: string,
+    enableJavaScript?: boolean,
     widths?: number[],
     minimumHeight?: number,
-  ): boolean {
-    console.log(
-      'CREATING SNAPSHOT\n' +
-      `name: ${name}\n` +
-      `enableJavascript: ${enableJavascript}.\n` +
-      `widths: ${widths}.\n` +
-      `minimumHeight: ${minimumHeight}\n`
-    )
-    // Something like this is to be sent to api
-    // {
-    //   'data' => {
-    //     'type' => 'snapshots',
-    //       'attributes' => {
-    //       'name' => '/foo/test.html (test name)',
-    //     },
-    //     'relationships' => {
-    //       'resources' => {
-    //         'data' => [
-    //           {
-    //             'type' => 'resources',
-    //             'id' => html_sha,
-    //             'attributes' => {
-    //               'resource-url' => '/foo/test.html',
-    //                 'mimetype' => 'text/html',
-    //                   'is-root' => true,
-    //             },
-    //           },
-    //           {
-    //             'type' => 'resources',
-    //             'id' => css_sha,
-    //             'attributes' => {
-    //               'resource-url' => 'http://localhost:8080/css/test.css',
-    //             },
-    //           },
-    //         ],
-    //       },
-    //     },
-    //   },
-    // }
+  ): Promise<number | null> {
+    // const crypto = require('crypto')
+    // let sha = crypto.createHash('sha256').update(domSnapshot).digest('hex')
 
-    return true
+    let rootResource = await this.percyClient.makeResource({
+      resourceUrl: '/',
+      content: domSnapshot,
+      isRoot: true,
+      mimetype: 'text/html',
+    })
+
+    let snapshotId = null
+
+    await this.percyClient.createSnapshot(
+      buildId, [rootResource], {name, widths, enableJavaScript, minimumHeight}
+    ).then(async (response: any) => {
+      snapshotId = parseInt(response.body.data.id)
+      console.log(`[info] SnapshotService#createSnapshot[Snapshot ${snapshotId}] created`)
+
+      await this.percyClient.uploadMissingResources(buildId, response, [rootResource])
+    }).catch((error: any) => {
+      console.log(`[error] SnapshotService#createSnapshot ${error}`)
+    })
+
+    return snapshotId
+  }
+
+  async finalizeSnapshot(snapshotId: number) {
+    await this.percyClient.finalizeSnapshot(snapshotId)
+      .then(() => {
+        console.log(`[info] SnapshotService#finalizeSnapshot[Snapshot ${snapshotId}]: finalized`)
+      })
+      .catch((error: any) => {
+        console.log(`[error] SnapshotService#finalizeSnapshot: ${error}`)
+      })
   }
 }

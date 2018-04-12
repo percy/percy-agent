@@ -2,9 +2,6 @@
 var RequestManifest = /** @class */ (function () {
     function RequestManifest() {
     }
-    /**
-     * Capture a list of URLs for resources requested by this page.
-     */
     RequestManifest.prototype.capture = function () {
         var requests = performance.getEntriesByType('resource');
         return requests.map(function (request) { return request.name; });
@@ -24,15 +21,8 @@ var Percy = /** @class */ (function () {
         this.stabalizePage();
         var requestManifest = new RequestManifest().capture();
         var domSnapshot = this.domSnapshot();
-        console.log('TAKING SNAPSHOT\n' +
-            ("name: " + name + "\n") +
-            ("enableJavascript: " + options.enableJavascript + ".\n") +
-            ("widths: " + options.widths + ".\n") +
-            ("clientUserAgent: " + this.clientUserAgent + ".\n") +
-            ("requestManifest: " + requestManifest + "\n") +
-            ("domSnapshot: " + domSnapshot));
         var percyAgent = new PercyAgent();
-        percyAgent.post('http://localhost:5338/snapshots', {
+        percyAgent.post('http://localhost:5338/percy/snapshot', {
             name: name,
             enableJavascript: options.enableJavascript,
             widths: options.widths,
@@ -40,7 +30,6 @@ var Percy = /** @class */ (function () {
             requestManifest: requestManifest,
             domSnapshot: domSnapshot
         });
-        console.log('after post.');
     };
     Percy.prototype.domSnapshot = function () {
         var doctype = this.getDoctype();
@@ -61,9 +50,6 @@ var Percy = /** @class */ (function () {
     };
     return Percy;
 }());
-/**
- * PercyAgent is used for interacting with the PercyAgent webservice
- */
 var PercyAgent = /** @class */ (function () {
     function PercyAgent() {
     }

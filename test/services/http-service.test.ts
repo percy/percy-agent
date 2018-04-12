@@ -13,23 +13,25 @@ describe('HttpService', () => {
 
   describe('#start', () => {
     it('starts serving src/public', async () => {
-      subject.start(port)
+      await subject.start(port)
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
         .end(function (err, res) {
+          console.log(err)
           expect(err).to.be.null
           expect(res).to.have.status(200)
           expect(res).to.have.header('content-type', /application\/javascript/)
         })
     })
 
-    it('responds to /snapshots', async () => {
-      subject.start(port)
+    it('responds to /percy/snapshots', async () => {
+      await subject.start(port)
 
       chai.request(`http://${host}`)
-        .post('/snapshots')
+        .post('/percy/snapshot')
         .end(function (err, res) {
+          console.log(err)
           expect(err).to.be.null
           expect(res).to.have.status(200)
           expect(res).to.have.header('content-type', /application\/json/)
@@ -40,8 +42,8 @@ describe('HttpService', () => {
 
   describe('#stops', () => {
     it('stops a running server', async () => {
-      subject.start(port)
-      subject.stop()
+      await subject.start(port)
+      await subject.stop()
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
