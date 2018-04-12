@@ -1,5 +1,5 @@
-import * as fs from 'fs'
 import * as childProcess from 'child_process'
+import * as fs from 'fs'
 
 export default class ProcessService {
   static pidPath = './.percy-agent.pid'

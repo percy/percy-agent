@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
-import ProcessService from '../services/process-service'
 import axios from 'axios'
+import ProcessService from '../services/process-service'
 
 export default class Stop extends Command {
   static description = 'Stops the percy-agent process.'
@@ -30,7 +30,7 @@ export default class Stop extends Command {
       let stopMethod = 'gracefully'
       if (flags.force) { stopMethod = 'forcefully' }
 
-      const pid = await processService.pid()
+      const pid = await processService.getPid()
       this.log(`[info] ${stopMethod} stopping percy-agent[${pid}]...`)
 
       await processService.kill(flags.force)

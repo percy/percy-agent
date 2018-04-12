@@ -1,9 +1,9 @@
-import * as express from 'express'
-import * as cors from 'cors'
 import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
+import * as express from 'express'
 import {Server} from 'http'
-import SnapshotService from './snapshot-service'
 import BuildService from './build-service'
+import SnapshotService from './snapshot-service'
 
 export default class HttpService {
   readonly app: express.Application
