@@ -1,4 +1,6 @@
-export class PercyClientService {
+import {URL} from 'url'
+
+export default class PercyClientService {
   percyClient: any
 
   constructor() {
@@ -9,6 +11,11 @@ export class PercyClientService {
       apiURL: process.env.PERCY_API,
       clientInfo: this.clientInfo()
     })
+  }
+
+  parseUrlPath(url: string): string {
+    let parsedURL = new URL(url)
+    return parsedURL.pathname + (parsedURL.search ? `?${parsedURL.search}` : '')
   }
 
   private clientInfo(): string {

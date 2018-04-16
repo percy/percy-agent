@@ -42,7 +42,11 @@ export default class HttpService {
       let snapshotId = await snapshotService.createSnapshot(
         this.buildId,
         request.body.name,
-        request.body.domSnapshot
+        request.body.url,
+        request.body.domSnapshot,
+        request.body.requestManifest,
+        request.body.enableJavascript,
+        request.body.widths
       )
 
       if (snapshotId) {
@@ -50,7 +54,8 @@ export default class HttpService {
       }
     }
 
-    return response.json({success: 'ok'})
+    console.log('[info] HttpService#handleSnapshot: OK')
+    return response.send('ok')
   }
 
   private async handleBuildFinalize(_request: express.Request, response: express.Response) {
@@ -58,15 +63,18 @@ export default class HttpService {
       const buildService = new BuildService()
       await buildService.finalizeBuild(this.buildId).catch(error => {
         console.log(`[error] HttpService#handleBuildFinalize: ${error}`)
-        return response.json({error: JSON.stringify(error)})
+        return response.send('ok')
       })
     }
 
-    return response.json({success: 'ok'})
+    console.log('[info] HttpService#handleBuildFinalize: OK')
+    return response.send('ok')
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
-    return response.json({success: 'ok'})
+
+    console.log('[info] HttpService#handleStop: OK')
+    return response.send('ok')
   }
 }
