@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import axios from 'axios'
+import Axios from 'axios'
 import ProcessService from '../services/process-service'
 
 export default class Stop extends Command {
@@ -24,8 +24,8 @@ export default class Stop extends Command {
     const processService = new ProcessService()
 
     if (await processService.isRunning()) {
-      await axios(`http://localhost:${flags.port}/percy/finalize`, {method: 'POST'})
-      await axios(`http://localhost:${flags.port}/percy/stop`, {method: 'POST'})
+      await Axios(`http://localhost:${flags.port}/percy/finalize`, {method: 'POST'})
+      await Axios(`http://localhost:${flags.port}/percy/stop`, {method: 'POST'})
 
       let stopMethod = 'gracefully'
       if (flags.force) { stopMethod = 'forcefully' }
