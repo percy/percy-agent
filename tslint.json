@@ -4,6 +4,7 @@
     "no-console": false,
     "radix": false,
     "ordered-imports": false,
-    "no-http-string": false
+    "no-http-string": false,
+    "no-useless-files": false
   }
 }

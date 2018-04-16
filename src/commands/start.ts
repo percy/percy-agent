@@ -57,7 +57,7 @@ export default class Start extends Command {
       if (pid) {
         this.log(`[info] percy-agent[${pid}] has started on port ${port}`)
       } else {
-        this.log('[info] percy-agent is already running')
+        this.log('[warn] percy-agent is already running')
       }
     }
   }

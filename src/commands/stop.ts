@@ -25,7 +25,10 @@ export default class Stop extends Command {
 
     if (await processService.isRunning()) {
       await Axios(`http://localhost:${flags.port}/percy/finalize`, {method: 'POST'})
+        .catch(_error => {})
+
       await Axios(`http://localhost:${flags.port}/percy/stop`, {method: 'POST'})
+        .catch(_error => { })
 
       let stopMethod = 'gracefully'
       if (flags.force) { stopMethod = 'forcefully' }

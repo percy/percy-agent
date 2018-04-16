@@ -1,29 +1,20 @@
-import {expect, test} from '@oclif/test'
+// const {stdout} = require('stdout-stderr')
+// import {describe} from 'mocha'
+// import Start from '../../src/commands/start'
+// import Stop from '../../src/commands/stop'
+// import * as chai from 'chai'
+// const expect = chai.expect
 
-describe('stop', () => {
-  test
-  .stdout()
-  .command(['start'])
-  .command(['stop'])
-  .it('runs stop', ctx => {
-    expect(ctx.stdout).to.contain('gracefully stopping percy-agent')
-    expect(ctx.stdout).to.contain('percy-agent has stopped.')
-  })
+// describe('Stop', () => {
+//   let subject = Stop
 
-  // test
-  // .stdout()
-  // .command(['start'])
-  // .command(['stop', '--force'])
-  // .it('runs stop --force', ctx => {
-  //   expect(ctx.stdout).to.contain('forcefully stopping percy-agent')
-  //   expect(ctx.stdout).to.contain('percy-agent has stopped.')
-  // })
+//   describe('#run', async () => {
+//     await Start.run([])
 
-  // test
-  // .stdout()
-  // .command(['stop'])
-  // .command(['stop', '--force'])
-  // .it('runs stop, even if already stopped', ctx => {
-  //   expect(ctx.stdout).to.contain('percy-agent is already stopped')
-  // })
-})
+//     stdout.start()
+//     await subject.run([])
+//     stdout.stop()
+
+//     expect(stdout.output).to.match(/foo/)
+//   })
+// })

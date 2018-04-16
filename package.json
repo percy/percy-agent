@@ -19,7 +19,8 @@
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "percy-client": "^2.8.1"
+    "percy-client": "^2.8.1",
+    "stdout-stderr": "^0.1.9"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.4.4",
