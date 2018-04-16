@@ -1,6 +1,7 @@
 import {Command, flags} from '@oclif/command'
 import HttpService from '../services/http-service'
 import ProcessService from '../services/process-service'
+import BuildService from '../services/build-service'
 
 export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
@@ -28,6 +29,21 @@ export default class Start extends Command {
 
     if (flags.attached) {
       let httpService = new HttpService()
+
+      process.on('SIGINT', async () => {
+        // move this to somewhere better.
+        const buildService = new BuildService()
+        if (httpService.buildId) {
+          await buildService.finalizeBuild(httpService.buildId).catch((error: any) => {
+            console.log(`[error] HttpService#handleBuildFinalize: ${error}`)
+          })
+
+          await httpService.stop()
+        }
+
+        process.exit(0)
+      })
+
       await httpService.start(parseInt(port))
 
       this.log(`[info] percy-agent has started on port ${port}`)
