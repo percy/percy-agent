@@ -1,4 +1,4 @@
-import {PercyClientService} from './percy-client-service'
+import PercyClientService from './percy-client-service'
 
 export default class BuildService extends PercyClientService {
   async createBuild(): Promise<number> {
@@ -12,6 +12,7 @@ export default class BuildService extends PercyClientService {
 
   async finalizeBuild(buildId: number) {
     await this.percyClient.finalizeBuild(buildId)
+
     console.log(`[info] BuildService#createBuild[Build ${buildId}]: finalized`)
   }
 }
