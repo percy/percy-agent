@@ -24,6 +24,7 @@ var Percy = /** @class */ (function () {
         var percyAgent = new PercyAgent();
         percyAgent.post('http://localhost:5338/percy/snapshot', {
             name: name,
+            url: document.URL,
             enableJavascript: options.enableJavascript,
             widths: options.widths,
             clientUserAgent: this.clientUserAgent,
