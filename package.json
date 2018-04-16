@@ -46,7 +46,7 @@
     ".oclif.manifest.json",
     "package.json",
     "/bin",
-    "/lib"
+    "/dist"
   ],
   "homepage": "https://github.com/percy/percy-agent",
   "keywords": [
@@ -55,9 +55,9 @@
     "agent"
   ],
   "license": "TBD",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./dist/commands",
     "bin": "percy-agent",
     "plugins": [
       "@oclif/plugin-help",
@@ -66,8 +66,8 @@
   },
   "repository": "percy/percy-agent",
   "scripts": {
-    "build": "rm -rf lib && tsc && yarn run build-agent",
-    "build-agent": "rm -rf src/public && tsc -p src/percy-agent-js",
+    "build": "rm -rf dist && tsc && yarn run build-agent",
+    "build-agent": "rm -rf dist/public && tsc -p src/percy-agent-client",
     "clean": "rm -f .oclif.manifest.json",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
     "postpublish": "yarn run clean",
@@ -77,5 +77,5 @@
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
-  "types": "lib/index.d.ts"
+  "types": "dist/index.d.ts"
 }

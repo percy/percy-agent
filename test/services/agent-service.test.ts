@@ -1,11 +1,11 @@
 import {describe} from 'mocha'
-import HttpService from '../../src/services/http-service'
+import AgentService from '../../src/services/agent-service'
 import * as chai from 'chai'
 const expect = chai.expect
 chai.use(require('chai-http'))
 
-describe('HttpService', () => {
-  let subject = new HttpService()
+describe('AgentService', () => {
+  let subject = new AgentService()
   let port = 34931
   let host = `127.0.0.1:${port}`
 

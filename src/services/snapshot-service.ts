@@ -1,6 +1,5 @@
 import PercyClientService from './percy-client-service'
 import RequestService from './request-service'
-import { build } from '@oclif/parser/lib/flags';
 
 export default class SnapshotService extends PercyClientService {
   async createSnapshot(

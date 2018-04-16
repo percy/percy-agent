@@ -1,5 +1,5 @@
 *.log
 .oclif.manifest.json
-/lib
+/dist
 /node_modules
 .percy-agent.pid

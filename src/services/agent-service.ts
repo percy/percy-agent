@@ -16,7 +16,7 @@ export default class HttpService {
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
-    this.app.use(express.static('src/public'))
+    this.app.use(express.static('dist/public'))
 
     this.app.post('/percy/snapshot', this.handleSnapshot.bind(this))
     this.app.post('/percy/finalize', this.handleBuildFinalize.bind(this))

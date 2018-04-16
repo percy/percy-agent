@@ -10,7 +10,7 @@
     "strict": true,
     "target": "es3",
     "module": "amd",
-    "outFile": "../public/percy-agent.js"
+    "outFile": "../../dist/public/percy-agent.js"
   },
   "include": [
     "./**/*"
