@@ -76,7 +76,7 @@
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "yarn run clean",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "dist/index.d.ts"
