@@ -7,7 +7,7 @@ const expect = chai.expect
 
 describe('Start', () => {
   afterEach(async () => {
-    await captureStdOut(async () => Stop.run(['--force']))
+    await captureStdOut(() => Stop.run(['--force']))
   })
 
   describe('#run', () => {

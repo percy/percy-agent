@@ -29,6 +29,11 @@ export default class HttpService {
   }
 
   async stop() {
+    if (this.buildId) {
+      await new BuildService().finalizeBuild(this.buildId)
+      this.buildId = null
+    }
+
     if (this.server) { this.server.close() }
   }
 
