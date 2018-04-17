@@ -1,0 +1,31 @@
+POST /api/v1/builds/659589/finalize
+authorization: Token token=6326946734e29027aa8499ddc40fbf3c9a7958c6dcf36af2f00d8d0f8e6c8be4
+content-type: application/vnd.api+json
+host: percy.io
+accept: application/json
+body: {}
+
+HTTP/1.1 200 OK
+date: Tue, 17 Apr 2018 00:52:55 GMT
+content-type: application/json; charset=utf-8
+transfer-encoding: chunked
+connection: keep-alive
+set-cookie: __cfduid=d71d7a3d9074594d64ce2d87b1b5e9c281523926375; expires=Wed, 17-Apr-19 00:52:55 GMT; path=/; domain=.percy.io; HttpOnly
+status: 200 OK
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+access-control-allow-origin: *
+x-xss-protection: 1; mode=block
+x-request-id: 39d7b680-857f-94f9-aec8-b15832c7c3d3
+access-control-allow-headers: Authorization, Content-Type
+access-control-allow-methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+x-runtime: 0.061306
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+expires: Thu, 01 Jan 1970 00:00:00 GMT
+x-envoy-upstream-service-time: 63
+strict-transport-security: max-age=15552000; includeSubDomains; preload
+expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+server: cloudflare
+cf-ray: 40cae965996f95ef-SJC
+
+{"success":true}
