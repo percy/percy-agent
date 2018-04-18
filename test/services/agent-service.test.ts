@@ -9,7 +9,7 @@ chai.use(require('chai-http'))
 describe('AgentService', () => {
   let subject = new AgentService()
   let port = 34931
-  let host = `127.0.0.1:${port}`
+  let host = `localhost:${port}`
 
   beforeEach(() => {
     const buildCreateResponse = require('../fixtures/build-create.json')
@@ -73,7 +73,7 @@ describe('AgentService', () => {
         .end(function (err, res) {
           expect(res).to.be.undefined
           expect(err).to.be.an('error')
-            .with.property('message', `connect ECONNREFUSED ${host}`)
+            .with.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
         })
     })
 
