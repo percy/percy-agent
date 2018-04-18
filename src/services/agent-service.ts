@@ -68,18 +68,18 @@ export default class HttpService {
       const buildService = new BuildService()
       await buildService.finalizeBuild(this.buildId).catch(error => {
         console.log(`[error] HttpService#handleBuildFinalize: ${error}`)
-        return response.send('ok')
+        return response.json({sucess: true})
       })
     }
 
     console.log('[info] HttpService#handleBuildFinalize: OK')
-    return response.send('ok')
+    return response.json({sucess: true})
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
 
     console.log('[info] HttpService#handleStop: OK')
-    return response.send('ok')
+    return response.json({sucess: true})
   }
 }

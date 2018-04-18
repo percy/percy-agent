@@ -44,10 +44,10 @@ describe('AgentService', () => {
       let stdout = await captureStdOut(() => subject.start(port))
       expect(stdout).to.match(/\[info\] BuildService#createBuild\[Build \d+\]\: created/)
     })
+  })
 
-    it('responds to /percy/snapshot', async () => {
-      await subject.start(port)
-
+  describe('POST /percy/snapshot', () => {
+    beforeEach(async () => {
       nock('https://percy.io')
         .get('/logo.svg')
         .reply(200, '<svg></svg>')
@@ -59,6 +59,10 @@ describe('AgentService', () => {
       nock('https://percy.io')
         .post(/\/api\/v1\/builds\/\d+\/snapshots/)
         .reply(201, {data: {id: 1}})
+    })
+
+    it('responds with success', async () => {
+      await subject.start(port)
 
       chai.request(`http://${host}`)
         .post('/percy/snapshot')
@@ -71,6 +75,48 @@ describe('AgentService', () => {
           requestManifest: ['http://percy.io/logo.svg'],
           domSnapshot: '<html><body><img src="http://percy.io/logo.svg"/></body></html>'
         })
+        .end(function (err, res) {
+          expect(err).to.be.null
+          expect(res).to.have.status(200)
+          expect(res).to.have.header('content-type', /application\/json/)
+          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
+        })
+    })
+  })
+
+  describe('POST /percy/finalize', () => {
+    beforeEach(async () => {
+      nock('https://percy.io')
+        .post(/\/api\/v1\/builds\/\d+\/finalize/)
+        .reply(200, '')
+    })
+
+    it('responds with success', async () => {
+      await subject.start(port)
+
+      chai.request(`http://${host}`)
+        .post('/percy/finalize')
+        .end(function (err, res) {
+          expect(err).to.be.null
+          expect(res).to.have.status(200)
+          expect(res).to.have.header('content-type', /application\/json/)
+          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
+        })
+    })
+  })
+
+  describe('POST /percy/stop', () => {
+    beforeEach(async () => {
+      nock('https://percy.io')
+        .post(/\/api\/v1\/builds\/\d+\/finalize/)
+        .reply(200, '')
+    })
+
+    it('responds with success', async () => {
+      await subject.start(port)
+
+      chai.request(`http://${host}`)
+        .post('/percy/stop')
         .end(function (err, res) {
           expect(err).to.be.null
           expect(res).to.have.status(200)
