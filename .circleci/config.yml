@@ -8,6 +8,7 @@ jobs:
     environment:
       NYC: "yarn exec nyc -- --nycrc-path node_modules/@oclif/nyc-config/.nycrc"
       MOCHA_FILE: "reports/mocha.xml"
+      PERCY_PROJECT: "test/test"
     steps:
       - checkout
       - restore_cache: &restore_cache
