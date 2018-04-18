@@ -1,0 +1,285 @@
+{
+  "data": {
+    "attributes": {
+      "approved-at": null,
+      "branch": "master",
+      "build-number": 1322,
+      "created-at": "2018-04-17T00:48:00.000Z",
+      "failure-details": null,
+      "failure-reason": null,
+      "finished-at": null,
+      "is-pull-request": false,
+      "parallel-nonce": null,
+      "parallel-total-shards": null,
+      "pull-request-number": null,
+      "pull-request-title": null,
+      "review-state": null,
+      "review-state-reason": null,
+      "state": "pending",
+      "total-comparisons": null,
+      "total-comparisons-diff": null,
+      "total-comparisons-finished": null,
+      "total-snapshots": null,
+      "total-snapshots-unreviewed": null,
+      "updated-at": "2018-04-17T00:48:00.000Z",
+      "user-agent": "Percy/v1 percy-agent/XX percy-js/2.8.1 (node/v8.5.0)",
+      "web-url": "https://percy.io/test/test/builds/659575"
+    },
+    "id": "659575",
+    "links": {
+      "self": "/api/v1/builds/659575"
+    },
+    "meta": {
+      "approve-link": "/api/v1/builds/659575/approve",
+      "finalize-link": "/api/v1/builds/659575/finalize"
+    },
+    "relationships": {
+      "approved-by": {
+        "data": null,
+        "links": {
+          "related": "/api/v1/builds/659575/approved-by",
+          "self": "/api/v1/builds/659575/relationships/approved-by"
+        }
+      },
+      "base-build": {
+        "data": {
+          "id": "658775",
+          "type": "builds"
+        },
+        "links": {
+          "related": "/api/v1/builds/659575/base-build",
+          "self": "/api/v1/builds/659575/relationships/base-build"
+        }
+      },
+      "browsers": {
+        "links": {
+          "related": "/api/v1/builds/659575/browsers",
+          "self": "/api/v1/builds/659575/relationships/browsers"
+        }
+      },
+      "commit": {
+        "data": {
+          "id": "516867",
+          "type": "commits"
+        },
+        "links": {
+          "related": "/api/v1/builds/659575/commit",
+          "self": "/api/v1/builds/659575/relationships/commit"
+        }
+      },
+      "comparisons": {
+        "links": {
+          "related": "/api/v1/builds/659575/comparisons",
+          "self": "/api/v1/builds/659575/relationships/comparisons"
+        }
+      },
+      "missing-resources": {
+        "links": {
+          "related": "/api/v1/builds/659575/missing-resources",
+          "self": "/api/v1/builds/659575/relationships/missing-resources"
+        }
+      },
+      "project": {
+        "data": {
+          "id": "569",
+          "type": "projects"
+        },
+        "links": {
+          "related": "/api/v1/builds/659575/project",
+          "self": "/api/v1/builds/659575/relationships/project"
+        }
+      },
+      "repo": {
+        "data": null,
+        "links": {
+          "related": "/api/v1/builds/659575/repo",
+          "self": "/api/v1/builds/659575/relationships/repo"
+        }
+      },
+      "snapshots": {
+        "links": {
+          "related": "/api/v1/builds/659575/snapshots",
+          "self": "/api/v1/builds/659575/relationships/snapshots"
+        }
+      }
+    },
+    "type": "builds"
+  },
+  "included": [
+    {
+      "attributes": {
+        "created-at": "2016-11-16T16:24:46.000Z",
+        "diff-base": "automatic",
+        "full-slug": "test/test",
+        "is-enabled": true,
+        "name": "test",
+        "slug": "test",
+        "updated-at": "2018-04-16T20:30:25.000Z"
+      },
+      "id": "569",
+      "links": {
+        "self": "/api/v1/projects/test/test"
+      },
+      "relationships": {
+        "builds": {
+          "links": {
+            "related": "/api/v1/projects/test/test/builds",
+            "self": "/api/v1/projects/test/test/relationships/builds"
+          }
+        },
+        "organization": {
+          "links": {
+            "related": "/api/v1/projects/test/test/organization",
+            "self": "/api/v1/projects/test/test/relationships/organization"
+          }
+        },
+        "repo": {
+          "links": {
+            "related": "/api/v1/projects/test/test/repo",
+            "self": "/api/v1/projects/test/test/relationships/repo"
+          }
+        },
+        "tokens": {
+          "links": {
+            "related": "/api/v1/projects/test/test/tokens",
+            "self": "/api/v1/projects/test/test/relationships/tokens"
+          }
+        }
+      },
+      "type": "projects"
+    },
+    {
+      "attributes": {
+        "author-name": "David Jones",
+        "committed-at": "2018-04-16 17:33:20 -0700",
+        "committer-name": "David Jones",
+        "created-at": "2018-04-17T00:44:17.000Z",
+        "message": "added tests for AgentService start and stop",
+        "sha": "29b987b1afa13638b3b5f4baa6f0119761701875",
+        "updated-at": "2018-04-17T00:44:17.000Z"
+      },
+      "id": "516867",
+      "links": {
+        "self": "/api/v1/commits/516867"
+      },
+      "type": "commits"
+    },
+    {
+      "attributes": {
+        "approved-at": null,
+        "branch": "master",
+        "build-number": 1144,
+        "created-at": "2018-04-16T20:28:12.000Z",
+        "failure-details": null,
+        "failure-reason": null,
+        "finished-at": "2018-04-16T20:30:25.000Z",
+        "is-pull-request": false,
+        "parallel-nonce": null,
+        "parallel-total-shards": null,
+        "pull-request-number": null,
+        "pull-request-title": null,
+        "review-state": "unreviewed",
+        "review-state-reason": "unreviewed_snapshots",
+        "state": "finished",
+        "total-comparisons": 9,
+        "total-comparisons-diff": 6,
+        "total-comparisons-finished": 9,
+        "total-snapshots": 3,
+        "total-snapshots-unreviewed": 2,
+        "updated-at": "2018-04-16T20:30:25.000Z",
+        "user-agent": "Percy/v1 percy-agent/XX percy-js/2.8.1 (node/v8.5.0)",
+        "web-url": "https://percy.io/test/test/builds/658775"
+      },
+      "id": "658775",
+      "links": {
+        "self": "/api/v1/builds/658775"
+      },
+      "meta": {
+        "approve-link": "/api/v1/builds/658775/approve",
+        "finalize-link": "/api/v1/builds/658775/finalize"
+      },
+      "relationships": {
+        "approved-by": {
+          "links": {
+            "related": "/api/v1/builds/658775/approved-by",
+            "self": "/api/v1/builds/658775/relationships/approved-by"
+          }
+        },
+        "base-build": {
+          "links": {
+            "related": "/api/v1/builds/658775/base-build",
+            "self": "/api/v1/builds/658775/relationships/base-build"
+          }
+        },
+        "browsers": {
+          "links": {
+            "related": "/api/v1/builds/658775/browsers",
+            "self": "/api/v1/builds/658775/relationships/browsers"
+          }
+        },
+        "commit": {
+          "data": {
+            "id": "516363",
+            "type": "commits"
+          },
+          "links": {
+            "related": "/api/v1/builds/658775/commit",
+            "self": "/api/v1/builds/658775/relationships/commit"
+          }
+        },
+        "comparisons": {
+          "links": {
+            "related": "/api/v1/builds/658775/comparisons",
+            "self": "/api/v1/builds/658775/relationships/comparisons"
+          }
+        },
+        "missing-resources": {
+          "links": {
+            "related": "/api/v1/builds/658775/missing-resources",
+            "self": "/api/v1/builds/658775/relationships/missing-resources"
+          }
+        },
+        "project": {
+          "data": {
+            "id": "569",
+            "type": "projects"
+          },
+          "links": {
+            "related": "/api/v1/builds/658775/project",
+            "self": "/api/v1/builds/658775/relationships/project"
+          }
+        },
+        "repo": {
+          "data": null,
+          "links": {
+            "related": "/api/v1/builds/658775/repo",
+            "self": "/api/v1/builds/658775/relationships/repo"
+          }
+        },
+        "snapshots": {
+          "links": {
+            "related": "/api/v1/builds/658775/snapshots",
+            "self": "/api/v1/builds/658775/relationships/snapshots"
+          }
+        }
+      },
+      "type": "builds"
+    },
+    {
+      "attributes": {
+        "author-name": "David Jones",
+        "committed-at": "2018-04-16 11:58:25 -0700",
+        "committer-name": "David Jones",
+        "created-at": "2018-04-16T20:24:31.000Z",
+        "message": "added the ability to control+c --attached mode and have it finalize the build and shutdown the expressjs server",
+        "sha": "37c68c41e81f15015160990146723ad576cc2f1e",
+        "updated-at": "2018-04-16T20:24:31.000Z"
+      },
+      "id": "516363",
+      "links": {
+        "self": "/api/v1/commits/516363"
+      },
+      "type": "commits"
+    }
+  ]
+}

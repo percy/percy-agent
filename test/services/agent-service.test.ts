@@ -2,6 +2,7 @@ import {describe} from 'mocha'
 import {captureStdOut} from '../helpers/stdout'
 import AgentService from '../../src/services/agent-service'
 import * as chai from 'chai'
+import * as nock from 'nock'
 const expect = chai.expect
 chai.use(require('chai-http'))
 
@@ -9,6 +10,18 @@ describe('AgentService', () => {
   let subject = new AgentService()
   let port = 34931
   let host = `127.0.0.1:${port}`
+
+  beforeEach(() => {
+    const buildCreateResponse = require('../fixtures/build-create.json')
+
+    nock('https://percy.io')
+      .post('/api/v1/projects/test/test/builds/')
+      .reply(201, buildCreateResponse)
+
+    nock('https://percy.io')
+      .post(/\/api\/v1\/builds\/\d+\/finalize/)
+      .reply(200, '{"success":true}')
+  })
 
   afterEach(async () => {
     await captureStdOut(() => subject.stop())
