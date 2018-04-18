@@ -60,7 +60,7 @@ export default class HttpService {
     }
 
     console.log('[info] HttpService#handleSnapshot: OK')
-    return response.send('ok')
+    return response.json({sucess: true})
   }
 
   private async handleBuildFinalize(_request: express.Request, response: express.Response) {

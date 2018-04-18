@@ -34,7 +34,6 @@ describe('AgentService', () => {
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
         .end(function (err, res) {
-          console.log(err)
           expect(err).to.be.null
           expect(res).to.have.status(200)
           expect(res).to.have.header('content-type', /application\/javascript/)
@@ -46,19 +45,39 @@ describe('AgentService', () => {
       expect(stdout).to.match(/\[info\] BuildService#createBuild\[Build \d+\]\: created/)
     })
 
-    // it('responds to /percy/snapshots', async () => {
-    //   await subject.start(port)
+    it('responds to /percy/snapshot', async () => {
+      await subject.start(port)
 
-    //   chai.request(`http://${host}`)
-    //     .post('/percy/snapshot')
-    //     .end(function (err, res) {
-    //       console.log(err)
-    //       expect(err).to.be.null
-    //       expect(res).to.have.status(200)
-    //       expect(res).to.have.header('content-type', /application\/json/)
-    //       expect(JSON.stringify(res.body)).to.equal('{"message":"Response from percy-agent. Your user agent was: node-superagent/3.8.2"}')
-    //     })
-    // })
+      nock('https://percy.io')
+        .get('/logo.svg')
+        .reply(200, '<svg></svg>')
+
+      nock('https://percy.io')
+        .post(/\/api\/v1\/snapshots\/\d+\/finalize/)
+        .reply(201, '')
+
+      nock('https://percy.io')
+        .post(/\/api\/v1\/builds\/\d+\/snapshots/)
+        .reply(201, {data: {id: 1}})
+
+      chai.request(`http://${host}`)
+        .post('/percy/snapshot')
+        .send({
+          name: 'test',
+          url: 'http://localhost/index.html',
+          enableJavascript: true,
+          widths: [500, 1000, 2000],
+          clientUserAgent: 'percy-agent/test-suite',
+          requestManifest: ['http://percy.io/logo.svg'],
+          domSnapshot: '<html><body><img src="http://percy.io/logo.svg"/></body></html>'
+        })
+        .end(function (err, res) {
+          expect(err).to.be.null
+          expect(res).to.have.status(200)
+          expect(res).to.have.header('content-type', /application\/json/)
+          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
+        })
+    })
   })
 
   describe('#stop', () => {
