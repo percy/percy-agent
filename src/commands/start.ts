@@ -35,7 +35,7 @@ export default class Start extends Command {
         const buildService = new BuildService()
         if (agentService.buildId) {
           await buildService.finalizeBuild(agentService.buildId).catch((error: any) => {
-            console.log(`[error] HttpService#handleBuildFinalize: ${error}`)
+            console.log(`[error] AgentService#handleBuildFinalize: ${error}`)
           })
 
           await agentService.stop()

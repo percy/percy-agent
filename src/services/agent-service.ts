@@ -5,7 +5,7 @@ import {Server} from 'http'
 import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
 
-export default class HttpService {
+export default class AgentService {
   readonly app: express.Application
   server: Server | null = null
   buildId: number | null = null
@@ -59,7 +59,7 @@ export default class HttpService {
       }
     }
 
-    console.log('[info] HttpService#handleSnapshot: OK')
+    console.log('[info] AgentService#handleSnapshot: OK')
     return response.json({sucess: true})
   }
 
@@ -67,19 +67,19 @@ export default class HttpService {
     if (this.buildId) {
       const buildService = new BuildService()
       await buildService.finalizeBuild(this.buildId).catch(error => {
-        console.log(`[error] HttpService#handleBuildFinalize: ${error}`)
+        console.log(`[error] AgentService#handleBuildFinalize: ${error}`)
         return response.json({sucess: true})
       })
     }
 
-    console.log('[info] HttpService#handleBuildFinalize: OK')
+    console.log('[info] AgentService#handleBuildFinalize: OK')
     return response.json({sucess: true})
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
 
-    console.log('[info] HttpService#handleStop: OK')
+    console.log('[info] AgentService#handleStop: OK')
     return response.json({sucess: true})
   }
 }
