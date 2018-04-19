@@ -76,15 +76,15 @@
   },
   "repository": "percy/percy-agent",
   "scripts": {
-    "build": "rm -rf dist && tsc && yarn run build-agent",
-    "build-agent": "rm -rf dist/public && tsc -p src/percy-agent-client",
+    "build": "rm -rf dist && tsc && yarn run build-percy-agent-client",
+    "build-percy-agent-client": "rm -rf dist/public && tsc -p src/percy-agent-client",
     "clean": "rm -f .oclif.manifest.json",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish --fix",
     "postpublish": "yarn run clean",
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "yarn run clean",
-    "test": "yarn run build && PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "yarn run build-percy-agent-client && PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "dist/index.d.ts"
