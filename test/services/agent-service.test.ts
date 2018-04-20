@@ -4,6 +4,7 @@ import AgentService from '../../src/services/agent-service'
 import chai from '../support/chai'
 import * as nock from 'nock'
 const expect = chai.expect
+const {stdout} = require('stdout-stderr')
 
 describe('AgentService', () => {
   let subject = new AgentService()
@@ -58,9 +59,15 @@ describe('AgentService', () => {
       nock('https://percy.io')
         .post(/\/api\/v1\/builds\/\d+\/snapshots/)
         .reply(201, {data: {id: 1}})
+
+      stdout.start()
     })
 
+    afterEach(() => stdout.stop())
+
     it('responds with success', async () => {
+      stdout.start()
+
       await subject.start(port)
 
       chai.request(`http://${host}`)
@@ -88,7 +95,11 @@ describe('AgentService', () => {
       nock('https://percy.io')
         .post(/\/api\/v1\/builds\/\d+\/finalize/)
         .reply(200, '')
+
+      stdout.start()
     })
+
+    afterEach(() => stdout.stop())
 
     it('responds with success', async () => {
       await subject.start(port)
@@ -109,7 +120,11 @@ describe('AgentService', () => {
       nock('https://percy.io')
         .post(/\/api\/v1\/builds\/\d+\/finalize/)
         .reply(200, '')
+
+      stdout.start()
     })
+
+    afterEach(() => stdout.stop())
 
     it('responds with success', async () => {
       await subject.start(port)
