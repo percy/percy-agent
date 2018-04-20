@@ -1,10 +1,9 @@
 import {describe} from 'mocha'
 import {captureStdOut} from '../helpers/stdout'
 import AgentService from '../../src/services/agent-service'
-import * as chai from 'chai'
+import chai from '../support/chai'
 import * as nock from 'nock'
 const expect = chai.expect
-chai.use(require('chai-http'))
 
 describe('AgentService', () => {
   let subject = new AgentService()
