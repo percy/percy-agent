@@ -5,7 +5,7 @@ import * as chai from 'chai'
 import {captureStdOut} from '../helpers/stdout'
 const expect = chai.expect
 
-describe('Start', () => {
+describe('Stop', () => {
   beforeEach(async () => {
     await captureStdOut(async () => Start.run([]))
   })
