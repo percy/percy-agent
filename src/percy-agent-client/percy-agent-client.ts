@@ -15,13 +15,13 @@ interface SnapshotOptions {
   minimumHeight?: number,
 }
 
-class Percy {
-  clientUserAgent: string | null
+class PercyAgentClient {
+  userAgent: string | null
   beforeSnapshot: any
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(clientUserAgent?: string, beforeSnapshot?: any) {
-    this.clientUserAgent = clientUserAgent || null
+  constructor(userAgent?: string, beforeSnapshot?: any) {
+    this.userAgent = userAgent || null
     this.beforeSnapshot = beforeSnapshot || null
   }
 
@@ -38,7 +38,7 @@ class Percy {
       url: document.URL,
       enableJavascript: options.enableJavascript,
       widths: options.widths,
-      clientUserAgent: this.clientUserAgent,
+      clientUserAgent: this.userAgent,
       requestManifest,
       domSnapshot
     })
