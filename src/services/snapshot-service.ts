@@ -1,5 +1,6 @@
 import PercyClientService from './percy-client-service'
 import RequestService from './request-service'
+import logger from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   async createSnapshot(
@@ -33,29 +34,29 @@ export default class SnapshotService extends PercyClientService {
       buildId, resources, {name, widths, enableJavaScript, minimumHeight}
     ).then(async (response: any) => {
       snapshotId = parseInt(response.body.data.id)
-      console.log(`[info] SnapshotService#createSnapshot[Snapshot ${snapshotId}] created`)
+      logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] created`)
 
-      console.log(`[info] SnapshotService#createSnapshot[Snapshot ${snapshotId}] uploading missing resources...`)
+      logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] uploading missing resources...`)
 
       await this.percyClient.uploadMissingResources(buildId, response, resources).then(() => {
-        console.log(`[info] SnapshotService#createSnapshot[Snapshot ${snapshotId}] done uploading missing resources`)
+        logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] done uploading missing resources`)
         return snapshotId
       })
     }, (error: any) => {
-      console.log(`[error] SnapshotService#createSnapshot ${error}`)
+      logger.error(`SnapshotService#createSnapshot ${error}`)
     })
 
-    console.log(`[info] SnapshotService#createSnapshot returning ${snapshotId}`)
+    logger.info(`SnapshotService#createSnapshot returning ${snapshotId}`)
     return snapshotId
   }
 
   async finalizeSnapshot(snapshotId: number): Promise<boolean> {
     let response = await this.percyClient.finalizeSnapshot(snapshotId)
       .then(() => {
-        console.log(`[info] SnapshotService#finalizeSnapshot[Snapshot ${snapshotId}]: finalized`)
+        logger.info(`SnapshotService#finalizeSnapshot[Snapshot ${snapshotId}]: finalized`)
         return true
       }, (error: any) => {
-        console.log(`[error] SnapshotService#finalizeSnapshot: ${error}`)
+        logger.error(`SnapshotService#finalizeSnapshot: ${error}`)
         return false
       })
 

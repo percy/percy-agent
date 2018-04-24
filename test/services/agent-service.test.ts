@@ -42,7 +42,7 @@ describe('AgentService', () => {
 
     it('logs to stdout that it created a build', async () => {
       let stdout = await captureStdOut(() => subject.start(port))
-      expect(stdout).to.match(/\[info\] BuildService#createBuild\[Build \d+\]\: created/)
+      expect(stdout).to.match(/info: BuildService#createBuild\[Build \d+\]\: created/)
     })
   })
 
@@ -163,7 +163,7 @@ describe('AgentService', () => {
         await subject.stop()
       })
 
-      expect(stdout).to.match(/\[info\] BuildService#createBuild\[Build \d+\]\: finalized/)
+      expect(stdout).to.match(/info: BuildService#createBuild\[Build \d+\]\: finalized/)
     })
   })
 })

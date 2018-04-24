@@ -4,6 +4,7 @@ import * as express from 'express'
 import {Server} from 'http'
 import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
+import logger from '../utils/logger'
 
 export default class AgentService {
   readonly app: express.Application
@@ -59,7 +60,7 @@ export default class AgentService {
       }
     }
 
-    console.log('[info] AgentService#handleSnapshot: OK')
+    logger.info('AgentService#handleSnapshot: OK')
     return response.json({sucess: true})
   }
 
@@ -72,14 +73,15 @@ export default class AgentService {
       })
     }
 
-    console.log('[info] AgentService#handleBuildFinalize: OK')
+    logger.info('AgentService#handleBuildFinalize: OK')
     return response.json({sucess: true})
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
 
-    console.log('[info] AgentService#handleStop: OK')
+    logger.info('AgentService#handleStop: OK')
+
     return response.json({sucess: true})
   }
 }

@@ -1,5 +1,6 @@
 import PercyClientService from './percy-client-service'
 import Axios from 'axios'
+import logger from '../utils/logger'
 
 export default class RequestService extends PercyClientService {
   async processManifest(requestManifest: string[]): Promise<any[]> {
@@ -9,11 +10,11 @@ export default class RequestService extends PercyClientService {
 
     for (let request of requestManifest) {
       if (request.match(/http:\/\/localhost:5338\/percy/)) {
-        console.log(`[warn] Skipping Percy Agent requests: ${request}`)
+        logger.warn(`Skipping Percy Agent requests: ${request}`)
         break
       }
 
-      console.log(`[info] Processing request: ${request}`)
+      logger.info(`Processing request: ${request}`)
 
       await Axios({
         method: 'get',
@@ -29,7 +30,7 @@ export default class RequestService extends PercyClientService {
 
         resources.push(resource)
       }).catch(error => {
-        console.log(`[error] failed to GET: ${request}. ${error}`)
+        logger.error(`failed to GET: ${request}. ${error}`)
       })
     }
 

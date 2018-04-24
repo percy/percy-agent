@@ -3,7 +3,7 @@ import * as fs from 'fs'
 
 export default class ProcessService {
   static pidPath = './.percy-agent.pid'
-  static logPath = './log/percy-agent.log'
+  static logPath = './log/percy-agent-process.log'
 
   /**
    * Runs the given args as a spawned, detached child process and returns a pid.
@@ -44,7 +44,11 @@ export default class ProcessService {
       let signal = 'SIGHUP'
       if (force) { signal = 'SIGKILL' }
 
-      process.kill(pid, signal)
+      try {
+        process.kill(pid, signal)
+      } catch {
+        // process was already killed
+      }
     }
   }
 

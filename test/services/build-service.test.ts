@@ -35,7 +35,7 @@ describe('BuildService', () => {
 
     it('finalizes a build', async () => {
       let stdout = await captureStdOut(() => subject.finalizeBuild(buildId))
-      expect(stdout).to.contain(`[info] BuildService#createBuild[Build ${buildId}]: finalized`)
+      expect(stdout).to.contain(`info: BuildService#createBuild[Build ${buildId}]: finalized`)
     })
   })
 })

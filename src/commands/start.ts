@@ -2,6 +2,7 @@ import {Command, flags} from '@oclif/command'
 import AgentService from '../services/agent-service'
 import ProcessService from '../services/process-service'
 import BuildService from '../services/build-service'
+import logger from '../utils/logger'
 
 export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
@@ -24,10 +25,10 @@ export default class Start extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(Start)
-    let port = flags.port || '5338'
+  const {flags} = this.parse(Start)
+  let port = flags.port || '5338'
 
-    if (flags.attached) {
+  if (flags.attached) {
       let agentService = new AgentService()
 
       process.on('SIGINT', async () => {
@@ -35,7 +36,7 @@ export default class Start extends Command {
         const buildService = new BuildService()
         if (agentService.buildId) {
           await buildService.finalizeBuild(agentService.buildId).catch((error: any) => {
-            console.log(`[error] AgentService#handleBuildFinalize: ${error}`)
+            logger.error(`AgentService#handleBuildFinalize: ${error}`)
           })
 
           await agentService.stop()
@@ -46,7 +47,7 @@ export default class Start extends Command {
 
       await agentService.start(parseInt(port))
 
-      this.log(`[info] percy-agent has started on port ${port}`)
+      logger.info(`percy-agent has started on port ${port}`)
     } else {
       let processService = new ProcessService()
 
@@ -55,9 +56,10 @@ export default class Start extends Command {
       )
 
       if (pid) {
-        this.log(`[info] percy-agent[${pid}] has started on port ${port}`)
+        logger.info(`percy-agent[${pid}] has started on port ${port}`)
+        logger.info('logs available at log/percy-agent.log')
       } else {
-        this.log('[warn] percy-agent is already running')
+        logger.warn('percy-agent is already running')
       }
     }
   }
