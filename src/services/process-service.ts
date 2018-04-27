@@ -5,10 +5,6 @@ export default class ProcessService {
   static pidPath = './.percy-agent.pid'
   static logPath = './log/percy-agent-process.log'
 
-  delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
   async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
 
@@ -22,8 +18,6 @@ export default class ProcessService {
     await this.writePidFile(spawnedProcess.pid)
 
     spawnedProcess.unref()
-
-    await this.delay(1500) // give it time to actually start the webserver
 
     return spawnedProcess.pid
   }

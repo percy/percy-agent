@@ -18,6 +18,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "percy-client": "^2.8.2",
+    "retry-axios": "^0.3.2",
     "winston": "^2.4.2"
   },
   "devDependencies": {

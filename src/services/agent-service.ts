@@ -22,6 +22,8 @@ export default class AgentService {
 
     this.app.post('/percy/snapshot', this.handleSnapshot.bind(this))
     this.app.post('/percy/stop', this.handleStop.bind(this))
+
+    this.app.get('/percy/healthcheck', this.handleHealthCheck.bind(this))
   }
 
   async start(port: number) {
@@ -65,6 +67,10 @@ export default class AgentService {
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
     await new ProcessService().kill() // this can't be here.
+    return response.json({success: true})
+  }
+
+  private async handleHealthCheck(_request: express.Request, response: express.Response) {
     return response.json({success: true})
   }
 }
