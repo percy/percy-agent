@@ -7,11 +7,9 @@ const expect = chai.expect
 const {stdout} = require('stdout-stderr')
 
 describe('AgentService', () => {
-  let subject = new AgentService()
-  let port = 34931
-  let host = `localhost:${port}`
-
-  beforeEach(() => {
+  const subject = new AgentService()
+  const port = 5338
+  const host = `localhost:${port}`
     const buildCreateResponse = require('../fixtures/build-create.json')
 
     nock('https://percy.io')
