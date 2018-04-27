@@ -12,7 +12,7 @@ describe('BuildService', () => {
     nock.cleanAll()
   })
   describe('#createBuild', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       nock('https://percy.io')
         .post('/api/v1/projects/test/test/builds/')
         .reply(201, {data: {id: buildId}})
@@ -30,7 +30,7 @@ describe('BuildService', () => {
   })
 
   describe('#finalizeBuild', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       nock('https://percy.io')
         .post(`/api/v1/builds/${buildId}/finalize`)
         .reply(201, {data: {id: buildId}})
