@@ -23,7 +23,7 @@ export default class ProcessService {
 
     spawnedProcess.unref()
 
-    await this.delay(1000) // give it time to actually start the webserver
+    await this.delay(1500) // give it time to actually start the webserver
 
     return spawnedProcess.pid
   }
