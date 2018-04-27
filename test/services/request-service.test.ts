@@ -9,6 +9,10 @@ describe('RequestService', () => {
   let subject = new RequestService()
   const requestManifest = ['https://percy.io/logo.svg']
 
+  afterEach(() => {
+    nock.cleanAll()
+  })
+
   describe('#processManifest', () => {
     beforeEach(async () => {
       nock('https://percy.io')

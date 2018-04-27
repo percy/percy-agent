@@ -23,6 +23,9 @@ describe('AgentService', () => {
       .reply(200, '{"success":true}')
   })
 
+  afterEach(() => {
+    nock.cleanAll()
+  })
   afterEach(async () => {
     await captureStdOut(() => subject.stop())
   })

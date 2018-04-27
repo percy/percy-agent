@@ -8,6 +8,10 @@ describe('SnapshotService', () => {
   let subject = new SnapshotService()
   const snapshotId = 1
 
+  afterEach(() => {
+    nock.cleanAll()
+  })
+
   describe('#createSnapshot', () => {
     beforeEach(async () => {
       nock('https://percy.io')

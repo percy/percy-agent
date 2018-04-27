@@ -8,6 +8,9 @@ describe('BuildService', () => {
   let subject = new BuildService()
   const buildId = 1
 
+  afterEach(() => {
+    nock.cleanAll()
+  })
   describe('#createBuild', () => {
     beforeEach(async () => {
       nock('https://percy.io')
