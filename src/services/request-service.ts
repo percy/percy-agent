@@ -1,12 +1,13 @@
 import PercyClientService from './percy-client-service'
 import Axios from 'axios'
 import logger from '../utils/logger'
+import unique from '../utils/unique-array'
 
 export default class RequestService extends PercyClientService {
   async processManifest(requestManifest: string[]): Promise<any[]> {
     let resources: any[] = []
 
-    requestManifest = Array.from(new Set(requestManifest))
+    requestManifest = unique(requestManifest)
 
     for (let request of requestManifest) {
       if (request.match(/http:\/\/localhost:5338\/percy/)) {
