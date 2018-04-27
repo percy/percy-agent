@@ -4,140 +4,48 @@ import AgentService from '../../src/services/agent-service'
 import chai from '../support/chai'
 import * as nock from 'nock'
 const expect = chai.expect
-const {stdout} = require('stdout-stderr')
 
 describe('AgentService', () => {
   const subject = new AgentService()
   const port = 5338
   const host = `localhost:${port}`
-    const buildCreateResponse = require('../fixtures/build-create.json')
+  const buildCreateResponse = require('../fixtures/build-create.json')
+  const buildId = buildCreateResponse.data.id
 
+  beforeEach(() => {
     nock('https://percy.io')
       .post('/api/v1/projects/test/test/builds/')
       .reply(201, buildCreateResponse)
 
     nock('https://percy.io')
-      .post(/\/api\/v1\/builds\/\d+\/finalize/)
-      .reply(200, '{"success":true}')
+      .post(`/api/v1/builds/${buildId}/finalize`)
+      .reply(201, {data: {id: buildId}})
   })
 
   afterEach(() => {
     nock.cleanAll()
   })
-  afterEach(async () => {
-    await captureStdOut(() => subject.stop())
-  })
 
   describe('#start', () => {
+    afterEach(async () => {
+      await captureStdOut(() => subject.stop())
+    })
+
     it('starts serving dist/public on supplied port', async () => {
       await captureStdOut(() => subject.start(port))
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
-        .end(function (err, res) {
-          expect(err).to.be.null
-          expect(res).to.have.status(200)
-          expect(res).to.have.header('content-type', /application\/javascript/)
+        .end((error, response) => {
+          expect(error).to.be.null
+          expect(response).to.have.status(200)
+          expect(response).to.have.header('content-type', /application\/javascript/)
         })
     })
 
     it('logs to stdout that it created a build', async () => {
       let stdout = await captureStdOut(() => subject.start(port))
-      expect(stdout).to.match(/info: BuildService#createBuild\[Build \d+\]\: created/)
-    })
-  })
-
-  describe('POST /percy/snapshot', () => {
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .get('/logo.svg')
-        .reply(200, '<svg></svg>')
-
-      nock('https://percy.io')
-        .post(/\/api\/v1\/snapshots\/\d+\/finalize/)
-        .reply(201, '')
-
-      nock('https://percy.io')
-        .post(/\/api\/v1\/builds\/\d+\/snapshots/)
-        .reply(201, {data: {id: 1}})
-
-      stdout.start()
-    })
-
-    afterEach(() => stdout.stop())
-
-    it('responds with success', async () => {
-      stdout.start()
-
-      await subject.start(port)
-
-      chai.request(`http://${host}`)
-        .post('/percy/snapshot')
-        .send({
-          name: 'test',
-          url: 'http://localhost/index.html',
-          enableJavascript: true,
-          widths: [500, 1000, 2000],
-          clientUserAgent: 'percy-agent/test-suite',
-          requestManifest: ['http://percy.io/logo.svg'],
-          domSnapshot: '<html><body><img src="http://percy.io/logo.svg"/></body></html>'
-        })
-        .end(function (err, res) {
-          expect(err).to.be.null
-          expect(res).to.have.status(200)
-          expect(res).to.have.header('content-type', /application\/json/)
-          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
-        })
-    })
-  })
-
-  describe('POST /percy/finalize', () => {
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .post(/\/api\/v1\/builds\/\d+\/finalize/)
-        .reply(200, '')
-
-      stdout.start()
-    })
-
-    afterEach(() => stdout.stop())
-
-    it('responds with success', async () => {
-      await subject.start(port)
-
-      chai.request(`http://${host}`)
-        .post('/percy/finalize')
-        .end(function (err, res) {
-          expect(err).to.be.null
-          expect(res).to.have.status(200)
-          expect(res).to.have.header('content-type', /application\/json/)
-          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
-        })
-    })
-  })
-
-  describe('POST /percy/stop', () => {
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .post(/\/api\/v1\/builds\/\d+\/finalize/)
-        .reply(200, '')
-
-      stdout.start()
-    })
-
-    afterEach(() => stdout.stop())
-
-    it('responds with success', async () => {
-      await subject.start(port)
-
-      chai.request(`http://${host}`)
-        .post('/percy/stop')
-        .end(function (err, res) {
-          expect(err).to.be.null
-          expect(res).to.have.status(200)
-          expect(res).to.have.header('content-type', /application\/json/)
-          expect(JSON.stringify(res.body)).to.equal('{"sucess":true}')
-        })
+      expect(stdout).to.match(/info: created build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
 
@@ -150,9 +58,8 @@ describe('AgentService', () => {
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
-        .end(function (err, res) {
-          expect(res).to.be.undefined
-          expect(err).to.be.an('error')
+        .end((error, _response) => {
+          expect(error).to.be.an('error')
             .with.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
         })
     })
@@ -164,7 +71,7 @@ describe('AgentService', () => {
         await subject.stop()
       })
 
-      expect(stdout).to.match(/info: BuildService#createBuild\[Build \d+\]\: finalized/)
+      expect(stdout).to.match(/info: finalized build\./)
     })
   })
 })

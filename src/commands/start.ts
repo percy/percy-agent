@@ -1,7 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import AgentService from '../services/agent-service'
 import ProcessService from '../services/process-service'
-import BuildService from '../services/build-service'
 import logger from '../utils/logger'
 
 export default class Start extends Command {
@@ -9,7 +8,7 @@ export default class Start extends Command {
 
   static examples = [
     '$ percy-agent start\n' +
-    '[info] percy-agent has started on port 5338',
+    'info: percy-agent has started on port 5338. Logs available at log/percy-agent.log',
   ]
 
   static flags = {
@@ -25,42 +24,40 @@ export default class Start extends Command {
   }
 
   async run() {
-  const {flags} = this.parse(Start)
-  let port = flags.port || '5338'
+    const {flags} = this.parse(Start)
+    const port = flags.port ? parseInt(flags.port) : 5338
 
-  if (flags.attached) {
-      let agentService = new AgentService()
-
-      process.on('SIGINT', async () => {
-        // move this to somewhere better.
-        const buildService = new BuildService()
-        if (agentService.buildId) {
-          await buildService.finalizeBuild(agentService.buildId).catch((error: any) => {
-            logger.error(`AgentService#handleBuildFinalize: ${error}`)
-          })
-
-          await agentService.stop()
-        }
-
-        process.exit(0)
-      })
-
-      await agentService.start(parseInt(port))
-
-      logger.info(`percy-agent has started on port ${port}`)
+    if (flags.attached) {
+      await this.runAttached(port)
     } else {
-      let processService = new ProcessService()
-
-      const pid = await processService.runDetached(
-        ['bin/run', 'start', '--attached', '--port', port]
-      )
-
-      if (pid) {
-        logger.info(`percy-agent[${pid}] has started on port ${port}`)
-        logger.info('logs available at log/percy-agent.log')
-      } else {
-        logger.warn('percy-agent is already running')
-      }
+      await this.runDetached(port)
     }
+  }
+
+  private async runAttached(port: number) {
+    let agentService = new AgentService()
+
+    process.on('SIGINT', () => agentService.stop())
+
+    await agentService.start(port)
+    this.logStart(port)
+  }
+
+  private async runDetached(port: number) {
+    let processService = new ProcessService()
+
+    const pid = await processService.runDetached(
+      ['bin/run', 'start', '--attached', '--port', String(port)]
+    )
+
+    if (pid) {
+      this.logStart(port)
+    } else {
+      logger.warn('percy-agent is already running')
+    }
+  }
+
+  private logStart(port: number) {
+    logger.info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
   }
 }

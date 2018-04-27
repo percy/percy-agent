@@ -6,16 +6,19 @@ import * as nock from 'nock'
 
 describe('BuildService', () => {
   let subject = new BuildService()
-  const buildId = 1
+
+  const buildCreateResponse = require('../fixtures/build-create.json')
+  const buildId = buildCreateResponse.data.id
 
   afterEach(() => {
     nock.cleanAll()
   })
+
   describe('#createBuild', () => {
     beforeEach(() => {
       nock('https://percy.io')
         .post('/api/v1/projects/test/test/builds/')
-        .reply(201, {data: {id: buildId}})
+        .reply(201, buildCreateResponse)
     })
 
     it('creates a build', async () => {
@@ -25,7 +28,7 @@ describe('BuildService', () => {
         createdBuildId = await subject.createBuild()
       })
 
-      expect(createdBuildId).to.equal(buildId)
+      expect(createdBuildId).to.equal(+buildId)
     })
   })
 
@@ -38,7 +41,7 @@ describe('BuildService', () => {
 
     it('finalizes a build', async () => {
       let stdout = await captureStdOut(() => subject.finalizeBuild(buildId))
-      expect(stdout).to.contain(`info: BuildService#createBuild[Build ${buildId}]: finalized`)
+      expect(stdout).to.contain('info: finalized build.')
     })
   })
 })

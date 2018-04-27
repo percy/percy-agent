@@ -7,8 +7,7 @@ export default class Stop extends Command {
   static description = 'Stops the percy-agent process.'
   static examples = [
     '$ percy-agent stop\n' +
-    '[info] gracefully stopping percy-agent...\n' +
-    '[info] percy-agent has stopped.',
+    'info: percy-agent has stopped.',
   ]
 
   static flags = {
@@ -16,38 +15,30 @@ export default class Stop extends Command {
       char: 'p',
       description: 'port',
       default: '5338',
-    }),
-    force: flags.boolean({char: 'f'}),
+    })
   }
 
   async run() {
     const {flags} = this.parse(Stop)
+    const port = flags.port ? parseInt(flags.port) : 5338
     const processService = new ProcessService()
 
     if (await processService.isRunning()) {
-      await Axios(`http://localhost:${flags.port}/percy/finalize`, {method: 'POST'})
-        .catch(_error => {})
-
-      await Axios(`http://localhost:${flags.port}/percy/stop`, {method: 'POST'})
-        .catch(_error => { })
-
-      let stopMethod = 'gracefully'
-      if (flags.force) { stopMethod = 'forcefully' }
-
-      const pid = await processService.getPid()
-      logger.info(`${stopMethod} stopping percy-agent[${pid}]...`)
-
-      await processService.kill(flags.force)
-
-      try {
-        await processService.kill(flags.force)
-        logger.info(`percy-agent[${pid}] has stopped.`)
-      } catch (error) {
-        logger.warn(`percy-agent[${pid}] is already stopped.`)
-        logger.debug(error)
-      }
+      await this.postToRunningAgent('/percy/stop', port)
     } else {
       logger.warn('percy-agent is already stopped.')
     }
+  }
+
+  private async postToRunningAgent(path: string, port: number) {
+    await Axios(`http://localhost:${port}${path}`, {method: 'POST'})
+      .catch((error: any) => {
+        if (error.message === 'socket hang up') { // We expect a hangup
+          logger.info('percy-agent stopped.')
+        } else {
+          logger.error(`${error.name} ${error.message}`)
+          logger.debug(error)
+        }
+      })
   }
 }

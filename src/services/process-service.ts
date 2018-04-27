@@ -37,21 +37,14 @@ export default class ProcessService {
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 
-  async kill(force = false) {
-    if (await !this.isRunning()) {
-      return
-    } else {
+  async kill() {
+    const running = await this.isRunning()
+
+    if (running) {
       const pid = await this.getPid()
 
       await fs.unlinkSync(ProcessService.pidPath)
-      let signal = 'SIGHUP'
-      if (force) { signal = 'SIGKILL' }
-
-      try {
-        process.kill(pid, signal)
-      } catch {
-        // process was already killed
-      }
+      process.kill(pid, 'SIGHUP')
     }
   }
 
