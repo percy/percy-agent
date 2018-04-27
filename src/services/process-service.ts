@@ -5,10 +5,10 @@ export default class ProcessService {
   static pidPath = './.percy-agent.pid'
   static logPath = './log/percy-agent-process.log'
 
-  /**
-   * Runs the given args as a spawned, detached child process and returns a pid.
-   * If the process is already running, `null` is returned.
-   */
+  delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
   async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
 
@@ -22,6 +22,9 @@ export default class ProcessService {
     await this.writePidFile(spawnedProcess.pid)
 
     spawnedProcess.unref()
+
+    await this.delay(1000) // give it time to actually start the webserver
+
     return spawnedProcess.pid
   }
 
