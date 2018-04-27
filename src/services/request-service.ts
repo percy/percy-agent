@@ -9,13 +9,15 @@ export default class RequestService extends PercyClientService {
 
     requestManifest = unique(requestManifest)
 
+    logger.info(`processing ${requestManifest.length} requests...`)
+
     for (let request of requestManifest) {
-      if (request.match(/http:\/\/localhost:5338\/percy/)) {
-        logger.warn(`Skipping Percy Agent requests: ${request}`)
+      if (request.match(/http:\/\/localhost:\d+\/percy/)) {
+        logger.debug(`skipping Percy Agent requests: ${request}`)
         break
       }
 
-      logger.info(`Processing request: ${request}`)
+      logger.debug(`processing request: ${request}`)
 
       await Axios({
         method: 'get',
@@ -31,7 +33,8 @@ export default class RequestService extends PercyClientService {
 
         resources.push(resource)
       }).catch(error => {
-        logger.error(`failed to GET: ${request}. ${error}`)
+        logger.warn(`fetching '${request}' - ${error.message}`)
+        logger.debug(error)
       })
     }
 

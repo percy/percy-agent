@@ -13,6 +13,8 @@ export default class SnapshotService extends PercyClientService {
     widths: number[] = [1280],
     minimumHeight: number = 500,
   ): Promise<number | null> {
+    logger.info(`creating snapshot '${name}'...`)
+
     let rootResource = this.percyClient.makeResource({
       resourceUrl: this.parseUrlPath(rootResourceUrl),
       content: domSnapshot,
@@ -34,29 +36,27 @@ export default class SnapshotService extends PercyClientService {
       buildId, resources, {name, widths, enableJavaScript, minimumHeight}
     ).then(async (response: any) => {
       snapshotId = parseInt(response.body.data.id)
-      logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] created`)
-
-      logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] uploading missing resources...`)
+      logger.info('uploading missing resources...')
 
       await this.percyClient.uploadMissingResources(buildId, response, resources).then(() => {
-        logger.info(`SnapshotService#createSnapshot[Snapshot ${snapshotId}] done uploading missing resources`)
-        return snapshotId
+        logger.info('missing resources uploaded.')
       })
-    }, (error: any) => {
-      logger.error(`SnapshotService#createSnapshot ${error}`)
+    }).catch((error: any) => {
+      logger.error(`${error.name} ${error.message}`)
+      logger.debug(error)
     })
 
-    logger.info(`SnapshotService#createSnapshot returning ${snapshotId}`)
     return snapshotId
   }
 
   async finalizeSnapshot(snapshotId: number): Promise<boolean> {
     let response = await this.percyClient.finalizeSnapshot(snapshotId)
       .then(() => {
-        logger.info(`SnapshotService#finalizeSnapshot[Snapshot ${snapshotId}]: finalized`)
+        logger.info('finalized snapshot.')
         return true
       }, (error: any) => {
-        logger.error(`SnapshotService#finalizeSnapshot: ${error}`)
+        logger.error(`${error.name} ${error.message}`)
+        logger.debug(error)
         return false
       })
 
