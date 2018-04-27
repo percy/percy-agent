@@ -42,7 +42,7 @@ describe('ProcessService', () => {
 
   describe('#kill', () => {
     it('kills a running process', async () => {
-      await subject.runDetached(['bin/run', 'start', 'attached'])
+      await subject.runDetached(['bin/run', 'start', '--attached'])
       expect(await subject.isRunning()).to.equal(true)
 
       await subject.kill()
