@@ -2,8 +2,7 @@ import {Command, flags} from '@oclif/command'
 import AgentService from '../services/agent-service'
 import ProcessService from '../services/process-service'
 import logger from '../utils/logger'
-import Axios from 'axios'
-const retryAxios = require('retry-axios')
+import healthCheck from '../utils/health-checker'
 
 export default class Start extends Command {
   static description = 'Starts the percy-agent process.'
@@ -35,7 +34,7 @@ export default class Start extends Command {
       await this.runDetached(port)
     }
 
-    await this.listenForHealthCheck(port)
+    await healthCheck(port)
   }
 
   private async runAttached(port: number) {
@@ -59,32 +58,6 @@ export default class Start extends Command {
     } else {
       logger.warn('percy-agent is already running')
     }
-  }
-
-  private async listenForHealthCheck(port: number) {
-    const healthcheckUrl = `http://localhost:${port}/percy/healthcheck`
-
-    let retryConfig = {
-      retry: 10,
-      retryDelay: 500,
-      shouldRetry: () => {
-        return true
-      },
-    }
-
-    retryAxios.attach()
-
-    await Axios({
-      method: 'get',
-      url: healthcheckUrl,
-      timeout: 10000,
-      raxConfig: retryConfig,
-    } as any).then(_response => {
-      logger.info('percy-agent is ready.')
-    }).catch(error => {
-      logger.error(`Failed to establish a connection with ${healthcheckUrl}`)
-      logger.debug(error)
-    })
   }
 
   private logStart(port: number) {
