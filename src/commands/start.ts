@@ -1,11 +1,11 @@
-import {Command, flags} from '@oclif/command'
+import {flags} from '@oclif/command'
 import AgentService from '../services/agent-service'
-import ProcessService from '../services/process-service'
-import logger from '../utils/logger'
 import healthCheck from '../utils/health-checker'
+import PercyCommand from './percy-command'
 
-export default class Start extends Command {
+export default class Start extends PercyCommand {
   static description = 'Starts the percy-agent process.'
+  static hidden = false
 
   static examples = [
     '$ percy-agent start\n' +
@@ -28,6 +28,8 @@ export default class Start extends Command {
     const {flags} = this.parse(Start)
     const port = flags.port ? parseInt(flags.port) : 5338
 
+    if (this.percyEnvVarsMissing()) { return }
+
     if (flags.attached) {
       await this.runAttached(port)
     } else {
@@ -35,10 +37,6 @@ export default class Start extends Command {
     }
 
     await healthCheck(port)
-  }
-
-  processService(): ProcessService {
-    return new ProcessService()
   }
 
   private async runAttached(port: number) {
@@ -60,11 +58,11 @@ export default class Start extends Command {
     if (pid) {
       this.logStart(port)
     } else {
-      logger.warn('percy-agent is already running')
+      this.logger().warn('percy-agent is already running')
     }
   }
 
   private logStart(port: number) {
-    logger.info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
+    this.logger().info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
   }
 }

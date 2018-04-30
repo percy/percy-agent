@@ -1,10 +1,11 @@
-import {Command, flags} from '@oclif/command'
+import {flags} from '@oclif/command'
 import Axios from 'axios'
-import ProcessService from '../services/process-service'
-import logger from '../utils/logger'
+import PercyCommand from './percy-command'
 
-export default class Stop extends Command {
+export default class Stop extends PercyCommand {
   static description = 'Stops the percy-agent process.'
+  static hidden = false
+
   static examples = [
     '$ percy-agent stop\n' +
     'info: percy-agent has stopped.',
@@ -18,10 +19,6 @@ export default class Stop extends Command {
     })
   }
 
-  processService(): ProcessService {
-    return new ProcessService()
-  }
-
   async run() {
     const {flags} = this.parse(Stop)
     const port = flags.port ? parseInt(flags.port) : 5338
@@ -29,7 +26,7 @@ export default class Stop extends Command {
     if (await this.processService().isRunning()) {
       await this.postToRunningAgent('/percy/stop', port)
     } else {
-      logger.warn('percy-agent is already stopped.')
+      this.logger().warn('percy-agent is already stopped.')
     }
   }
 
@@ -37,10 +34,10 @@ export default class Stop extends Command {
     await Axios(`http://localhost:${port}${path}`, {method: 'POST'})
       .catch((error: any) => {
         if (error.message === 'socket hang up') { // We expect a hangup
-          logger.info('percy-agent stopped.')
+          this.logger().info('percy-agent stopped.')
         } else {
-          logger.error(`${error.name} ${error.message}`)
-          logger.debug(error)
+          this.logger().error(`${error.name} ${error.message}`)
+          this.logger().debug(error)
         }
       })
   }

@@ -5,6 +5,7 @@
     "radix": false,
     "ordered-imports": false,
     "no-http-string": false,
-    "no-string-based-set-timeout": false
+    "no-string-based-set-timeout": false,
+    "no-string-throw": false
   }
 }
