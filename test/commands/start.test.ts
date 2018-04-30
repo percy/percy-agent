@@ -11,7 +11,7 @@ describe('Start', () => {
   describe('#run', () => {
     let sandbox = sinon.createSandbox()
 
-    function mockProcessServiceWithPid(pid: number | null) {
+    function stubProcessServiceWithPid(pid: number | null): any {
       let processServiceStub = sandbox.stub() as any
       processServiceStub.runDetached = sandbox.stub()
       processServiceStub.runDetached.returns(pid)
@@ -19,6 +19,8 @@ describe('Start', () => {
       let start = Start.prototype as Start
 
       sandbox.stub(start, 'processService').returns(processServiceStub)
+
+      return processServiceStub
     }
 
     beforeEach(() => {
@@ -31,17 +33,20 @@ describe('Start', () => {
     })
 
     it('starts percy agent', async () => {
-      mockProcessServiceWithPid(123)
+      let processServiceStub = stubProcessServiceWithPid(123)
 
       let stdout = await captureStdOut(async () => {
         await Start.run([])
       })
 
+      expect(processServiceStub.runDetached).to.calledWithMatch(
+        ['bin/run', 'start', '--attached', '--port', '5338']
+      )
       expect(stdout).to.match(/info: percy-agent has started on port \d+. Logs available at log\/percy\-agent\.log/)
     })
 
     it('starts percy agent on a specific port', async () => {
-      mockProcessServiceWithPid(123)
+      let processServiceStub = stubProcessServiceWithPid(123)
 
       let port = '55000'
       let options = ['--port', port]
@@ -50,11 +55,14 @@ describe('Start', () => {
         await Start.run(options)
       })
 
+      expect(processServiceStub.runDetached).to.calledWithMatch(
+        ['bin/run', 'start', '--attached', '--port', port]
+      )
       expect(stdout).to.contain(`info: percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
     })
 
     it('warns when percy agent is already running', async () => {
-      mockProcessServiceWithPid(null)
+      stubProcessServiceWithPid(null)
 
       let stdout = await captureStdOut(async () => {
         await Start.run([])
