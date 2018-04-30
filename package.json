@@ -13,12 +13,14 @@
     "@oclif/plugin-help": "^1.2.5",
     "@oclif/plugin-not-found": "^1.0.6",
     "@types/express": "^4.11.1",
+    "@types/sinon": "^4.3.1",
     "@types/winston": "^2.3.9",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "percy-client": "^2.8.2",
     "retry-axios": "^0.3.2",
+    "sinon": "^4.5.0",
     "winston": "^2.4.2"
   },
   "devDependencies": {
@@ -87,7 +89,7 @@
     "posttest": "yarn run lint",
     "prepublishOnly": "yarn run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "yarn run clean",
-    "test": "yarn run build-percy-agent-client && LOG_LEVEL=error PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "yarn run build-percy-agent-client && LOG_LEVEL=debug PERCY_TOKEN=abc PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "dist/index.d.ts"

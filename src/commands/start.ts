@@ -37,6 +37,10 @@ export default class Start extends Command {
     await healthCheck(port)
   }
 
+  processService(): ProcessService {
+    return new ProcessService()
+  }
+
   private async runAttached(port: number) {
     let agentService = new AgentService()
 
@@ -47,7 +51,7 @@ export default class Start extends Command {
   }
 
   private async runDetached(port: number) {
-    let processService = new ProcessService()
+    let processService = this.processService()
 
     const pid = await processService.runDetached(
       ['bin/run', 'start', '--attached', '--port', String(port)]
