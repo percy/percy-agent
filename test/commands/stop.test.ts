@@ -10,7 +10,7 @@ describe('Stop', () => {
     await captureStdOut(async () => Start.run([]))
   })
 
-  describe('#stop', () => {
+  describe('#run', () => {
     it('stops percy agent gracefully', async () => {
       let stdout = await captureStdOut(async () => {
         await Stop.run([])
