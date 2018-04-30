@@ -18,12 +18,15 @@ export default class Stop extends Command {
     })
   }
 
+  processService(): ProcessService {
+    return new ProcessService()
+  }
+
   async run() {
     const {flags} = this.parse(Stop)
     const port = flags.port ? parseInt(flags.port) : 5338
-    const processService = new ProcessService()
 
-    if (await processService.isRunning()) {
+    if (await this.processService().isRunning()) {
       await this.postToRunningAgent('/percy/stop', port)
     } else {
       logger.warn('percy-agent is already stopped.')
