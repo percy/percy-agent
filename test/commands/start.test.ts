@@ -4,6 +4,7 @@ import * as sinon from 'sinon'
 import {describe} from 'mocha'
 import {captureStdOut} from '../helpers/stdout'
 import Start from '../../src/commands/start'
+import ProcessService from '../../src/services/process-service'
 
 const expect = chai.expect
 
@@ -12,15 +13,13 @@ describe('Start', () => {
     let sandbox = sinon.createSandbox()
 
     function stubProcessServiceWithPid(pid: number | null): any {
-      let processServiceStub = sandbox.stub() as any
-      processServiceStub.runDetached = sandbox.stub()
-      processServiceStub.runDetached.returns(pid)
+      let processService = ProcessService.prototype as ProcessService
+      sandbox.stub(processService, 'runDetached').returns(pid)
 
       let start = Start.prototype as Start
+      sandbox.stub(start, 'processService').returns(processService)
 
-      sandbox.stub(start, 'processService').returns(processServiceStub)
-
-      return processServiceStub
+      return processService
     }
 
     beforeEach(() => {
