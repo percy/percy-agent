@@ -14,17 +14,25 @@ export default class PercyCommand extends Command {
     return logger
   }
 
+  percyToken(): string | undefined {
+    return process.env.PERCY_TOKEN
+  }
+
+  percyProject(): string | undefined {
+    return process.env.PERCY_PROJECT
+  }
+
   async run() {
     throw('Implement run() in subclass')
   }
 
   protected percyEnvVarsMissing(): boolean {
-    if (process.env.PERCY_TOKEN === '') {
+    if (this.percyToken() === '') {
       this.logMissingEnvVar('PERCY_TOKEN')
       return true
     }
 
-    if (process.env.PERCY_PROJECT === '') {
+    if (this.percyProject() === '') {
       this.logMissingEnvVar('PERCY_PROJECT')
       return true
     }
@@ -34,7 +42,7 @@ export default class PercyCommand extends Command {
 
   private logMissingEnvVar(name: string) {
     this.logger().error(
-      `You must set ${name} to start percy-agent. See https://percy.io/docs for how to set ${name} for your environment.`
+      `You must set ${name}. See https://percy.io/docs for how to set ${name} for your environment.`
     )
   }
 }

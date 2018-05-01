@@ -2,8 +2,9 @@ import * as chai from 'chai'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 import {describe} from 'mocha'
-import {captureStdOut} from '../helpers/stdout'
+import {captureStdOut, captureStdErr} from '../helpers/stdout'
 import Start from '../../src/commands/start'
+import PercyCommand from '../../src/commands/percy-command'
 import ProcessService from '../../src/services/process-service'
 
 const expect = chai.expect
@@ -68,6 +69,28 @@ describe('Start', () => {
       })
 
       expect(stdout).to.match(/warn: percy-agent is already running/)
+    })
+
+    it('errors when PERCY_TOKEN is missing', async () => {
+      let percyCommand = PercyCommand.prototype as PercyCommand
+      sandbox.stub(percyCommand, 'percyToken').returns('')
+
+      let stderr = await captureStdErr(async () => {
+        await Start.run([])
+      })
+
+      expect(stderr).to.contain('You must set PERCY_TOKEN.')
+    })
+
+    it('errors when PERCY_PROJECT is missing', async () => {
+      let percyCommand = PercyCommand.prototype as PercyCommand
+      sandbox.stub(percyCommand, 'percyProject').returns('')
+
+      let stderr = await captureStdErr(async () => {
+        await Start.run([])
+      })
+
+      expect(stderr).to.contain('You must set PERCY_PROJECT.')
     })
   })
 })
