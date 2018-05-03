@@ -27,12 +27,12 @@ export default class PercyCommand extends Command {
   }
 
   protected percyEnvVarsMissing(): boolean {
-    if (this.percyToken() === '') {
+    if (this.percyToken() === '' || this.percyToken() === undefined) {
       this.logMissingEnvVar('PERCY_TOKEN')
       return true
     }
 
-    if (this.percyProject() === '') {
+    if (this.percyProject() === '' || this.percyProject() === undefined) {
       this.logMissingEnvVar('PERCY_PROJECT')
       return true
     }
