@@ -2,7 +2,11 @@ import PercyClientService from './percy-client-service'
 import logger from '../utils/logger'
 
 export default class BuildService extends PercyClientService {
-  async createBuild(): Promise<number | null> {
+  buildUrl: string | null = null
+  buildNumber: number | null = null
+  buildId: number | null = null
+
+  async createBuild(): Promise<number> {
     let build = await this.percyClient
       .createBuild(process.env.PERCY_PROJECT)
       .catch((error: any) => {
@@ -12,23 +16,33 @@ export default class BuildService extends PercyClientService {
 
     const buildData = build.body.data
 
-    let buildId = parseInt(buildData.id)
-    let buildNumber = parseInt(buildData.attributes['build-number'])
-    let buildUrl = buildData.attributes['web-url']
+    this.buildId = parseInt(buildData.id) as number
+    this.buildNumber = parseInt(buildData.attributes['build-number'])
+    this.buildUrl = buildData.attributes['web-url']
 
-    logger.info(`created build #${buildNumber}: ${buildUrl}`)
+    this.logEvent('created')
 
-    return buildId
+    return this.buildId
   }
 
-  async finalizeBuild(buildId: number) {
+  async finalizeBuild() {
+    if (!this.buildId) {
+      logger.info('build could not be finalized as buildId was unknown.')
+      return
+    }
+
     await this.percyClient
-      .finalizeBuild(buildId)
+      .finalizeBuild(this.buildId)
       .catch((error: any) => {
         logger.error(`${error.name} ${error.message}`)
         logger.debug(error)
       })
 
-    logger.info('finalized build.')
+    this.logEvent('finialized')
+
+  }
+
+  logEvent(event: string) {
+    logger.info(`${event} build #${this.buildNumber}: ${this.buildUrl}`)
   }
 }
