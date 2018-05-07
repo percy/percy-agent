@@ -3,8 +3,15 @@ import RequestService from './request-service'
 import logger from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
+  buildId: number
+
+  constructor(buildId: number) {
+    super()
+
+    this.buildId = buildId
+  }
+
   async createSnapshot(
-    buildId: number,
     name: string,
     rootResourceUrl: string,
     domSnapshot: string = '',
@@ -16,7 +23,7 @@ export default class SnapshotService extends PercyClientService {
     logger.info(`creating snapshot '${name}'...`)
 
     let rootResource = this.percyClient.makeResource({
-      resourceUrl: this.parseUrlPath(rootResourceUrl),
+      resourceUrl: rootResourceUrl,
       content: domSnapshot,
       isRoot: true,
       mimetype: 'text/html',
@@ -33,14 +40,25 @@ export default class SnapshotService extends PercyClientService {
     let snapshotId: number | null = null
 
     await this.percyClient.createSnapshot(
-      buildId, resources, {name, widths, enableJavaScript, minimumHeight}
+      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
     ).then(async (response: any) => {
-      snapshotId = parseInt(response.body.data.id)
-      logger.info('uploading missing resources...')
+      logger.info(`uploading missing ${resources.length} resources...`)
 
-      await this.percyClient.uploadMissingResources(buildId, response, resources).then(() => {
-        logger.info('missing resources uploaded.')
-      })
+      snapshotId = parseInt(response.body.data.id)
+
+      await this.percyClient.uploadMissingResources(this.buildId, response, resources)
+        .then(async () => {
+          logger.info('missing resources uploaded.')
+
+          if (snapshotId) {
+            await this.finalizeSnapshot(snapshotId)
+          } else {
+            // error state. snapshotid was missing.
+          }
+        }).catch((error: any) => {
+          logger.error(`${error.name} ${error.message}`)
+          logger.debug(error)
+        })
     }).catch((error: any) => {
       logger.error(`${error.name} ${error.message}`)
       logger.debug(error)
@@ -50,6 +68,8 @@ export default class SnapshotService extends PercyClientService {
   }
 
   async finalizeSnapshot(snapshotId: number): Promise<boolean> {
+    logger.debug('finalizing snapshot: ' + snapshotId)
+
     let response = await this.percyClient.finalizeSnapshot(snapshotId)
       .then(() => {
         logger.info('finalized snapshot.')
