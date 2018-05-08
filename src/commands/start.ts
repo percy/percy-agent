@@ -13,10 +13,10 @@ export default class Start extends PercyCommand {
   ]
 
   static flags = {
-    port: flags.string({
+    port: flags.integer({
       char: 'p',
       description: 'port',
-      default: '5338',
+      default: 5338,
     }),
     attached: flags.boolean({
       char: 'a',
@@ -26,7 +26,7 @@ export default class Start extends PercyCommand {
 
   async run() {
     const {flags} = this.parse(Start)
-    const port = flags.port ? parseInt(flags.port) : 5338
+    let port = flags.port as number
 
     if (this.percyEnvVarsMissing()) { return }
 
