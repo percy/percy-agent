@@ -5,8 +5,16 @@ import SnapshotService from '../../src/services/snapshot-service'
 import * as nock from 'nock'
 
 describe('SnapshotService', () => {
-  let subject = new SnapshotService()
   const snapshotId = 1
+  const buildId = 10
+
+  let subject = new SnapshotService(buildId)
+
+  beforeEach(async () => {
+    nock('https://percy.io')
+      .post(/\/api\/v1\/snapshots\/\d+\/finalize/)
+      .reply(200, {})
+  })
 
   afterEach(() => {
     nock.cleanAll()
@@ -24,7 +32,7 @@ describe('SnapshotService', () => {
 
       await captureStdOut(async () => {
         createdSnapshotId = await subject.createSnapshot(
-          snapshotId, 'my test', 'http://localhost/index.html', '<html><body></body></html>'
+          'my test', 'http://localhost/index.html', '<html><body></body></html>'
         )
       })
 
@@ -33,12 +41,6 @@ describe('SnapshotService', () => {
   })
 
   describe('#finalizeSnapshot', () => {
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .post(/\/api\/v1\/snapshots\/\d+\/finalize/)
-        .reply(200, {})
-    })
-
     it('creates finalizes a snapshot', async () => {
       let result = false
 

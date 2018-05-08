@@ -40,8 +40,8 @@ describe('BuildService', () => {
     })
 
     it('finalizes a build', async () => {
-      let stdout = await captureStdOut(() => subject.finalizeBuild(buildId))
-      expect(stdout).to.contain('info: finalized build.')
+      let stdout = await captureStdOut(() => subject.finalizeBuild())
+      expect(stdout).to.match(/info: finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
 })

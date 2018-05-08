@@ -28,10 +28,9 @@ describe('RequestService', () => {
       })
 
       expect(resources[0]).to.include({
-        content: '<svg></svg>',
-        isRoot: false,
-        localPath: undefined,
         mimetype: undefined,
+        isRoot: undefined,
+        content: undefined,
         resourceUrl: '/logo.svg',
         sha: 'b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
       })

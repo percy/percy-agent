@@ -38,7 +38,7 @@ export default class BuildService extends PercyClientService {
         logger.debug(error)
       })
 
-    this.logEvent('finialized')
+    this.logEvent('finalized')
 
   }
 

@@ -40,7 +40,7 @@ export default class AgentService {
     await this.buildService.finalizeBuild()
     if (this.server) { await this.server.close() }
 
-    process.exit(0)
+    // process.exit(0)
   }
 
   private async handleSnapshot(request: express.Request, response: express.Response) {

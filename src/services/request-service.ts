@@ -16,8 +16,6 @@ export default class RequestService extends PercyClientService {
     logger.info(`filtered to ${filteredRequestManifests.length} requests...`)
 
     let localCopies = await this.createLocalCopies(filteredRequestManifests)
-    console.log(JSON.stringify(localCopies))
-
     let resources = await this.createResourcesFromLocalCopies(localCopies)
 
     return resources

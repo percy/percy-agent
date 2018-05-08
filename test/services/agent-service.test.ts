@@ -71,7 +71,7 @@ describe('AgentService', () => {
         await subject.stop()
       })
 
-      expect(stdout).to.match(/info: finalized build\./)
+      expect(stdout).to.match(/info: finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
 })
