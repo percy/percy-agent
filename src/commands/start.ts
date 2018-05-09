@@ -1,5 +1,4 @@
 import {flags} from '@oclif/command'
-import AgentService from '../services/agent-service'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
@@ -18,9 +17,9 @@ export default class Start extends PercyCommand {
       description: 'port',
       default: 5338,
     }),
-    attached: flags.boolean({
-      char: 'a',
-      description: 'start as an attached process',
+    detached: flags.boolean({
+      char: 'd',
+      description: 'start as a detached process',
     })
   }
 
@@ -30,32 +29,30 @@ export default class Start extends PercyCommand {
 
     if (this.percyEnvVarsMissing()) { return }
 
-    if (flags.attached) {
-      await this.runAttached(port)
-    } else {
+    if (flags.detached) {
       await this.runDetached(port)
+    } else {
+      await this.runAttached(port)
     }
 
     await healthCheck(port)
   }
 
   private async runAttached(port: number) {
-    let agentService = new AgentService()
-
     process.on('SIGHUP', async () => {
-      await agentService.stop()
+      await this.agentService().stop()
       process.exit(0)
     })
     process.on('SIGINT', async () => {
-      await agentService.stop()
+      await this.agentService().stop()
       process.exit(0)
     })
     process.on('SIGTERM', async () => {
-      await agentService.stop()
+      await this.agentService().stop()
       process.exit(0)
     })
 
-    await agentService.start(port)
+    await this.agentService().start(port)
     this.logStart(port)
   }
 
@@ -63,7 +60,7 @@ export default class Start extends PercyCommand {
     let processService = this.processService()
 
     const pid = await processService.runDetached(
-      ['bin/run', 'start', '--attached', '--port', String(port)]
+      ['bin/run', 'start', '--detached', '--port', String(port)]
     )
 
     if (pid) {

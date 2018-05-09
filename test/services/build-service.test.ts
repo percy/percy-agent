@@ -10,9 +10,7 @@ describe('BuildService', () => {
   const buildCreateResponse = require('../fixtures/build-create.json')
   const buildId = buildCreateResponse.data.id
 
-  afterEach(() => {
-    nock.cleanAll()
-  })
+  afterEach(() => nock.cleanAll())
 
   describe('#createBuild', () => {
     beforeEach(() => {

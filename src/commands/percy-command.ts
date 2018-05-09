@@ -1,5 +1,6 @@
 import {Command} from '@oclif/command'
 import ProcessService from '../services/process-service'
+import AgentService from '../services/agent-service'
 import logger from '../utils/logger'
 import * as winston from 'winston'
 
@@ -8,6 +9,10 @@ export default class PercyCommand extends Command {
 
   processService(): ProcessService {
     return new ProcessService()
+  }
+
+  agentService(): AgentService {
+    return new AgentService()
   }
 
   logger(): winston.LoggerInstance {

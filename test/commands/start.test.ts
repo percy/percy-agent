@@ -6,6 +6,7 @@ import {captureStdOut, captureStdErr} from '../helpers/stdout'
 import Start from '../../src/commands/start'
 import PercyCommand from '../../src/commands/percy-command'
 import ProcessService from '../../src/services/process-service'
+import AgentService from '../../src/services/agent-service'
 
 const expect = chai.expect
 
@@ -13,7 +14,17 @@ describe('Start', () => {
   describe('#run', () => {
     let sandbox = sinon.createSandbox()
 
-    function stubProcessServiceWithPid(pid: number | null): any {
+    function AgentServiceStub(): AgentService {
+      let agentService = AgentService.prototype as AgentService
+      sandbox.stub(agentService, 'start')
+
+      let start = Start.prototype as Start
+      sandbox.stub(start, 'agentService').returns(agentService)
+
+      return agentService
+    }
+
+    function ProcessServiceStub(pid: number | null): ProcessService {
       let processService = ProcessService.prototype as ProcessService
       sandbox.stub(processService, 'runDetached').returns(pid)
 
@@ -33,20 +44,30 @@ describe('Start', () => {
     })
 
     it('starts percy agent', async () => {
-      let processServiceStub = stubProcessServiceWithPid(123)
+      let agentServiceStub = AgentServiceStub()
 
       let stdout = await captureStdOut(async () => {
         await Start.run([])
       })
 
-      expect(processServiceStub.runDetached).to.calledWithMatch(
-        ['bin/run', 'start', '--attached', '--port', '5338']
-      )
+      expect(agentServiceStub.start).to.calledWithMatch(5338)
       expect(stdout).to.match(/info: percy-agent has started on port \d+. Logs available at log\/percy\-agent\.log/)
     })
 
+    it('starts percy agent in detached mode', async () => {
+      let processService = ProcessServiceStub(null)
+
+      await captureStdOut(async () => {
+        await Start.run(['--detached'])
+      })
+
+      expect(processService.runDetached).to.calledWithMatch(
+        ['bin/run', 'start', '--detached', '--port', '5338']
+      )
+    })
+
     it('starts percy agent on a specific port', async () => {
-      let processServiceStub = stubProcessServiceWithPid(123)
+      let agentServiceStub = AgentServiceStub()
 
       let port = '55000'
       let options = ['--port', port]
@@ -55,17 +76,15 @@ describe('Start', () => {
         await Start.run(options)
       })
 
-      expect(processServiceStub.runDetached).to.calledWithMatch(
-        ['bin/run', 'start', '--attached', '--port', port]
-      )
+      expect(agentServiceStub.start).to.calledWithMatch(+port)
       expect(stdout).to.contain(`info: percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
     })
 
     it('warns when percy agent is already running', async () => {
-      stubProcessServiceWithPid(null)
+      ProcessServiceStub(null)
 
       let stdout = await captureStdOut(async () => {
-        await Start.run([])
+        await Start.run(['--detached'])
       })
 
       expect(stdout).to.match(/warn: percy-agent is already running/)
@@ -76,7 +95,7 @@ describe('Start', () => {
       sandbox.stub(percyCommand, 'percyToken').returns('')
 
       let stderr = await captureStdErr(async () => {
-        await Start.run([])
+        await Start.run(['--detached'])
       })
 
       expect(stderr).to.contain('You must set PERCY_TOKEN.')
@@ -87,7 +106,7 @@ describe('Start', () => {
       sandbox.stub(percyCommand, 'percyProject').returns('')
 
       let stderr = await captureStdErr(async () => {
-        await Start.run([])
+        await Start.run(['--detached'])
       })
 
       expect(stderr).to.contain('You must set PERCY_PROJECT.')

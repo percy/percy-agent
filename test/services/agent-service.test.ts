@@ -22,9 +22,7 @@ describe('AgentService', () => {
       .reply(201, {data: {id: buildId}})
   })
 
-  afterEach(() => {
-    nock.cleanAll()
-  })
+  afterEach(() => nock.cleanAll())
 
   describe('#start', () => {
     afterEach(async () => {

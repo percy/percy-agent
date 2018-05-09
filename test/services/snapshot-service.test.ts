@@ -16,9 +16,7 @@ describe('SnapshotService', () => {
       .reply(200, {})
   })
 
-  afterEach(() => {
-    nock.cleanAll()
-  })
+  afterEach(() => nock.cleanAll())
 
   describe('#createSnapshot', () => {
     beforeEach(async () => {
