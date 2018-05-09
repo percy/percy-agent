@@ -36,4 +36,21 @@ describe('RequestService', () => {
       })
     })
   })
+
+  describe('#filterRequestManifest', () => {
+    it('filters request manifest', async () => {
+      let requestManifest: any[] = [
+        'http://percy.io/logo.png',
+        'http://percy.io/logo.png',
+        '/app.css',
+        'http://localhost:5338/percy/stop',
+      ]
+      let filteredRequestManifest = subject.filterRequestManifest(requestManifest)
+
+      expect(filteredRequestManifest).to.deep.equal([
+        'http://percy.io/logo.png',
+        '/app.css',
+      ])
+    })
+  })
 })
