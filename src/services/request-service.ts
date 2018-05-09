@@ -3,8 +3,8 @@ import Axios from 'axios'
 import logger from '../utils/logger'
 import unique from '../utils/unique-array'
 import * as fs from 'fs'
-import * as path from 'path'
 import * as crypto from 'crypto'
+import ResourceService from './resource-service'
 
 export default class RequestService extends PercyClientService {
   static localCopiesPath = './tmp/'
@@ -16,7 +16,9 @@ export default class RequestService extends PercyClientService {
     logger.info(`filtered to ${filteredRequestManifests.length} requests...`)
 
     let localCopies = await this.createLocalCopies(filteredRequestManifests)
-    let resources = await this.createResourcesFromLocalCopies(localCopies)
+
+    let resourceService = new ResourceService()
+    let resources = await resourceService.createResourcesFromLocalCopies(localCopies)
 
     return resources
   }
@@ -65,38 +67,5 @@ export default class RequestService extends PercyClientService {
     })
 
     return filename
-  }
-
-  // TODO: possibly move this into resource-service.ts
-  async createResourcesFromLocalCopies(localCopies: Map<string, string>): Promise<any[]> {
-    let resources: any[] = []
-
-    localCopies.forEach(async (localFileName: string, requestUrl: string) => {
-      let resource = await this.createResourceFromFile(requestUrl, localFileName)
-      if (resource !== undefined && resource !== null) {
-        resources.push(resource)
-      }
-    })
-
-    return resources
-  }
-
-  async createResourceFromFile(request: string, copyFilePath: string): Promise<any | null> {
-    let copyFullPath = path.resolve(copyFilePath)
-    let sha = path.basename(copyFilePath)
-
-    logger.debug('creating resource')
-    logger.debug(`-> request: ${request}`)
-    logger.debug(`-> copyFilePath: ${copyFilePath}`)
-    logger.debug(`-> resourceUrl: ${this.parseUrlPath(request)}`)
-    logger.debug(`-> localPath: ${copyFullPath}`)
-    logger.debug(`-> sha: ${sha}`)
-
-    return this.percyClient.makeResource({
-      resourceUrl: this.parseUrlPath(request),
-      localPath: copyFullPath,
-      sha,
-      // mimetype: response.headers['Content-Type']
-    })
   }
 }
