@@ -80,4 +80,20 @@ describe('RequestService', () => {
       expect(localCopies).to.deep.equal(expectedResult)
     })
   })
+
+  describe('#makeLocalCopy', () => {
+    beforeEach(async () => {
+      nock('https://percy.io')
+        .get('/logo.svg')
+        .reply(200, '<svg></svg>', {'Content-Type': 'image/svg+xml'})
+    })
+
+    it('creates a local copy', async () => {
+      let request = 'https://percy.io/logo.svg'
+      let localCopy = await subject.makeLocalCopy(request)
+      let expectedFilename = './tmp/b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
+
+      expect(localCopy).to.deep.equal(expectedFilename)
+    })
+  })
 })
