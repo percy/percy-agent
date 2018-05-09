@@ -42,9 +42,18 @@ export default class Start extends PercyCommand {
   private async runAttached(port: number) {
     let agentService = new AgentService()
 
-    process.on('SIGHUP', () => agentService.stop())
-    process.on('SIGINT', () => agentService.stop())
-    process.on('SIGTERM', () => agentService.stop())
+    process.on('SIGHUP', async () => {
+      await agentService.stop()
+      process.exit(0)
+    })
+    process.on('SIGINT', async () => {
+      await agentService.stop()
+      process.exit(0)
+    })
+    process.on('SIGTERM', async () => {
+      await agentService.stop()
+      process.exit(0)
+    })
 
     await agentService.start(port)
     this.logStart(port)

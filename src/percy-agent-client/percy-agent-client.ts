@@ -33,6 +33,7 @@ class PercyAgentClient {
     let domSnapshot = this.domSnapshot()
 
     let percyAgent = new PercyAgent()
+    // TODO: this cannot be hardcoded to this port
     percyAgent.post('http://localhost:5338/percy/snapshot', {
       name,
       url: document.URL,
