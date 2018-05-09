@@ -95,7 +95,7 @@ describe('Start', () => {
       sandbox.stub(percyCommand, 'percyToken').returns('')
 
       let stderr = await captureStdErr(async () => {
-        await Start.run(['--detached'])
+        await Start.run([])
       })
 
       expect(stderr).to.contain('You must set PERCY_TOKEN.')
@@ -106,7 +106,7 @@ describe('Start', () => {
       sandbox.stub(percyCommand, 'percyProject').returns('')
 
       let stderr = await captureStdErr(async () => {
-        await Start.run(['--detached'])
+        await Start.run([])
       })
 
       expect(stderr).to.contain('You must set PERCY_PROJECT.')
