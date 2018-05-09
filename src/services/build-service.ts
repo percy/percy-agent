@@ -1,5 +1,5 @@
 import PercyClientService from './percy-client-service'
-import logger from '../utils/logger'
+import logger, {logError} from '../utils/logger'
 
 export default class BuildService extends PercyClientService {
   buildUrl: string | null = null
@@ -9,10 +9,7 @@ export default class BuildService extends PercyClientService {
   async createBuild(): Promise<number> {
     let build = await this.percyClient
       .createBuild(process.env.PERCY_PROJECT)
-      .catch((error: any) => {
-        logger.error(`${error.name} ${error.message}`)
-        logger.debug(error)
-      })
+      .catch(logError)
 
     const buildData = build.body.data
 

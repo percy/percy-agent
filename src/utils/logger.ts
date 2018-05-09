@@ -14,4 +14,9 @@ let logger = new winston.Logger({
   ]
 })
 
+export function logError(error: any) {
+  logger.error(`${error.name} ${error.message}`)
+  logger.debug(error)
+}
+
 export default logger

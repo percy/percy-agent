@@ -1,6 +1,6 @@
 import PercyClientService from './percy-client-service'
 import RequestService from './request-service'
-import logger from '../utils/logger'
+import logger, {logError} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   buildId: number
@@ -55,14 +55,8 @@ export default class SnapshotService extends PercyClientService {
           } else {
             // error state. snapshotid was missing.
           }
-        }).catch((error: any) => {
-          logger.error(`${error.name} ${error.message}`)
-          logger.debug(error)
-        })
-    }).catch((error: any) => {
-      logger.error(`${error.name} ${error.message}`)
-      logger.debug(error)
-    })
+        }).catch(logError)
+    }).catch(logError)
 
     return snapshotId
   }
@@ -75,8 +69,7 @@ export default class SnapshotService extends PercyClientService {
         logger.info('finalized snapshot.')
         return true
       }, (error: any) => {
-        logger.error(`${error.name} ${error.message}`)
-        logger.debug(error)
+        logError(error)
         return false
       })
 

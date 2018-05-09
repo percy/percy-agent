@@ -1,6 +1,6 @@
 import PercyClientService from './percy-client-service'
 import Axios from 'axios'
-import logger from '../utils/logger'
+import logger, {logError} from '../utils/logger'
 import unique from '../utils/unique-array'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
@@ -61,10 +61,7 @@ export default class RequestService extends PercyClientService {
       } else {
         logger.warn(`skipping '${request}' - empty response body`)
       }
-    }).catch(error => {
-      logger.warn(`fetching '${request}' - ${error.message}`)
-      logger.debug(error)
-    })
+    }).catch(logError)
 
     return filename
   }
