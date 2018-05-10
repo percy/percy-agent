@@ -10,6 +10,8 @@ export default class PercyCommand extends Command {
   agentService: AgentService
   processService: ProcessService
   logger: winston.LoggerInstance
+  percyToken: string
+  percyProject: string
 
   constructor(argv: string[], config: any) {
     super(argv, config)
@@ -17,27 +19,21 @@ export default class PercyCommand extends Command {
     this.agentService = new AgentService()
     this.processService = new ProcessService()
     this.logger = logger
-  }
-
-  percyToken(): string | undefined {
-    return process.env.PERCY_TOKEN
-  }
-
-  percyProject(): string | undefined {
-    return process.env.PERCY_PROJECT
+    this.percyToken = process.env.PERCY_TOKEN || ''
+    this.percyProject = process.env.PERCY_PROJECT || ''
   }
 
   async run() {
     throw('Implement run() in subclass')
   }
 
-  protected percyEnvVarsMissing(): boolean {
-    if (this.percyToken() === '' || this.percyToken() === undefined) {
+  percyEnvVarsMissing(): boolean {
+    if (this.percyToken === '') {
       this.logMissingEnvVar('PERCY_TOKEN')
       return true
     }
 
-    if (this.percyProject() === '' || this.percyProject() === undefined) {
+    if (this.percyProject === '') {
       this.logMissingEnvVar('PERCY_PROJECT')
       return true
     }
