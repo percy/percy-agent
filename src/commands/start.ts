@@ -36,6 +36,7 @@ export default class Start extends PercyCommand {
     }
 
     await healthCheck(port)
+    this.logger.info('finished healthCheck')
   }
 
   private async runAttached(port: number) {
@@ -43,10 +44,12 @@ export default class Start extends PercyCommand {
       await this.agentService.stop()
       process.exit(0)
     })
+
     process.on('SIGINT', async () => {
       await this.agentService.stop()
       process.exit(0)
     })
+
     process.on('SIGTERM', async () => {
       await this.agentService.stop()
       process.exit(0)
@@ -58,7 +61,7 @@ export default class Start extends PercyCommand {
 
   private async runDetached(port: number) {
     const pid = await this.processService.runDetached(
-      ['bin/run', 'start', '--detached', '--port', String(port)]
+      ['bin/run', 'start', '--port', String(port)]
     )
 
     if (pid) {

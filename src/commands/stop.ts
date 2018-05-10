@@ -13,16 +13,16 @@ export default class Stop extends PercyCommand {
   ]
 
   static flags = {
-    port: flags.string({
+    port: flags.integer({
       char: 'p',
       description: 'port',
-      default: '5338',
-    })
+      default: 5338,
+    }),
   }
 
   async run() {
     const {flags} = this.parse(Stop)
-    const port = flags.port ? parseInt(flags.port) : 5338
+    const port = flags.port ? flags.port : 5338
 
     if (this.percyEnvVarsMissing()) { return }
 

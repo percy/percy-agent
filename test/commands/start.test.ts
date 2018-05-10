@@ -61,7 +61,7 @@ describe('Start', () => {
       })
 
       expect(processService.runDetached).to.calledWithMatch(
-        ['bin/run', 'start', '--detached', '--port', '5338']
+        ['bin/run', 'start', '--port', '5338']
       )
     })
 
