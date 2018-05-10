@@ -64,11 +64,11 @@ export default class Start extends PercyCommand {
     if (pid) {
       this.logStart(port)
     } else {
-      this.logger().warn('percy-agent is already running')
+      this.logger.warn('percy-agent is already running')
     }
   }
 
   private logStart(port: number) {
-    this.logger().info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
+    this.logger.info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
   }
 }
