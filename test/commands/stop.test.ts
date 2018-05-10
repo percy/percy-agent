@@ -16,7 +16,7 @@ describe('Stop', () => {
     let processService = ProcessService.prototype as ProcessService
     sandbox.stub(processService, 'isRunning').returns(isRunning)
 
-    let stop = Stop.prototype as Stop
+    let stop = new Stop([], '') as Stop
     sandbox.stub(stop, 'processService').returns(processService)
 
     return processService

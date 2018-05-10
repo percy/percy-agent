@@ -18,7 +18,7 @@ describe('Start', () => {
       let agentService = AgentService.prototype as AgentService
       sandbox.stub(agentService, 'start')
 
-      let start = Start.prototype as Start
+      let start = new Start([], '') as Start
       sandbox.stub(start, 'agentService').returns(agentService)
 
       return agentService
@@ -28,7 +28,7 @@ describe('Start', () => {
       let processService = ProcessService.prototype as ProcessService
       sandbox.stub(processService, 'runDetached').returns(pid)
 
-      let start = Start.prototype as Start
+      let start = new Start([], '') as Start
       sandbox.stub(start, 'processService').returns(processService)
 
       return processService
