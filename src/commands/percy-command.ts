@@ -1,22 +1,22 @@
 import {Command} from '@oclif/command'
-import ProcessService from '../services/process-service'
-import AgentService from '../services/agent-service'
 import logger from '../utils/logger'
+import AgentService from '../services/agent-service'
+import ProcessService from '../services/process-service'
 import * as winston from 'winston'
 
 export default class PercyCommand extends Command {
   static hidden = true
 
-  processService(): ProcessService {
-    return new ProcessService()
-  }
+  agentService: AgentService
+  processService: ProcessService
+  logger: winston.LoggerInstance
 
-  agentService(): AgentService {
-    return new AgentService()
-  }
+  constructor(argv: string[], config: any) {
+    super(argv, config)
 
-  logger(): winston.LoggerInstance {
-    return logger
+    this.agentService = new AgentService()
+    this.processService = new ProcessService()
+    this.logger = logger
   }
 
   percyToken(): string | undefined {
@@ -46,7 +46,7 @@ export default class PercyCommand extends Command {
   }
 
   private logMissingEnvVar(name: string) {
-    this.logger().error(
+    this.logger.error(
       `You must set ${name}. See https://percy.io/docs for how to set ${name} for your environment.`
     )
   }

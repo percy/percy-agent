@@ -46,14 +46,14 @@ export default class SnapshotService extends PercyClientService {
 
       snapshotId = parseInt(response.body.data.id)
 
-      await this.percyClient.uploadMissingResources(this.buildId, response, resources)
+      this.percyClient.uploadMissingResources(this.buildId, response, resources)
         .then(async () => {
           logger.info('missing resources uploaded.')
 
           if (snapshotId) {
             await this.finalizeSnapshot(snapshotId)
           } else {
-            // error state. snapshotid was missing.
+            logger.error('snapshot could not be finalized because the snapshot id is missing.')
           }
         }).catch(logError)
     }).catch(logError)
