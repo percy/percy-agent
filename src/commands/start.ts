@@ -36,7 +36,6 @@ export default class Start extends PercyCommand {
     }
 
     await healthCheck(port)
-    this.logger.info('finished healthCheck')
   }
 
   private async runAttached(port: number) {
