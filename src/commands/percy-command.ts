@@ -31,9 +31,7 @@ export default class PercyCommand extends Command {
     if (this.percyToken === '') {
       this.logMissingEnvVar('PERCY_TOKEN')
       return true
-    }
-
-    if (this.percyProject === '') {
+    } else if (this.percyProject === '') {
       this.logMissingEnvVar('PERCY_PROJECT')
       return true
     }
