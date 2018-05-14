@@ -64,15 +64,13 @@ export default class SnapshotService extends PercyClientService {
   async finalizeSnapshot(snapshotId: number): Promise<boolean> {
     logger.debug('finalizing snapshot: ' + snapshotId)
 
-    let response = await this.percyClient.finalizeSnapshot(snapshotId)
-      .then(() => {
+    try {
+      await this.percyClient.finalizeSnapshot(snapshotId)
         logger.info('finalized snapshot.')
         return true
-      }, (error: any) => {
+    } catch (error) {
         logError(error)
         return false
-      })
-
-    return response
+    }
   }
 }
