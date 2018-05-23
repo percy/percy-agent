@@ -6,12 +6,15 @@ import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
 import logger from '../utils/logger'
 import ProcessService from './process-service'
+import ResourceService from './resource-service'
 
 export default class AgentService {
   readonly app: express.Application
   server: Server | null = null
   snapshotService: SnapshotService | null = null
   buildService: BuildService
+  resourceService: ResourceService
+  resourceUploadPromises: any[] = []
 
   constructor() {
     this.app = express()
@@ -27,6 +30,7 @@ export default class AgentService {
     this.app.get('/percy/healthcheck', this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
+    this.resourceService = new ResourceService()
   }
 
   async start(port: number) {
@@ -37,6 +41,10 @@ export default class AgentService {
   }
 
   async stop() {
+    logger.info('Stopping... waiting for snapshot resources to finish uploading...')
+    await Promise.all(this.resourceUploadPromises)
+    logger.info('...done')
+
     await this.buildService.finalizeBuild()
     if (this.server) { await this.server.close() }
   }
@@ -46,7 +54,8 @@ export default class AgentService {
     // let userAgent = request.headers['user-agent']
 
     if (this.snapshotService) {
-      await this.snapshotService.createSnapshot(
+      logger.info('before createSnapshot')
+      let snapshotResponse = await this.snapshotService.createSnapshot(
         request.body.name,
         request.body.url,
         request.body.domSnapshot,
@@ -55,7 +64,11 @@ export default class AgentService {
         request.body.widths
       )
 
+      let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)
+
       logger.info(`snapshot taken: '${request.body.name}'`)
+
+      this.resourceUploadPromises.push(uploadPromsie)
 
       return response.json({success: true})
     }

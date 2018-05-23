@@ -19,7 +19,7 @@ export default class SnapshotService extends PercyClientService {
     enableJavaScript: boolean = false,
     widths: number[] = [1280],
     minimumHeight: number = 500,
-  ): Promise<number | null> {
+  ): Promise<any> {
     logger.info(`creating snapshot '${name}'...`)
 
     let rootResource = this.percyClient.makeResource({
@@ -33,32 +33,27 @@ export default class SnapshotService extends PercyClientService {
 
     if (requestManifest) {
       let requestService = new RequestService()
+      logger.info('processing manifest')
+
       let requestResources = await requestService.processManifest(requestManifest)
+      logger.info('processing manifest - done')
+
       resources = resources.concat(requestResources)
     }
 
-    let snapshotId: number | null = null
-
-    await this.percyClient.createSnapshot(
+    let response = await this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
-    ).then(async (response: any) => {
-      logger.info(`uploading missing ${resources.length} resources...`)
-
-      snapshotId = parseInt(response.body.data.id)
-
-      this.percyClient.uploadMissingResources(this.buildId, response, resources)
-        .then(async () => {
-          logger.info('missing resources uploaded.')
-
-          if (snapshotId) {
-            await this.finalizeSnapshot(snapshotId)
-          } else {
-            logger.error('snapshot could not be finalized because the snapshot id is missing.')
-          }
-        }).catch(logError)
+    ).then((response: any) => {
+      return response
     }).catch(logError)
 
-    return snapshotId
+    let snapshotResponse = {
+      buildId: this.buildId,
+      response,
+      resources
+    }
+
+    return snapshotResponse
   }
 
   async finalizeSnapshot(snapshotId: number): Promise<boolean> {
@@ -66,11 +61,11 @@ export default class SnapshotService extends PercyClientService {
 
     try {
       await this.percyClient.finalizeSnapshot(snapshotId)
-        logger.info('finalized snapshot.')
-        return true
+      logger.info('finalized snapshot.')
+      return true
     } catch (error) {
-        logError(error)
-        return false
+      logError(error)
+      return false
     }
   }
 }

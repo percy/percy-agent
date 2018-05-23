@@ -25,16 +25,36 @@ describe('SnapshotService', () => {
         .reply(200, {data: {id: snapshotId}})
     })
 
+    let resourceUrl = 'http://localhost/index.html'
+
     it('creates a snapshot', async () => {
-      let createdSnapshotId: number | null = null
+      let snapshotResponse: any
 
       await captureStdOut(async () => {
-        createdSnapshotId = await subject.createSnapshot(
-          'my test', 'http://localhost/index.html', '<html><body></body></html>'
+        snapshotResponse = await subject.createSnapshot(
+          'my test', resourceUrl, '<html><body></body></html>'
         )
       })
 
-      expect(createdSnapshotId).to.equal(snapshotId)
+      expect(snapshotResponse).to.deep.include({
+        buildId,
+        resources: [{
+          resourceUrl,
+          content: '<html><body></body></html>',
+          sha: 'f70b370debd085dd9e9fb6495c796cdccf41c44574cc185dbe124f3ea8237623',
+          mimetype: 'text/html',
+          isRoot: true,
+          localPath: undefined,
+        }],
+      })
+
+      expect(snapshotResponse.response).to.include({
+        statusCode: 200
+      })
+
+      expect(snapshotResponse.response).to.include({
+        statusCode: 200
+      })
     })
   })
 

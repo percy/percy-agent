@@ -35,4 +35,14 @@ export default class ResourceService extends PercyClientService {
       // mimetype: response.headers['Content-Type']
     })
   }
+
+  uploadMissingResources(snapshotResponse: any): Promise<any> {
+    let uploadPromise: Promise<any> = this.percyClient.uploadMissingResources(
+      snapshotResponse.buildId,
+      snapshotResponse.response,
+      snapshotResponse.resources
+    )
+
+    return uploadPromise
+  }
 }
