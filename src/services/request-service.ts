@@ -33,15 +33,23 @@ export default class RequestService extends PercyClientService {
 
   async createLocalCopies(requestManifest: string[]): Promise<Map<string, string>> {
     let localCopies: Map<string, string> = new Map()
+    let requestPromises = []
 
     for (let request of requestManifest) {
       logger.debug(`making local copy of request: ${request}`)
 
-      let localCopy = await this.makeLocalCopy(request)
-      if (localCopy) {
-        localCopies.set(request, localCopy)
-      }
+      let requestPromise = new Promise(async (resolve, _reject) => {
+        let localCopy = await this.makeLocalCopy(request)
+        if (localCopy) {
+          localCopies.set(request, localCopy)
+        }
+        resolve()
+      })
+
+      requestPromises.push(requestPromise)
     }
+
+    await Promise.all(requestPromises)
 
     return localCopies
   }

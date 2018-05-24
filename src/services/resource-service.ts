@@ -9,6 +9,7 @@ export default class ResourceService extends PercyClientService {
 
     localCopies.forEach(async (localFileName: string, requestUrl: string) => {
       let resource = await resourceService.createResourceFromFile(requestUrl, localFileName)
+
       if (resource !== undefined && resource !== null) {
         resources.push(resource)
       }
