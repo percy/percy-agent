@@ -9,7 +9,12 @@ describe('RequestService', () => {
   let subject = new RequestService()
   const requestManifest = ['https://percy.io/logo.svg']
 
-  afterEach(() => nock.cleanAll())
+  afterEach(() => {
+    nock.cleanAll()
+
+    // Clear the requests processed after each test so caching doesn't occur
+    subject.requestsProcessed.clear()
+  })
 
   describe('#processManifest', () => {
     beforeEach(async () => {
@@ -79,6 +84,9 @@ describe('RequestService', () => {
   })
 
   describe('#makeLocalCopy', () => {
+    let request = 'https://percy.io/logo.svg'
+    let expectedFilename = './tmp/b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
+
     beforeEach(async () => {
       nock('https://percy.io')
         .get('/logo.svg')
@@ -86,11 +94,16 @@ describe('RequestService', () => {
     })
 
     it('creates a local copy', async () => {
-      let request = 'https://percy.io/logo.svg'
       let localCopy = await subject.makeLocalCopy(request)
-      let expectedFilename = './tmp/b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
-
       expect(localCopy).to.deep.equal(expectedFilename)
+    })
+
+    it('skips requests that have already been made', async () => {
+      let localCopy = await subject.makeLocalCopy(request)
+      expect(localCopy).to.deep.equal(expectedFilename)
+
+      let stdout = await captureStdOut(() => subject.makeLocalCopy(request))
+      expect(stdout).to.match(/warn: skipping request, local copy already present/)
     })
   })
 })

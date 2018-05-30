@@ -8,6 +8,7 @@ import ResourceService from './resource-service'
 
 export default class RequestService extends PercyClientService {
   static localCopiesPath = './tmp/'
+  requestsProcessed: Map<string, string> = new Map()
 
   async processManifest(requestManifest: string[]): Promise<any[]> {
     logger.info(`processing ${requestManifest.length} requests...`)
@@ -36,8 +37,6 @@ export default class RequestService extends PercyClientService {
     let requestPromises = []
 
     for (let request of requestManifest) {
-      logger.debug(`making local copy of request: ${request}`)
-
       let requestPromise = new Promise(async (resolve, _reject) => {
         let localCopy = await this.makeLocalCopy(request)
         if (localCopy) {
@@ -57,6 +56,13 @@ export default class RequestService extends PercyClientService {
   async makeLocalCopy(request: string): Promise<string | null> {
     let filename: string | null = null
 
+    if (this.requestsProcessed.has(request)) {
+      logger.warn(`skipping request, local copy already present: '${request}'`)
+      return this.requestsProcessed.get(request) || null
+    } else {
+      logger.debug(`making local copy of request: ${request}`)
+    }
+
     await Axios({
       method: 'get',
       url: request,
@@ -66,6 +72,8 @@ export default class RequestService extends PercyClientService {
         let sha = crypto.createHash('sha256').update(response.data, 'utf8').digest('hex')
         filename = RequestService.localCopiesPath + sha
         fs.writeFileSync(filename, response.data)
+
+        this.requestsProcessed.set(request, filename)
       } else {
         logger.warn(`skipping '${request}' - empty response body`)
       }

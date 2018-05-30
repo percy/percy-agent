@@ -4,11 +4,13 @@ import logger, {logError} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   buildId: number
+  requestService: RequestService
 
   constructor(buildId: number) {
     super()
 
     this.buildId = buildId
+    this.requestService = new RequestService()
   }
 
   async createSnapshot(
@@ -32,11 +34,9 @@ export default class SnapshotService extends PercyClientService {
     let resources = [rootResource]
 
     if (requestManifest) {
-      let requestService = new RequestService()
-      logger.info('processing manifest')
-
-      let requestResources = await requestService.processManifest(requestManifest)
-      logger.info('processing manifest - done')
+      logger.debug('processing request manifest...')
+      let requestResources = await this.requestService.processManifest(requestManifest)
+      logger.debug('request manifest processed.')
 
       resources = resources.concat(requestResources)
     }
