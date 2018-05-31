@@ -30,29 +30,11 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [percy-agent hello [FILE]](#percy-agent-hello-file)
-* [percy-agent help [COMMAND]](#percy-agent-help-command)
+* [`percy-agent help [COMMAND]`](#percy-agent-help-command)
+* [`percy-agent start`](#percy-agent-start)
+* [`percy-agent stop`](#percy-agent-stop)
 
-## percy-agent hello [FILE]
-
-describe the command here
-
-```
-USAGE
-  $ percy-agent hello [FILE]
-
-OPTIONS
-  -f, --force
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ percy-agent hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/percy/percy-agent/blob/v0.0.1/src/commands/hello.ts)_
-
-## percy-agent help [COMMAND]
+## `percy-agent help [COMMAND]`
 
 display help for percy-agent
 
@@ -67,5 +49,42 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.2/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v1.2.10/src/commands/help.ts)_
+
+## `percy-agent start`
+
+Starts the percy-agent process.
+
+```
+USAGE
+  $ percy-agent start
+
+OPTIONS
+  -d, --detached   start as a detached process
+  -p, --port=port  [default: 5338] port
+
+EXAMPLE
+  $ percy-agent start
+  info: percy-agent has started on port 5338. Logs available at log/percy-agent.log
+```
+
+_See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.1/dist/commands/start.ts)_
+
+## `percy-agent stop`
+
+Stops the percy-agent process.
+
+```
+USAGE
+  $ percy-agent stop
+
+OPTIONS
+  -p, --port=port  [default: 5338] port
+
+EXAMPLE
+  $ percy-agent stop
+  info: percy-agent has stopped.
+```
+
+_See code: [dist/commands/stop.ts](https://github.com/percy/percy-agent/blob/v0.0.1/dist/commands/stop.ts)_
 <!-- commandsstop -->
