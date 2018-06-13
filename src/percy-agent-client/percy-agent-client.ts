@@ -9,13 +9,13 @@ class RequestManifest {
   }
 }
 
-interface SnapshotOptions {
+export interface SnapshotOptions {
   enableJavascript?: boolean,
   widths?: number[],
   minimumHeight?: number,
 }
 
-class PercyAgentClient {
+export class PercyAgentClient {
   userAgent: string | null
   beforeSnapshot: any
   readonly defaultDoctype = '<!DOCTYPE html>'
