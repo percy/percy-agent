@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "pretty": true,
+    "rootDirs": [
+      "./"
+    ],
+    "strict": true,
+    "target": "es3",
+    "module": "CommonJS",
+    "outDir": "../../dist-test/"
+  },
+  "include": [
+    "./**/*.ts"
+  ]
+}

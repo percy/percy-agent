@@ -25,8 +25,9 @@ class PercyAgentClient {
     this.beforeSnapshot = beforeSnapshot || null
   }
 
-  snapshot(name: string, options: SnapshotOptions) {
+  snapshot(name: string, options: SnapshotOptions = {}) {
     if (this.beforeSnapshot) { this.beforeSnapshot() }
+
     this.stabalizePage()
 
     let requestManifest = new RequestManifest().capture()
