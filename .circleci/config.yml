@@ -1,9 +1,9 @@
 ---
 version: 2
 jobs:
-  node-latest: &test
+  node-10: &test
     docker:
-      - image: node:latest
+      - image: circleci/node:10-browsers
     working_directory: ~/cli
     environment:
       NYC: "yarn exec nyc -- --nycrc-path node_modules/@oclif/nyc-config/.nycrc"
