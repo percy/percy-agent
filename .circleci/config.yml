@@ -52,12 +52,12 @@ workflows:
   version: 2
   "@percy/agent":
     jobs:
-      - node-latest
+      - node-10
       - node-8
       # - release:
       #     context: org-global
       #     filters:
       #       branches: {only: master}
       #     requires:
-      #       - node-latest
+      #       - node-10
       #       - node-8
