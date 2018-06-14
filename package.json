@@ -96,7 +96,7 @@
     "prepublishOnly": "npm run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "npm run clean",
     "test": "npm run build-client && PERCY_TOKEN=abc PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
-    "test-client": "npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
+    "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "dist/index.d.ts"
