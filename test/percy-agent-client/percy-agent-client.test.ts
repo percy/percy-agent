@@ -19,8 +19,17 @@ describe('PercyAgentClient', () => {
     requests = []
   })
 
-  it('#snapshot', () => {
-    subject.snapshot('test snapshot')
-    expect(requests[0].url).to.equal('http://localhost:5338/percy/snapshot')
+  describe('#snapshot', () => {
+    it('posts the percy agent process', () => {
+      subject.snapshot('test snapshot')
+
+      let request = requests[0]
+      let requestBody = JSON.parse(request.requestBody)
+
+      expect(request.url).to.equal('http://localhost:5338/percy/snapshot')
+      expect(request.method).to.equal('post')
+      expect(requestBody.name).to.equal('test snapshot')
+      expect(requestBody.domSnapshot).to.contain('<html>')
+    })
   })
 })
