@@ -28,6 +28,7 @@ describe('PercyAgentClient', () => {
 
       expect(request.url).to.equal('http://localhost:5338/percy/snapshot')
       expect(request.method).to.equal('post')
+
       expect(requestBody.name).to.equal('test snapshot')
       expect(requestBody.domSnapshot).to.contain('<html>')
     })

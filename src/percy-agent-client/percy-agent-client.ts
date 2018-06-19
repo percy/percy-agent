@@ -1,5 +1,23 @@
-import RequestManifest from './request-manifest'
-import PercyAgent from './percy-agent'
+interface Request {
+  name: string
+}
+
+class RequestManifest {
+  capture(): string[] {
+    let requests: Request[] = performance.getEntriesByType('resource')
+    return requests.map(request => request.name)
+  }
+}
+
+class PercyAgent {
+  post(url: string, data: any) {
+    const xhr = new XMLHttpRequest()
+
+    xhr.open('post', url, false) // synchronous request
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.send(JSON.stringify(data))
+  }
+}
 
 export interface SnapshotOptions {
   enableJavascript?: boolean,
