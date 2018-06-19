@@ -10,12 +10,16 @@ class RequestManifest {
 }
 
 class PercyAgent {
-  post(url: string, data: any) {
-    const xhr = new XMLHttpRequest()
+  xhr: XMLHttpRequest
 
-    xhr.open('post', url, false) // synchronous request
-    xhr.setRequestHeader('Content-Type', 'application/json')
-    xhr.send(JSON.stringify(data))
+  constructor(xhr?: any) {
+    this.xhr = new xhr() || new XMLHttpRequest()
+  }
+
+  post(url: string, data: any) {
+    this.xhr.open('post', url, false) // synchronous request
+    this.xhr.setRequestHeader('Content-Type', 'application/json')
+    this.xhr.send(JSON.stringify(data))
   }
 }
 
@@ -27,23 +31,23 @@ export interface SnapshotOptions {
 
 export class PercyAgentClient {
   userAgent: string | null
-  beforeSnapshot: any
+  xhr: any
+  domTransformation: any | null
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(userAgent?: string, beforeSnapshot?: any) {
+  constructor(userAgent?: string, xhr?: XMLHttpRequest, domTransformation?: any) {
     this.userAgent = userAgent || null
-    this.beforeSnapshot = beforeSnapshot || null
+    this.xhr = xhr || XMLHttpRequest
+    this.domTransformation = domTransformation || null
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
-    if (this.beforeSnapshot) { this.beforeSnapshot() }
-
     this.stabalizePage()
 
     let requestManifest = new RequestManifest().capture()
     let domSnapshot = this.domSnapshot()
+    let percyAgent = new PercyAgent(this.xhr)
 
-    let percyAgent = new PercyAgent()
     // TODO: this cannot be hardcoded to this port
     percyAgent.post('http://localhost:5338/percy/snapshot', {
       name,
@@ -58,9 +62,18 @@ export class PercyAgentClient {
 
   private domSnapshot(): string {
     let doctype = this.getDoctype()
-    let dom = document.documentElement.outerHTML
 
-    return doctype + dom
+    let documentElement = document.documentElement
+
+    // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
+    // For example, if your test suite runs tests in an element inside a page that
+    // lists all yours tests. You'll want to "hoist" the contents of the testing container to be
+    // the full page. Using a dom transformation is how you'd acheive that.
+    if (this.domTransformation) {
+      documentElement = this.domTransformation(documentElement)
+    }
+
+    return doctype + documentElement.outerHTML
   }
 
   private getDoctype(): string {
