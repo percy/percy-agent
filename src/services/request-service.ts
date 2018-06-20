@@ -66,7 +66,7 @@ export default class RequestService extends PercyClientService {
     await Axios({
       method: 'get',
       url: request,
-      responseType: 'blob'
+      responseType: 'arraybuffer'
     }).then(response => {
       if (response.data) {
         let sha = crypto.createHash('sha256').update(response.data, 'utf8').digest('hex')
