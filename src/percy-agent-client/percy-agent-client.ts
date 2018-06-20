@@ -62,18 +62,17 @@ export class PercyAgentClient {
 
   private domSnapshot(): string {
     let doctype = this.getDoctype()
-
-    let documentElement = document.documentElement
+    let domClone = document.documentElement.cloneNode(true) as HTMLElement
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
     // lists all yours tests. You'll want to "hoist" the contents of the testing container to be
     // the full page. Using a dom transformation is how you'd acheive that.
     if (this.domTransformation) {
-      documentElement = this.domTransformation(documentElement)
+      domClone = this.domTransformation(domClone)
     }
 
-    return doctype + documentElement.outerHTML
+    return doctype + domClone.outerHTML
   }
 
   private getDoctype(): string {
