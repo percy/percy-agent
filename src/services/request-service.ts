@@ -57,7 +57,7 @@ export default class RequestService extends PercyClientService {
     let filename: string | null = null
 
     if (this.requestsProcessed.has(request)) {
-      logger.warn(`skipping request, local copy already present: '${request}'`)
+      logger.debug(`skipping request, local copy already present: '${request}'`)
       return this.requestsProcessed.get(request) || null
     } else {
       logger.debug(`making local copy of request: ${request}`)
@@ -75,7 +75,7 @@ export default class RequestService extends PercyClientService {
 
         this.requestsProcessed.set(request, filename)
       } else {
-        logger.warn(`skipping '${request}' - empty response body`)
+        logger.debug(`skipping '${request}' - empty response body`)
       }
     }).catch(logError)
 
