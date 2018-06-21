@@ -14,7 +14,9 @@
         "start"
       ],
       "env": {
-        "LOG_LEVEL": "debug"
+        "LOG_LEVEL": "debug",
+        "PERCY_TOKEN": "",
+        "PERCY_PROJECT": ""
       },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
