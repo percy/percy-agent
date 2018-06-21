@@ -20,16 +20,17 @@ export default class ResourceService extends PercyClientService {
   async createResourceFromFile(request: string, copyFilePath: string): Promise<any | null> {
     let copyFullPath = path.resolve(copyFilePath)
     let sha = path.basename(copyFilePath)
+    let resourceUrl = request
 
     logger.debug('creating resource')
     logger.debug(`-> request: ${request}`)
     logger.debug(`-> copyFilePath: ${copyFilePath}`)
-    logger.debug(`-> resourceUrl: ${this.parseUrlPath(request)}`)
+    logger.debug(`-> resourceUrl: ${resourceUrl}`)
     logger.debug(`-> localPath: ${copyFullPath}`)
     logger.debug(`-> sha: ${sha}`)
 
     return this.percyClient.makeResource({
-      resourceUrl: this.parseUrlPath(request),
+      resourceUrl,
       localPath: copyFullPath,
       sha,
       // mimetype: response.headers['Content-Type']
