@@ -25,6 +25,10 @@ export default class RequestService extends PercyClientService {
   }
 
   filterRequestManifest(requestManifest: string[]): string[] {
+    requestManifest = requestManifest.map(request => {
+      return this.parseRequestPath(request)
+    })
+
     requestManifest = unique(requestManifest)
 
     return requestManifest.filter(request => {

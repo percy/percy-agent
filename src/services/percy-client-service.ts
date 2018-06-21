@@ -13,9 +13,17 @@ export default class PercyClientService {
     })
   }
 
-  parseUrlPath(url: string): string {
+  parseRequestPath(url: string): string {
     let parsedURL = new URL(url)
-    return parsedURL.pathname + (parsedURL.search ? `?${parsedURL.search}` : '')
+
+    // Excellent docs about what this is made up of here
+    // https://nodejs.org/docs/latest-v8.x/api/url.html#url_url_strings_and_url_objects
+    let strippedAnchor = parsedURL.protocol
+                       + '//'
+                       + parsedURL.host
+                       + parsedURL.pathname
+                       + (parsedURL.search ? `?${parsedURL.search}` : '')
+    return strippedAnchor
   }
 
   private clientInfo(): string {
