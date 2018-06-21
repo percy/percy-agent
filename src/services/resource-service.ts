@@ -5,10 +5,9 @@ import * as path from 'path'
 export default class ResourceService extends PercyClientService {
   async createResourcesFromLocalCopies(localCopies: Map<string, string>): Promise<any[]> {
     let resources: any[] = []
-    let resourceService = new ResourceService()
 
     localCopies.forEach(async (localFileName: string, requestUrl: string) => {
-      let resource = await resourceService.createResourceFromFile(requestUrl, localFileName)
+      let resource = await this.createResourceFromFile(requestUrl, localFileName)
 
       if (resource !== undefined && resource !== null) {
         resources.push(resource)
