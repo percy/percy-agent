@@ -5,7 +5,7 @@ import ProcessService from '../services/process-service'
 import * as winston from 'winston'
 
 export default class PercyCommand extends Command {
-  static hidden = true
+  // static hidden = true
 
   agentService: AgentService
   processService: ProcessService
