@@ -34,7 +34,9 @@ export default class AgentService {
   }
 
   async start(port: number) {
+    logger.info('About to create express app')
     this.server = this.app.listen(port)
+    logger.info('Created express app')
 
     let buildId = await this.buildService.createBuild()
     this.snapshotService = new SnapshotService(buildId)
