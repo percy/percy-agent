@@ -35,7 +35,7 @@ export class PercyAgentClient {
   domTransformation: any | null
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(userAgent?: string, xhr?: XMLHttpRequest, domTransformation?: any) {
+  constructor(userAgent?: string, xhr?: any, domTransformation?: any) {
     this.userAgent = userAgent || null
     this.xhr = xhr || XMLHttpRequest
     this.domTransformation = domTransformation || null

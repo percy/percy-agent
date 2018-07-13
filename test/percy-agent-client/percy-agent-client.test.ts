@@ -4,8 +4,8 @@ require('../../src/percy-agent-client/percy-agent-client')
 import * as sinon from 'sinon'
 
 describe('PercyAgentClient', () => {
-  const subject = new PercyAgentClient()
   let xhr = sinon.useFakeXMLHttpRequest()
+  const subject = new PercyAgentClient('Test Client', xhr)
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
 
   beforeEach(() => {
