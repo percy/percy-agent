@@ -33,7 +33,7 @@ describe('RequestService', () => {
       expect(resources[0]).to.include({
         mimetype: undefined,
         isRoot: undefined,
-        resourceUrl: '/logo.svg',
+        resourceUrl: 'https://percy.io/logo.svg',
         sha: 'b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
       })
     })
@@ -44,14 +44,14 @@ describe('RequestService', () => {
       let requestManifest: any[] = [
         'http://percy.io/logo.png',
         'http://percy.io/logo.png',
-        '/app.css',
+        'http://percy.io/app.css',
         'http://localhost:5338/percy/stop',
       ]
       let filteredRequestManifest = subject.filterRequestManifest(requestManifest)
 
       expect(filteredRequestManifest).to.deep.equal([
         'http://percy.io/logo.png',
-        '/app.css',
+        'http://percy.io/app.css'
       ])
     })
   })
@@ -103,7 +103,7 @@ describe('RequestService', () => {
       expect(localCopy).to.deep.equal(expectedFilename)
 
       let stdout = await captureStdOut(() => subject.makeLocalCopy(request))
-      expect(stdout).to.match(/warn: skipping request, local copy already present/)
+      expect(stdout).to.match(/info: skipping request, local copy already present/)
     })
   })
 })

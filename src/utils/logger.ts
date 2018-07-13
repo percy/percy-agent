@@ -1,7 +1,5 @@
 import * as winston from 'winston'
 
-process.env
-
 let logger = new winston.Logger({
   transports: [
     new winston.transports.Console({

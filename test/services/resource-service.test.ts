@@ -18,7 +18,7 @@ describe('RequestService', () => {
       expect(resources[0]).to.include({
         mimetype: undefined,
         isRoot: undefined,
-        resourceUrl: '/logo.svg',
+        resourceUrl: 'https://percy.io/logo.svg',
         sha: copyFileSha
       })
     })
@@ -31,7 +31,7 @@ describe('RequestService', () => {
       expect(resource).to.include({
         mimetype: undefined,
         isRoot: undefined,
-        resourceUrl: '/logo.svg',
+        resourceUrl: 'https://percy.io/logo.svg',
         sha: copyFileSha
       })
     })

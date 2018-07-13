@@ -61,10 +61,10 @@ export default class RequestService extends PercyClientService {
     let filename: string | null = null
 
     if (this.requestsProcessed.has(request)) {
-      logger.debug(`skipping request, local copy already present: '${request}'`)
+      logger.info(`skipping request, local copy already present: '${request}'`)
       return this.requestsProcessed.get(request) || null
     } else {
-      logger.debug(`making local copy of request: ${request}`)
+      logger.info(`making local copy of request: ${request}`)
     }
 
     await Axios({
@@ -79,7 +79,7 @@ export default class RequestService extends PercyClientService {
 
         this.requestsProcessed.set(request, filename)
       } else {
-        logger.debug(`skipping '${request}' - empty response body`)
+        logger.info(`skipping '${request}' - empty response body`)
       }
     }).catch(logError)
 
