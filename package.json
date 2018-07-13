@@ -39,6 +39,7 @@
     "browserify": "^16.2.2",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
+    "eslint-config-oclif": "^2.0.0",
     "globby": "^8.0.1",
     "husky": "^1.0.0-rc.3",
     "mocha": "^5.1.1",
