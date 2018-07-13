@@ -78,7 +78,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "oclif": {
-    "commands": "./src/commands",
+    "commands": "./dist/commands",
     "bin": "percy-agent",
     "plugins": [
       "@oclif/plugin-help",
