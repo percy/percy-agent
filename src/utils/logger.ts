@@ -7,7 +7,7 @@ let logger = new winston.Logger({
       level: (process.env.LOG_LEVEL || 'info')
     }),
     new winston.transports.File({
-      level: (process.env.LOG_LEVEL || 'info'), filename: 'log/percy-agent.log', colorize: true, json: false
+      level: (process.env.LOG_LEVEL || 'info'), filename: 'percy-agent.log', colorize: true, json: false
     })
   ]
 })

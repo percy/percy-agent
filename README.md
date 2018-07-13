@@ -75,7 +75,7 @@ OPTIONS
 
 EXAMPLE
   $ percy-agent start
-  info: percy-agent has started on port 5338. Logs available at log/percy-agent.log
+  info: percy-agent has started on port 5338. Logs available at percy-agent.log
 ```
 
 _See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.5/dist/commands/start.ts)_

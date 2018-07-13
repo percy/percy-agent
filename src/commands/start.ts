@@ -8,7 +8,7 @@ export default class Start extends PercyCommand {
 
   static examples = [
     '$ percy-agent start\n' +
-    'info: percy-agent has started on port 5338. Logs available at log/percy-agent.log',
+    'info: percy-agent has started on port 5338. Logs available at percy-agent.log',
   ]
 
   static flags = {
@@ -71,6 +71,6 @@ export default class Start extends PercyCommand {
   }
 
   private logStart(port: number) {
-    this.logger.info(`percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
+    this.logger.info(`percy-agent has started on port ${port}. Logs available at percy-agent.log`)
   }
 }

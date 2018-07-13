@@ -76,7 +76,7 @@ describe('Start', () => {
       })
 
       expect(agentServiceStub.start).to.calledWithMatch(+port)
-      expect(stdout).to.contain(`info: percy-agent has started on port ${port}. Logs available at log/percy-agent.log`)
+      expect(stdout).to.contain(`info: percy-agent has started on port ${port}. Logs available at percy-agent.log`)
     })
 
     it('warns when percy agent is already running', async () => {
