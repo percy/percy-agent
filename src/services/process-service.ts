@@ -3,7 +3,7 @@ import * as fs from 'fs'
 
 export default class ProcessService {
   static pidPath = './.percy-agent.pid'
-  static logPath = './log/percy-agent-process.log'
+  static logPath = './percy-agent-process.log'
 
   async runDetached(args: string[]): Promise<number | null> {
     if (await this.isRunning()) { return null }
