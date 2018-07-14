@@ -5,7 +5,7 @@ import {logError} from '../utils/logger'
 
 export default class Stop extends PercyCommand {
   static description = 'Stops the percy-agent process.'
-  // static hidden = false
+  static hidden = false
 
   static examples = [
     '$ percy-agent stop\n' +

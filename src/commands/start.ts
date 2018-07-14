@@ -4,7 +4,7 @@ import PercyCommand from './percy-command'
 
 export default class Start extends PercyCommand {
   static description = 'Starts the percy-agent process.'
-  // static hidden = false
+  static hidden = false
 
   static examples = [
     '$ percy-agent start\n' +
@@ -60,7 +60,7 @@ export default class Start extends PercyCommand {
 
   private async runDetached(port: number) {
     const pid = await this.processService.runDetached(
-      ['bin/run', 'start', '--port', String(port)]
+      [__dirname, '../../bin/run', 'start', '--port', String(port)]
     )
 
     if (pid) {
