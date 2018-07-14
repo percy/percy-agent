@@ -5,6 +5,7 @@
 1. `npm version x.x.x` - enter new version
 1. `git push origin version-bump`
 1. Issue a PR for `version-bump` and merge.
+1. `git push origin master`
 1. `git push --tags`
 1. Ensure tests have passed on that tag
 1. [Update the release notes](https://github.com/percy/percy-agent/releases) on GitHub
