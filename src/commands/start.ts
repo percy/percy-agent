@@ -60,7 +60,7 @@ export default class Start extends PercyCommand {
 
   private async runDetached(port: number) {
     const pid = await this.processService.runDetached(
-      [__dirname, '../../bin/run', 'start', '--port', String(port)]
+      [`${__dirname}../../../bin/run`, 'start', '--port', String(port)]
     )
 
     if (pid) {
