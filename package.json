@@ -1,7 +1,7 @@
 {
   "name": "@percy/agent",
   "description": "A low-level Node process for interacting with Percy.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Perceptual Inc",
   "bin": {
     "percy-agent": "./bin/run"
