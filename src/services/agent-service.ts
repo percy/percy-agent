@@ -15,6 +15,7 @@ export default class AgentService {
   buildService: BuildService
   resourceService: ResourceService
   resourceUploadPromises: any[] = []
+  publicDirectory: string = `${__dirname}/../../dist/public`
 
   constructor() {
     this.app = express()
@@ -22,7 +23,8 @@ export default class AgentService {
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
-    this.app.use(express.static('dist/public'))
+    this.app.use(express.static(this.publicDirectory))
+    logger.info(`Serving: ${this.publicDirectory}`)
 
     this.app.post('/percy/snapshot', this.handleSnapshot.bind(this))
     this.app.post('/percy/stop', this.handleStop.bind(this))
