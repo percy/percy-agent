@@ -22,7 +22,7 @@ export default class PercyClientService {
                        + '//'
                        + parsedURL.host
                        + parsedURL.pathname
-                       + (parsedURL.search ? `?${parsedURL.search}` : '')
+                       + (parsedURL.search || '')
     return strippedAnchor
   }
 
