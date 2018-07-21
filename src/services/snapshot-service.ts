@@ -20,7 +20,7 @@ export default class SnapshotService extends PercyClientService {
     requestManifest: string[] = [],
     enableJavaScript: boolean = false,
     widths: number[] = [1280],
-    minimumHeight: number = 500,
+    minimumHeight: number | null = null,
   ): Promise<any> {
     logger.info(`creating snapshot '${name}'...`)
 
