@@ -15,7 +15,7 @@ describe('PercyAgentClient', () => {
   })
 
   afterEach(() => {
-    xhr.restore()
+    // xhr.restore
     requests = []
   })
 
@@ -28,9 +28,40 @@ describe('PercyAgentClient', () => {
 
       expect(request.url).to.equal('http://localhost:5338/percy/snapshot')
       expect(request.method).to.equal('post')
-
       expect(requestBody.name).to.equal('test snapshot')
-      expect(requestBody.domSnapshot).to.contain('<html>')
+    })
+
+    it('serializes text input elements', () => {
+      let inputName = document.getElementById('testInputText') as HTMLInputElement
+      inputName.value = 'test input value'
+      subject.snapshot('test snapshot')
+
+      let request = requests[0]
+      let requestBody = JSON.parse(request.requestBody)
+
+      expect(requestBody.domSnapshot).to.contain('test input value')
+    })
+
+    it('serializes checkbox elements', () => {
+      let inputName = document.getElementById('testCheckbox') as HTMLInputElement
+      inputName.checked = true
+
+      subject.snapshot('test snapshot')
+      let request = requests[0]
+      let requestBody = JSON.parse(request.requestBody)
+
+      expect(requestBody.domSnapshot).to.contain('checked')
+    })
+
+    it('serializes radio button elements', () => {
+      let inputName = document.getElementById('testRadioButton') as HTMLInputElement
+      inputName.checked = true
+
+      subject.snapshot('test snapshot')
+      let request = requests[0]
+      let requestBody = JSON.parse(request.requestBody)
+
+      expect(requestBody.domSnapshot).to.contain('checked')
     })
   })
 })

@@ -7,6 +7,9 @@
     "rootDirs": [
       "./"
     ],
+    "lib": [
+      "dom", "es6", "dom.iterable"
+    ],
     "strict": true,
     "target": "es3",
     "module": "amd",

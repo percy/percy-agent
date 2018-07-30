@@ -42,8 +42,6 @@ export class PercyAgentClient {
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
-    this.stabalizePage()
-
     let requestManifest = new RequestManifest().capture()
     let domSnapshot = this.domSnapshot()
     let percyAgent = new PercyAgent(this.xhr)
@@ -72,6 +70,8 @@ export class PercyAgentClient {
       domClone = this.domTransformation(domClone)
     }
 
+    domClone = this.stabalizePage(domClone)
+
     return doctype + domClone.outerHTML
   }
 
@@ -86,8 +86,29 @@ export class PercyAgentClient {
     return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
   }
 
-  private stabalizePage() {
-    // Apply various hacks to the pages
-    // freeze jQuery etc.
+  private serializeInputElements(domClone: HTMLElement): HTMLElement {
+    const inputNodes = domClone.getElementsByTagName('input')
+    let inputElements = Array.prototype.slice.call(inputNodes) as HTMLInputElement[]
+
+    inputElements.forEach((elem: HTMLInputElement) => {
+      switch (elem.type) {
+        case 'checkbox':
+        case 'radio':
+          if (elem.checked) {
+            elem.setAttribute('checked', '')
+          }
+          break
+        default:
+          elem.setAttribute('value', elem.value || '')
+      }
+    })
+
+    return domClone
+  }
+
+  private stabalizePage(domClone: HTMLElement) {
+    let stabilizedDomClone = this.serializeInputElements(domClone)
+
+    return stabilizedDomClone
   }
 }
