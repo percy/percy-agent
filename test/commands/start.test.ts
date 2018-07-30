@@ -8,6 +8,7 @@ import ProcessService from '../../src/services/process-service'
 import AgentService from '../../src/services/agent-service'
 
 const expect = chai.expect
+const path = require('path')
 
 describe('Start', () => {
   describe('#run', () => {
@@ -61,7 +62,7 @@ describe('Start', () => {
       })
 
       expect(processService.runDetached).to.calledWithMatch(
-        ['bin/run', 'start', '--port', '5338']
+        [path.resolve(`${__dirname}/../../bin/run`), 'start', '--port', '5338']
       )
     })
 

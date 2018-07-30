@@ -2,6 +2,8 @@ import {flags} from '@oclif/command'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
+const path = require('path')
+
 export default class Start extends PercyCommand {
   static description = 'Starts the percy-agent process.'
   static hidden = false
@@ -60,7 +62,7 @@ export default class Start extends PercyCommand {
 
   private async runDetached(port: number) {
     const pid = await this.processService.runDetached(
-      [`${__dirname}../../../bin/run`, 'start', '--port', String(port)]
+      [path.resolve(`${__dirname}/../../bin/run`), 'start', '--port', String(port)]
     )
 
     if (pid) {
