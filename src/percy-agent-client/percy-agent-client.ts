@@ -99,7 +99,7 @@ export class PercyAgentClient {
           }
           break
         default:
-          elem.setAttribute('value', elem.value || '')
+          elem.setAttribute('value', elem.value)
       }
     })
 
