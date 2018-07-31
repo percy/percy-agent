@@ -60,7 +60,8 @@ export class PercyAgentClient {
 
   private domSnapshot(): string {
     let doctype = this.getDoctype()
-    let domClone = document.documentElement.cloneNode(true) as HTMLElement
+    let dom = this.stabalizeDOM(document.documentElement)
+    let domClone = dom.cloneNode(true) as HTMLElement
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
@@ -69,8 +70,6 @@ export class PercyAgentClient {
     if (this.domTransformation) {
       domClone = this.domTransformation(domClone)
     }
-
-    domClone = this.stabalizePage(domClone)
 
     return doctype + domClone.outerHTML
   }
@@ -106,9 +105,10 @@ export class PercyAgentClient {
     return domClone
   }
 
-  private stabalizePage(domClone: HTMLElement) {
-    let stabilizedDomClone = this.serializeInputElements(domClone)
+  private stabalizeDOM(dom: HTMLElement) {
+    let stabilizedDOM = this.serializeInputElements(dom)
+    // more calls to come here
 
-    return stabilizedDomClone
+    return stabilizedDOM
   }
 }
