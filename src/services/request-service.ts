@@ -69,8 +69,8 @@ export default class RequestService extends PercyClientService {
     }
 
     let retryConfig = {
-      retry: 5, // with exponential back off
-      retryDelay: 500,
+      retry: 3, // with exponential back off
+      retryDelay: 250,
       shouldRetry: () => true,
     }
 
