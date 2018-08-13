@@ -24,7 +24,6 @@ export default class AgentService {
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
     this.app.use(express.static(this.publicDirectory))
-    logger.info(`Serving: ${this.publicDirectory}`)
 
     this.app.post('/percy/snapshot', this.handleSnapshot.bind(this))
     this.app.post('/percy/stop', this.handleStop.bind(this))
@@ -36,9 +35,7 @@ export default class AgentService {
   }
 
   async start(port: number) {
-    logger.info('About to create express app')
     this.server = this.app.listen(port)
-    logger.info('Created express app')
 
     let buildId = await this.buildService.createBuild()
     this.snapshotService = new SnapshotService(buildId)
