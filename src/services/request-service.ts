@@ -5,6 +5,7 @@ import unique from '../utils/unique-array'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
 import ResourceService from './resource-service'
+const retryAxios = require('retry-axios')
 
 export default class RequestService extends PercyClientService {
   static localCopiesPath = './tmp/'
@@ -67,11 +68,20 @@ export default class RequestService extends PercyClientService {
       logger.info(`making local copy of request: ${request}`)
     }
 
+    let retryConfig = {
+      retry: 5, // with exponential back off
+      retryDelay: 500,
+      shouldRetry: () => true,
+    }
+
+    let interceptorId = retryAxios.attach()
+
     await Axios({
       method: 'get',
       url: request,
-      responseType: 'arraybuffer'
-    }).then(response => {
+      responseType: 'arraybuffer',
+      raxConfig: retryConfig
+    } as any).then(response => {
       if (response.data) {
         let sha = crypto.createHash('sha256').update(response.data, 'utf8').digest('hex')
         filename = RequestService.localCopiesPath + sha
@@ -82,6 +92,8 @@ export default class RequestService extends PercyClientService {
         logger.info(`skipping '${request}' - empty response body`)
       }
     }).catch(logError)
+
+    retryAxios.detach(interceptorId)
 
     return filename
   }
