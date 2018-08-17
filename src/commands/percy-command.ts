@@ -39,6 +39,10 @@ export default class PercyCommand extends Command {
     return false
   }
 
+  logStart(port: number) {
+    this.logger.info(`percy-agent has started on port ${port}. Logs available at percy-agent.log`)
+  }
+
   private logMissingEnvVar(name: string) {
     this.logger.error(
       `You must set ${name}. See https://percy.io/docs for how to set ${name} for your environment.`

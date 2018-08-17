@@ -71,8 +71,4 @@ export default class Start extends PercyCommand {
       this.logger.warn('percy-agent is already running')
     }
   }
-
-  private logStart(port: number) {
-    this.logger.info(`percy-agent has started on port ${port}. Logs available at percy-agent.log`)
-  }
 }
