@@ -51,7 +51,8 @@ describe('RequestService', () => {
 
       expect(filteredRequestManifest).to.deep.equal([
         'http://percy.io/logo.png',
-        'http://percy.io/app.css'
+        'http://percy.io/app.css',
+        'http://localhost:5338/percy/stop',
       ])
     })
   })

@@ -30,11 +30,7 @@ export default class RequestService extends PercyClientService {
       return this.parseRequestPath(request)
     })
 
-    requestManifest = unique(requestManifest)
-
-    return requestManifest.filter(request => {
-      return !request.match(/http:\/\/localhost:\d+\/percy/)
-    })
+    return unique(requestManifest)
   }
 
   async createLocalCopies(requestManifest: string[]): Promise<Map<string, string>> {
@@ -69,8 +65,8 @@ export default class RequestService extends PercyClientService {
     }
 
     let retryConfig = {
-      retry: 3, // with exponential back off
-      retryDelay: 250,
+      retry: 2,
+      retryDelay: 100,
       shouldRetry: () => true,
     }
 
