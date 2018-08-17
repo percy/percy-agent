@@ -11,7 +11,11 @@ export default class Exec extends PercyCommand {
   ]
 
   static args = [
-    {name: 'command'},
+    {
+      name: 'command',
+      required: true,
+      description: 'command to run'
+    },
   ]
 
   static flags = {
