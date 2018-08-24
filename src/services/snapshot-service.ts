@@ -1,23 +1,22 @@
 import PercyClientService from './percy-client-service'
-import RequestService from './request-service'
+import AssetDiscoveryService from './asset-discovery-service'
 import logger, {logError} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   buildId: number
-  requestService: RequestService
+  assetDiscoveryService: AssetDiscoveryService
 
   constructor(buildId: number) {
     super()
 
     this.buildId = buildId
-    this.requestService = new RequestService()
+    this.assetDiscoveryService = new AssetDiscoveryService()
   }
 
   async createSnapshot(
     name: string,
     rootResourceUrl: string,
     domSnapshot: string = '',
-    requestManifest: string[] = [],
     enableJavaScript: boolean = false,
     widths: number[] = [1280],
     minimumHeight: number | null = null,
@@ -33,13 +32,8 @@ export default class SnapshotService extends PercyClientService {
 
     let resources = [rootResource]
 
-    if (requestManifest) {
-      logger.debug('processing request manifest...')
-      let requestResources = await this.requestService.processManifest(requestManifest)
-      logger.debug('request manifest processed.')
-
-      resources = resources.concat(requestResources)
-    }
+    let discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
+    resources.concat(discoveredResources)
 
     let response = await this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}

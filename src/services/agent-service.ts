@@ -60,7 +60,6 @@ export default class AgentService {
         request.body.name,
         request.body.url,
         request.body.domSnapshot,
-        request.body.requestManifest,
         request.body.enableJavascript,
         request.body.widths
       )
