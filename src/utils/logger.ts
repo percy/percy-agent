@@ -5,7 +5,6 @@ let logger = new winston.Logger({
     new winston.transports.Console({
       level: (process.env.LOG_LEVEL || 'info'),
       colorize: true,
-      label: 'Percy'
     }),
     new winston.transports.File({
       level: (process.env.LOG_LEVEL || 'info'),
