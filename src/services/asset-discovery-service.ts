@@ -16,7 +16,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let resources: any[] = []
 
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({args: ['--no-sandbox']})
     const page = await browser.newPage()
 
     await page.setRequestInterception(true)
