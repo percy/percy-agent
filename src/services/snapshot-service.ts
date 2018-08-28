@@ -21,7 +21,7 @@ export default class SnapshotService extends PercyClientService {
     widths: number[] = [1280],
     minimumHeight: number | null = null,
   ): Promise<any> {
-    logger.info(`creating snapshot '${name}'...`)
+    logger.debug(`creating snapshot '${name}'...`)
 
     let rootResource = this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,

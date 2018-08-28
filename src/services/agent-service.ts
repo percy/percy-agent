@@ -55,7 +55,6 @@ export default class AgentService {
     // let userAgent = request.headers['user-agent']
 
     if (this.snapshotService) {
-      logger.info('before createSnapshot')
       let snapshotResponse = await this.snapshotService.createSnapshot(
         request.body.name,
         request.body.url,
@@ -66,7 +65,7 @@ export default class AgentService {
 
       let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)
 
-      logger.info(`snapshot taken: '${request.body.name}'`)
+      logger.info(`Snapshot taken: '${request.body.name}'`)
 
       this.resourceUploadPromises.push(uploadPromsie)
 

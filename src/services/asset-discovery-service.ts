@@ -13,7 +13,7 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
-    logger.info(`discovering assets for URL: ${rootResourceUrl}`)
+    logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     let resources: any[] = []
 

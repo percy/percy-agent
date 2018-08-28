@@ -3,11 +3,15 @@ import * as winston from 'winston'
 let logger = new winston.Logger({
   transports: [
     new winston.transports.Console({
+      level: (process.env.LOG_LEVEL || 'info'),
       colorize: true,
-      level: (process.env.LOG_LEVEL || 'info')
+      label: 'Percy'
     }),
     new winston.transports.File({
-      level: (process.env.LOG_LEVEL || 'info'), filename: 'percy-agent.log', colorize: true, json: false
+      level: (process.env.LOG_LEVEL || 'info'),
+      filename: 'percy-agent.log',
+      colorize: true,
+      json: false
     })
   ]
 })

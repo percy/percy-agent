@@ -17,7 +17,7 @@ export default class ResponseService extends PercyClientService {
   }
 
   async processResponse(response: puppeteer.Response): Promise<any> {
-    logger.info(`processing ${response.url()} response...`)
+    logger.debug(`processing ${response.url()} response...`)
 
     const url = this.parseRequestPath(response.url())
 
