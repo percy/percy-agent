@@ -21,16 +21,16 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     await page.setRequestInterception(true)
 
-    page.on('request', request => {
+    page.on('request', async request => {
       if (request.isNavigationRequest()) {
-        request.respond({
+        await request.respond({
           status: 200,
           contentType: 'text/html',
           body: domSnapshot,
         })
       } else {
         // Pass-through request.
-        request.continue()
+        await request.continue()
       }
     })
 
