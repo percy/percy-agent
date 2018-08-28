@@ -33,7 +33,7 @@ export default class SnapshotService extends PercyClientService {
     let resources = [rootResource]
 
     let discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
-    resources.concat(discoveredResources)
+    resources = resources.concat(discoveredResources)
 
     let response = await this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}

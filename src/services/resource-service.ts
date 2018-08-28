@@ -3,7 +3,7 @@ import logger from '../utils/logger'
 import * as path from 'path'
 
 export default class ResourceService extends PercyClientService {
-  async createResourceFromFile(responseUrl: string, copyFilePath: string): Promise<any | null> {
+  createResourceFromFile(responseUrl: string, copyFilePath: string): any {
     let copyFullPath = path.resolve(copyFilePath)
     let sha = path.basename(copyFilePath)
     let resourceUrl = responseUrl

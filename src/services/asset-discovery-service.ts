@@ -11,27 +11,42 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService()
   }
 
-  async discoverResources(rootResourceUrl: string, _domSnapshot: string): Promise<any[]> {
+  async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
     logger.info(`discovering assets for URL: ${rootResourceUrl}`)
+
+    let resources: any[] = []
 
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
 
-    // Todo: load _domSnapshot into the page somehow
+    await page.setRequestInterception(true)
 
-    let resources: any[] = []
-
-    page.on('response', response => {
-      logger.info(response.url())
-
-      let resource = this.responseService.processResponse(response)
-
-      if (resource) {
-        resources.push(resource)
+    page.on('request', request => {
+      if (request.isNavigationRequest()) {
+        request.respond({
+          status: 200,
+          contentType: 'text/html',
+          body: domSnapshot,
+        })
+      } else {
+        // Pass-through request.
+        request.continue()
       }
     })
 
-    // await page.goto(rootResourceUrl, {waitUntil: 'networkidle0'})
+    page.on('response', async response => {
+      if (response.request().isNavigationRequest()) {
+        return
+      }
+
+      let resource = await this.responseService.processResponse(response)
+      if (resource) { resources.push(resource) }
+    })
+
+    let waitingPromise = page.waitForNavigation({waitUntil: 'networkidle0', timeout: 5000})
+    await page.goto(rootResourceUrl)
+    await waitingPromise
+    await page.close()
     await browser.close()
 
     return resources
