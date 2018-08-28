@@ -3,6 +3,7 @@ import ResponseService from './response-service'
 import logger from '../utils/logger'
 import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
+import {URL} from 'url'
 
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
@@ -37,6 +38,13 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     page.on('response', async response => {
       if (response.request().isNavigationRequest()) {
+        return
+      }
+
+      const parsedUrl = new URL(rootResourceUrl)
+      const localhost = `${parsedUrl.protocol}//${parsedUrl.host}`
+
+      if (!response.url().startsWith(localhost)) {
         return
       }
 
