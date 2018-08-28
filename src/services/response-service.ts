@@ -33,7 +33,7 @@ export default class ResponseService extends PercyClientService {
   }
 
   async makeLocalCopy(response: puppeteer.Response): Promise<string> {
-    logger.info(`making local copy of response: ${response.url()}`)
+    logger.debug(`making local copy of response: ${response.url()}`)
 
     const buffer = await response.buffer()
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
