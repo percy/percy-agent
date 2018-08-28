@@ -16,36 +16,30 @@ export default class ResponseService extends PercyClientService {
     this.resourceService = new ResourceService()
   }
 
-  async processResponse(response: puppeteer.Response): Promise<any | null> {
+  async processResponse(response: puppeteer.Response): Promise<any> {
     logger.info(`processing ${response.url()} response...`)
 
-    let url = this.parseRequestPath(response.url())
-    let localCopy = await this.makeLocalCopy(response)
+    const url = this.parseRequestPath(response.url())
 
-    if (localCopy) {
-      let resource = this.resourceService.createResourceFromFile(url, localCopy)
-      logger.info(`HELLO: ${resource.resourceUrl}`)
-      return resource
+    if (this.responsesProcessed.has(url)) {
+      return this.responsesProcessed.get(url)
     }
+
+    const localCopy = await this.makeLocalCopy(response)
+    const resource = this.resourceService.createResourceFromFile(url, localCopy)
+    this.responsesProcessed.set(url, resource)
+
+    return resource
   }
 
-  async makeLocalCopy(response: puppeteer.Response): Promise<string | null> {
-    let filename: string | null = null
-
-    if (this.responsesProcessed.has(response.url())) {
-      logger.info(`skipping request, local copy already present: '${response.url()}'`)
-      return this.responsesProcessed.get(response.url()) || null
-    } else {
-      logger.info(`making local copy of response: ${response.url()}`)
-    }
+  async makeLocalCopy(response: puppeteer.Response): Promise<string> {
+    logger.info(`making local copy of response: ${response.url()}`)
 
     const buffer = await response.buffer()
-    let sha = crypto.createHash('sha256').update(buffer).digest('hex')
-    filename = ResponseService.localCopiesPath + sha
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const filename = ResponseService.localCopiesPath + sha
 
     fs.writeFileSync(filename, buffer)
-
-    this.responsesProcessed.set(response.url(), filename)
 
     return filename
   }

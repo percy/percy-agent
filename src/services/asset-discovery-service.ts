@@ -2,6 +2,7 @@ import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 import logger from '../utils/logger'
 import * as puppeteer from 'puppeteer'
+import unique from '../utils/unique-array'
 
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
@@ -40,7 +41,7 @@ export default class AssetDiscoveryService extends PercyClientService {
       }
 
       let resource = await this.responseService.processResponse(response)
-      if (resource) { resources.push(resource) }
+      resources.push(resource)
     })
 
     let waitingPromise = page.waitForNavigation({waitUntil: 'networkidle0', timeout: 5000})
@@ -49,6 +50,6 @@ export default class AssetDiscoveryService extends PercyClientService {
     await page.close()
     await browser.close()
 
-    return resources
+    return unique(resources)
   }
 }
