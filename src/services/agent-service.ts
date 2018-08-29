@@ -39,12 +39,17 @@ export default class AgentService {
 
     let buildId = await this.buildService.createBuild()
     this.snapshotService = new SnapshotService(buildId)
+    await this.snapshotService.assetDiscoveryService.launchBrowser()
   }
 
   async stop() {
     logger.info('Stopping... waiting for snapshot resources to finish uploading...')
     await Promise.all(this.resourceUploadPromises)
     logger.info('...done')
+
+    if (this.snapshotService) {
+      await this.snapshotService.assetDiscoveryService.closeBrowser()
+    }
 
     await this.buildService.finalizeBuild()
     if (this.server) { await this.server.close() }

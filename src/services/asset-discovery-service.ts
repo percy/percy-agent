@@ -7,19 +7,36 @@ import {URL} from 'url'
 
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
+  browser: puppeteer.Browser | null
 
   constructor() {
     super()
     this.responseService = new ResponseService()
+    this.browser = null
+  }
+
+  async launchBrowser() {
+    this.browser = await puppeteer.launch({args: ['--no-sandbox']})
+  }
+
+  async closeBrowser() {
+    if (!this.browser) { return }
+
+    await this.browser.close()
+    this.browser = null
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
+    if (!this.browser) {
+      logger.debug('Puppeteer browser has not been launched.')
+      return []
+    }
+
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     let resources: any[] = []
 
-    const browser = await puppeteer.launch({args: ['--no-sandbox']})
-    const page = await browser.newPage()
+    const page = await this.browser.newPage()
 
     await page.setRequestInterception(true)
 
@@ -56,7 +73,6 @@ export default class AssetDiscoveryService extends PercyClientService {
     await page.goto(rootResourceUrl)
     await waitingPromise
     await page.close()
-    await browser.close()
 
     return unique(resources)
   }
