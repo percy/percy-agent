@@ -5,7 +5,7 @@ import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
 
 export default class AssetDiscoveryService extends PercyClientService {
-  readonly NETWORK_IDLE_TIMEOUT = 2000 // ms
+  readonly NAVIGATION_TIMEOUT = 3000 // ms
 
   responseService: ResponseService
   browser: puppeteer.Browser | null
@@ -46,13 +46,15 @@ export default class AssetDiscoveryService extends PercyClientService {
     })
 
     page.on('response', async response => {
-      const resource = await this.responseService.processResponse(response)
-      if (resource) { resources.push(resource) }
+      try {
+        const resource = await this.responseService.processResponse(response)
+        if (resource) { resources.push(resource) }
+      } catch (error) { logError(error) }
     })
 
     let waitingPromise = page.waitForNavigation({
       waitUntil: 'networkidle0',
-      timeout: this.NETWORK_IDLE_TIMEOUT,
+      timeout: this.NAVIGATION_TIMEOUT,
     })
 
     await page.goto(rootResourceUrl)
