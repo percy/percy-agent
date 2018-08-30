@@ -1,6 +1,6 @@
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
-import logger from '../utils/logger'
+import logger, {logError} from '../utils/logger'
 import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
 import {URL} from 'url'
@@ -71,7 +71,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let waitingPromise = page.waitForNavigation({waitUntil: 'networkidle0', timeout: 5000})
     await page.goto(rootResourceUrl)
-    await waitingPromise
+    await waitingPromise.catch(logError)
     await page.close()
 
     return unique(resources)
