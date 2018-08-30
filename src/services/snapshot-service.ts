@@ -32,7 +32,10 @@ export default class SnapshotService extends PercyClientService {
 
     let resources = [rootResource]
 
+    logger.profile('discoverResources')
     let discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
+    logger.profile('discoverResources')
+
     resources = resources.concat(discoveredResources)
 
     let response = await this.percyClient.createSnapshot(

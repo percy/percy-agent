@@ -57,11 +57,14 @@ export default class AgentService {
   }
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
+    logger.profile('handleSnapshot')
+
     // Use this once we have snapshot user agent support
     // let userAgent = request.headers['user-agent']
     let success = false
 
     if (this.snapshotService) {
+      logger.profile('createSnapshot')
       let snapshotResponse = await this.snapshotService.createSnapshot(
         request.body.name,
         request.body.url,
@@ -69,6 +72,7 @@ export default class AgentService {
         request.body.enableJavascript,
         request.body.widths
       )
+      logger.profile('createSnapshot')
 
       let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)
 
@@ -78,6 +82,8 @@ export default class AgentService {
 
       success = true
     }
+
+    logger.profile('handleSnapshot')
 
     return response.json({success})
   }
