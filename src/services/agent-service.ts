@@ -10,12 +10,13 @@ import ResourceService from './resource-service'
 
 export default class AgentService {
   readonly app: express.Application
-  server: Server | null = null
-  snapshotService: SnapshotService | null = null
+  readonly publicDirectory: string = `${__dirname}/../../dist/public`
+
   buildService: BuildService
   resourceService: ResourceService
   resourceUploadPromises: any[] = []
-  publicDirectory: string = `${__dirname}/../../dist/public`
+  server: Server | null = null
+  snapshotService: SnapshotService | null = null
 
   constructor() {
     this.app = express()
@@ -39,7 +40,7 @@ export default class AgentService {
 
     let buildId = await this.buildService.createBuild()
     this.snapshotService = new SnapshotService(buildId)
-    await this.snapshotService.assetDiscoveryService.launchBrowser()
+    await this.snapshotService.assetDiscoveryService.setup()
   }
 
   async stop() {
@@ -48,7 +49,7 @@ export default class AgentService {
     logger.info('...done')
 
     if (this.snapshotService) {
-      await this.snapshotService.assetDiscoveryService.closeBrowser()
+      await this.snapshotService.assetDiscoveryService.teardown()
     }
 
     await this.buildService.finalizeBuild()

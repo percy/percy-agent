@@ -4,11 +4,11 @@ import * as fs from 'fs'
 import * as crypto from 'crypto'
 import ResourceService from './resource-service'
 import * as puppeteer from 'puppeteer'
+import {URL} from 'url'
 
 export default class ResponseService extends PercyClientService {
   static localCopiesPath = './tmp/'
   responsesProcessed: Map<string, string> = new Map()
-
   resourceService: ResourceService
 
   constructor() {
@@ -16,8 +16,16 @@ export default class ResponseService extends PercyClientService {
     this.resourceService = new ResourceService()
   }
 
-  async processResponse(response: puppeteer.Response): Promise<any> {
+  async processResponse(response: puppeteer.Response): Promise<any | null> {
     logger.debug(`processing ${response.url()} response...`)
+    const request = response.request()
+
+    if (request.isNavigationRequest()) { return }
+
+    const parsedUrl = new URL(request.url())
+    const localhost = `${parsedUrl.protocol}//${parsedUrl.host}`
+
+    if (!response.url().startsWith(localhost)) { return }
 
     const url = this.parseRequestPath(response.url())
 
