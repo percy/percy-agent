@@ -10,22 +10,28 @@ export default class AssetDiscoveryService extends PercyClientService {
 
   responseService: ResponseService
   browser: puppeteer.Browser | null
+  page: puppeteer.Page | null
 
   constructor() {
     super()
     this.responseService = new ResponseService()
     this.browser = null
+    this.page = null
   }
 
   async setup() {
     logger.profile('puppeteer.launch')
     this.browser = await puppeteer.launch({args: ['--no-sandbox']})
     logger.profile('puppeteer.launch')
+
+    logger.profile('browser.newPage')
+    this.page = await this.browser.newPage()
+    logger.profile('browser.newPage')
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
-    if (!this.browser) {
-      logger.error('Puppeteer has not been launched.')
+    if (!this.browser || !this.page) {
+      logger.error('Puppeteer failed to open with a page.')
       return []
     }
 
@@ -33,13 +39,9 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let resources: any[] = []
 
-    logger.profile('puppeteer.newPage')
-    let page = await this.browser.newPage()
-    logger.profile('puppeteer.newPage')
+    await this.page.setRequestInterception(true)
 
-    await page.setRequestInterception(true)
-
-    page.on('request', async request => {
+    this.page.on('request', async request => {
       if (request.isNavigationRequest()) {
         await request.respond({
           status: 200,
@@ -51,7 +53,7 @@ export default class AssetDiscoveryService extends PercyClientService {
       }
     })
 
-    page.on('response', async response => {
+    this.page.on('response', async response => {
       try {
         const resource = await this.responseService.processResponse(response)
 
@@ -59,27 +61,24 @@ export default class AssetDiscoveryService extends PercyClientService {
       } catch (error) { logError(error) }
     })
 
-    logger.profile('puppeteer.page.goto')
-    await page.goto(rootResourceUrl)
-    logger.profile('puppeteer.page.goto')
+    logger.profile('page.goto')
+    await this.page.goto(rootResourceUrl)
+    logger.profile('page.goto')
 
-    logger.profile('puppeteer.page.waitFor')
-    await waitForNetworkIdle(page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
-    logger.profile('puppeteer.page.waitFor')
+    logger.profile('waitForNetworkIdle')
+    await waitForNetworkIdle(this.page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
+    logger.profile('waitForNetworkIdle')
 
-    logger.profile('puppeteer.page.close')
-    await page.close()
-    logger.profile('puppeteer.page.close')
+    this.page.removeAllListeners()
 
-    logger.profile('unique.resources')
     resources = unique(resources)
-    logger.profile('unique.resources')
 
     return resources
   }
 
   async teardown() {
     await this.closeBrowser()
+    await this.closePage()
   }
 
   private async closeBrowser() {
@@ -88,4 +87,9 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.browser = null
   }
 
+  private async closePage() {
+    if (!this.page) { return }
+    await this.page.close()
+    this.page = null
+  }
 }
