@@ -26,6 +26,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     logger.profile('browser.newPage')
     this.page = await this.browser.newPage()
+    await this.page.setRequestInterception(true)
     logger.profile('browser.newPage')
   }
 
@@ -38,8 +39,6 @@ export default class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     let resources: any[] = []
-
-    await this.page.setRequestInterception(true)
 
     this.page.on('request', async request => {
       if (request.isNavigationRequest()) {
@@ -77,8 +76,8 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async teardown() {
-    await this.closeBrowser()
     await this.closePage()
+    await this.closeBrowser()
   }
 
   private async closeBrowser() {
