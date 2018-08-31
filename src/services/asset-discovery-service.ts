@@ -52,25 +52,19 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     page.on('response', async response => {
       try {
-        logger.profile('responseService.processResponse')
         const resource = await this.responseService.processResponse(response)
-        logger.profile('responseService.processResponse')
 
         if (resource) { resources.push(resource) }
       } catch (error) { logError(error) }
     })
 
-    let waitingPromise = page.waitForNavigation({
-      waitUntil: 'networkidle0',
-      timeout: this.NAVIGATION_TIMEOUT,
-    })
     logger.profile('puppeteer.page.goto')
     await page.goto(rootResourceUrl)
     logger.profile('puppeteer.page.goto')
 
-    logger.profile('puppeteer.page.waitForNavigation')
-    await waitingPromise.catch(logError)
-    logger.profile('puppeteer.page.waitForNavigation')
+    logger.profile('puppeteer.page.waitFor')
+    await waitForNetworkIdle(page).catch(logError)
+    logger.profile('puppeteer.page.waitFor')
 
     logger.profile('puppeteer.page.close')
     await page.close()
@@ -91,5 +85,39 @@ export default class AssetDiscoveryService extends PercyClientService {
     if (!this.browser) { return }
     await this.browser.close()
     this.browser = null
+  }
+
+}
+
+function waitForNetworkIdle(page: puppeteer.Page, timeout = 50, maxInflightRequests = 0) {
+  page.on('request', onRequestStarted)
+  page.on('requestfinished', onRequestFinished)
+  page.on('requestfailed', onRequestFinished)
+
+  let inflight = 0
+  let fulfill: any
+  let promise = new Promise(x => fulfill = x)
+  let timeoutId = setTimeout(onTimeoutDone, timeout)
+  return promise
+
+  function onTimeoutDone() {
+    page.removeListener('request', onRequestStarted)
+    page.removeListener('requestfinished', onRequestFinished)
+    page.removeListener('requestfailed', onRequestFinished)
+    fulfill()
+  }
+
+  function onRequestStarted() {
+    ++inflight
+    if (inflight > maxInflightRequests)
+      clearTimeout(timeoutId)
+  }
+
+  function onRequestFinished() {
+    if (inflight === 0)
+      return
+    --inflight
+    if (inflight === maxInflightRequests)
+      timeoutId = setTimeout(onTimeoutDone, timeout)
   }
 }
