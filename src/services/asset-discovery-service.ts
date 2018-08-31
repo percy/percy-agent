@@ -5,7 +5,7 @@ import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
 
 export default class AssetDiscoveryService extends PercyClientService {
-  readonly NAVIGATION_TIMEOUT = 3000 // ms
+  readonly NETWORK_IDLE_TIMEOUT = 25 // ms
 
   responseService: ResponseService
   browser: puppeteer.Browser | null
@@ -63,7 +63,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     logger.profile('puppeteer.page.goto')
 
     logger.profile('puppeteer.page.waitFor')
-    await waitForNetworkIdle(page).catch(logError)
+    await waitForNetworkIdle(page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
     logger.profile('puppeteer.page.waitFor')
 
     logger.profile('puppeteer.page.close')
