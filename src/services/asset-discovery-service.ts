@@ -12,9 +12,9 @@ export default class AssetDiscoveryService extends PercyClientService {
   browser: puppeteer.Browser | null
   page: puppeteer.Page | null
 
-  constructor() {
+  constructor(buildId: number) {
     super()
-    this.responseService = new ResponseService()
+    this.responseService = new ResponseService(buildId)
     this.browser = null
     this.page = null
   }

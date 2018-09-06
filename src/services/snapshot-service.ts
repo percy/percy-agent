@@ -12,7 +12,7 @@ export default class SnapshotService extends PercyClientService {
     super()
 
     this.buildId = buildId
-    this.assetDiscoveryService = new AssetDiscoveryService()
+    this.assetDiscoveryService = new AssetDiscoveryService(buildId)
     this.resourceService = new ResourceService(buildId)
   }
 

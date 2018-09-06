@@ -23,7 +23,7 @@ describe('BuildService', () => {
       let createdBuildId: number | null = null
 
       await captureStdOut(async () => {
-        createdBuildId = await subject.createBuild()
+        createdBuildId = await subject.create()
       })
 
       expect(createdBuildId).to.equal(+buildId)
@@ -38,7 +38,7 @@ describe('BuildService', () => {
     })
 
     it('finalizes a build', async () => {
-      let stdout = await captureStdOut(() => subject.finalizeBuild())
+      let stdout = await captureStdOut(() => subject.finalize())
       expect(stdout).to.match(/info: finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })

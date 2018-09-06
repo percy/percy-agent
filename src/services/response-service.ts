@@ -11,9 +11,9 @@ export default class ResponseService extends PercyClientService {
   responsesProcessed: Map<string, string> = new Map()
   resourceService: ResourceService
 
-  constructor() {
+  constructor(buildId: number) {
     super()
-    this.resourceService = new ResourceService()
+    this.resourceService = new ResourceService(buildId)
   }
 
   async processResponse(response: puppeteer.Response): Promise<any | null> {
