@@ -20,17 +20,19 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async setup() {
-    logger.profile('puppeteer.launch')
+    logger.profile('-> assetDiscoveryService.puppeteer.launch')
     this.browser = await puppeteer.launch({args: ['--no-sandbox']})
-    logger.profile('puppeteer.launch')
+    logger.profile('-> assetDiscoveryService.puppeteer.launch')
 
-    logger.profile('browser.newPage')
+    logger.profile('-> assetDiscoveryService.browser.newPage')
     this.page = await this.browser.newPage()
     await this.page.setRequestInterception(true)
-    logger.profile('browser.newPage')
+    logger.profile('-> assetDiscoveryService.browser.newPage')
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
+    logger.profile('discoveredResources')
+
     if (!this.browser || !this.page) {
       logger.error('Puppeteer failed to open with a page.')
       return []
@@ -60,17 +62,23 @@ export default class AssetDiscoveryService extends PercyClientService {
       } catch (error) { logError(error) }
     })
 
-    logger.profile('page.goto')
+    logger.profile('--> assetDiscoveryService.page.goto')
     await this.page.goto(rootResourceUrl)
-    logger.profile('page.goto')
+    logger.profile('--> assetDiscoveryService.page.goto')
 
-    logger.profile('waitForNetworkIdle')
+    logger.profile('--> assetDiscoveryService.waitForNetworkIdle')
     await waitForNetworkIdle(this.page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
-    logger.profile('waitForNetworkIdle')
+    logger.profile('--> assetDiscoveryService.waitForNetworkIdle')
 
     this.page.removeAllListeners()
 
     resources = unique(resources)
+
+    logger.profile(
+      'discoveredResources',
+      '-> assetDiscoveryService.discoverResources',
+      {resourcesDiscovered: resources.length}
+    )
 
     return resources
   }

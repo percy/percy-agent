@@ -6,17 +6,17 @@ import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
 import logger from '../utils/logger'
 import ProcessService from './process-service'
-import ResourceService from './resource-service'
 
 export default class AgentService {
   readonly app: express.Application
   readonly publicDirectory: string = `${__dirname}/../../dist/public`
 
   buildService: BuildService
-  resourceService: ResourceService
+  snapshotCreationPromises: any[] = []
   resourceUploadPromises: any[] = []
   server: Server | null = null
   snapshotService: SnapshotService | null = null
+  buildId: number | null = null
 
   constructor() {
     this.app = express()
@@ -32,60 +32,72 @@ export default class AgentService {
     this.app.get('/percy/healthcheck', this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
-    this.resourceService = new ResourceService()
   }
 
   async start(port: number) {
     this.server = this.app.listen(port)
 
-    let buildId = await this.buildService.createBuild()
-    this.snapshotService = new SnapshotService(buildId)
+    this.buildId = await this.buildService.create()
+    this.snapshotService = new SnapshotService(this.buildId)
     await this.snapshotService.assetDiscoveryService.setup()
   }
 
   async stop() {
-    logger.info('Stopping... waiting for snapshot resources to finish uploading...')
-    await Promise.all(this.resourceUploadPromises)
-    logger.info('...done')
+    logger.info('Stopping percy-agent...')
+
+    logger.info(`Waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
+    await Promise.all(this.snapshotCreationPromises)
+    logger.info('All snapshots created with resources uploaded')
+    logger.info('done.')
 
     if (this.snapshotService) {
       await this.snapshotService.assetDiscoveryService.teardown()
     }
 
-    await this.buildService.finalizeBuild()
+    await this.buildService.finalize()
     if (this.server) { await this.server.close() }
   }
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
-    logger.profile('handleSnapshot')
+    logger.profile('agentService.handleSnapshot')
 
     // Use this once we have snapshot user agent support
     // let userAgent = request.headers['user-agent']
-    let success = false
 
-    if (this.snapshotService) {
-      logger.profile('createSnapshot')
-      let snapshotResponse = await this.snapshotService.createSnapshot(
-        request.body.name,
-        request.body.url,
-        request.body.domSnapshot,
-        request.body.enableJavascript,
-        request.body.widths
-      )
-      logger.profile('createSnapshot')
+    if (!this.snapshotService) { return response.json({success: false}) }
 
-      let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)
+    let rootResource = await this.snapshotService.rootResource(
+      request.body.url,
+      request.body.domSnapshot,
+    )
 
-      logger.info(`Snapshot taken: '${request.body.name}'`)
+    let discoveredResources = await this.snapshotService.discoveredResources(
+      request.body.url,
+      request.body.domSnapshot,
+    )
 
-      this.resourceUploadPromises.push(uploadPromsie)
+    let resources = [rootResource].concat(discoveredResources)
 
-      success = true
-    }
+    let snapshotCreation = this.snapshotService.createSnapshot(
+      request.body.name,
+      resources,
+      request.body.enableJavascript,
+      request.body.widths,
+    )
 
-    logger.profile('handleSnapshot')
+    // snapshotCreation.then(value => {
+    //   logger.info('HELLO')
+    //   logger.info(JSON.stringify(value))
+    // }).catch(logError)
 
-    return response.json({success})
+    // let resourceUpload = this.snapshotService.uploadResources(resources)
+    // this.resourceUploadPromises.push(resourceUpload)
+
+    this.snapshotCreationPromises.push(snapshotCreation)
+    logger.info(`Snapshot taken: '${request.body.name}'`)
+
+    logger.profile('agentService.handleSnapshot')
+    return response.json({success: true})
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
