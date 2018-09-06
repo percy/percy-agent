@@ -1,3 +1,4 @@
+
 class PercyAgent {
   xhr: XMLHttpRequest
 
@@ -16,6 +17,7 @@ export interface SnapshotOptions {
   enableJavascript?: boolean,
   widths?: number[],
   minimumHeight?: number,
+  document?: Document,
 }
 
 export class PercyAgentClient {
@@ -31,13 +33,14 @@ export class PercyAgentClient {
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
-    let domSnapshot = this.domSnapshot()
+    let documentObject = options.document || document
+    let domSnapshot = this.domSnapshot(documentObject)
     let percyAgent = new PercyAgent(this.xhr)
 
     // TODO: this cannot be hardcoded to this port
     percyAgent.post('http://localhost:5338/percy/snapshot', {
       name,
-      url: document.URL,
+      url: documentObject.URL,
       enableJavascript: options.enableJavascript,
       widths: options.widths,
       clientUserAgent: this.userAgent,
@@ -45,9 +48,9 @@ export class PercyAgentClient {
     })
   }
 
-  private domSnapshot(): string {
+  private domSnapshot(documentObject: Document): string {
     let doctype = this.getDoctype()
-    let dom = this.stabalizeDOM(document.documentElement)
+    let dom = this.stabalizeDOM(documentObject.documentElement)
     let domClone = dom.cloneNode(true) as HTMLElement
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
