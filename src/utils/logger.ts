@@ -15,6 +15,12 @@ let logger = new winston.Logger({
   ]
 })
 
+export function profile(id: string, msg?: string, meta?: any, callback?: (err: Error, level: string, msg: string, meta: any) => void): winston.LoggerInstance | undefined {
+  if (process.env.LOG_LEVEL === 'debug') {
+    return logger.profile(id, msg, meta, callback)
+  }
+}
+
 export function logError(error: any) {
   logger.error(`${error.name} ${error.message}`)
   logger.debug(error)

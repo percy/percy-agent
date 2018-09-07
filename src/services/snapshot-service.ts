@@ -1,7 +1,7 @@
 import PercyClientService from './percy-client-service'
 import AssetDiscoveryService from './asset-discovery-service'
 import ResourceService from './resource-service'
-import logger from '../utils/logger'
+import {profile} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   buildId: number
@@ -49,9 +49,9 @@ export default class SnapshotService extends PercyClientService {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
     ).then(async (response: any) => {
-      logger.profile('resourceService.uploadMissingResources')
+      profile('resourceService.uploadMissingResources')
       await this.resourceService.uploadMissingResources(response, resources)
-      logger.profile('resourceService.uploadMissingResources')
+      profile('resourceService.uploadMissingResources')
       return response
     })
 

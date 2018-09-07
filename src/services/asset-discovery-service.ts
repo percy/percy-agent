@@ -1,6 +1,6 @@
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
-import logger, {logError} from '../utils/logger'
+import logger, {logError, profile} from '../utils/logger'
 import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
@@ -20,18 +20,18 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async setup() {
-    logger.profile('-> assetDiscoveryService.puppeteer.launch')
+    profile('-> assetDiscoveryService.puppeteer.launch')
     this.browser = await puppeteer.launch({args: ['--no-sandbox']})
-    logger.profile('-> assetDiscoveryService.puppeteer.launch')
+    profile('-> assetDiscoveryService.puppeteer.launch')
 
-    logger.profile('-> assetDiscoveryService.browser.newPage')
+    profile('-> assetDiscoveryService.browser.newPage')
     this.page = await this.browser.newPage()
     await this.page.setRequestInterception(true)
-    logger.profile('-> assetDiscoveryService.browser.newPage')
+    profile('-> assetDiscoveryService.browser.newPage')
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
-    logger.profile('discoveredResources')
+    profile('discoveredResources')
 
     if (!this.browser || !this.page) {
       logger.error('Puppeteer failed to open with a page.')
@@ -62,19 +62,19 @@ export default class AssetDiscoveryService extends PercyClientService {
       } catch (error) { logError(error) }
     })
 
-    logger.profile('--> assetDiscoveryService.page.goto')
+    profile('--> assetDiscoveryService.page.goto')
     await this.page.goto(rootResourceUrl)
-    logger.profile('--> assetDiscoveryService.page.goto')
+    profile('--> assetDiscoveryService.page.goto')
 
-    logger.profile('--> assetDiscoveryService.waitForNetworkIdle')
+    profile('--> assetDiscoveryService.waitForNetworkIdle')
     await waitForNetworkIdle(this.page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
-    logger.profile('--> assetDiscoveryService.waitForNetworkIdle')
+    profile('--> assetDiscoveryService.waitForNetworkIdle')
 
     this.page.removeAllListeners()
 
     resources = unique(resources)
 
-    logger.profile(
+    profile(
       'discoveredResources',
       '-> assetDiscoveryService.discoverResources',
       {resourcesDiscovered: resources.length}

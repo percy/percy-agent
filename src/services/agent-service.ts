@@ -4,7 +4,7 @@ import * as express from 'express'
 import {Server} from 'http'
 import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
-import logger from '../utils/logger'
+import logger, {profile} from '../utils/logger'
 import ProcessService from './process-service'
 
 export default class AgentService {
@@ -59,7 +59,7 @@ export default class AgentService {
   }
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
-    logger.profile('agentService.handleSnapshot')
+    profile('agentService.handleSnapshot')
 
     // Use this once we have snapshot user agent support
     // let userAgent = request.headers['user-agent']
@@ -96,7 +96,7 @@ export default class AgentService {
     this.snapshotCreationPromises.push(snapshotCreation)
     logger.info(`Snapshot taken: '${request.body.name}'`)
 
-    logger.profile('agentService.handleSnapshot')
+    profile('agentService.handleSnapshot')
     return response.json({success: true})
   }
 
