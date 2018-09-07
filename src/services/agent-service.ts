@@ -66,17 +66,10 @@ export default class AgentService {
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
-    let rootResource = await this.snapshotService.rootResource(
+    let resources = await this.snapshotService.buildResources(
       request.body.url,
       request.body.domSnapshot,
     )
-
-    let discoveredResources = await this.snapshotService.discoveredResources(
-      request.body.url,
-      request.body.domSnapshot,
-    )
-
-    let resources = [rootResource].concat(discoveredResources)
 
     let snapshotCreation = this.snapshotService.createSnapshot(
       request.body.name,
@@ -84,14 +77,6 @@ export default class AgentService {
       request.body.enableJavascript,
       request.body.widths,
     )
-
-    // snapshotCreation.then(value => {
-    //   logger.info('HELLO')
-    //   logger.info(JSON.stringify(value))
-    // }).catch(logError)
-
-    // let resourceUpload = this.snapshotService.uploadResources(resources)
-    // this.resourceUploadPromises.push(resourceUpload)
 
     this.snapshotCreationPromises.push(snapshotCreation)
     logger.info(`Snapshot taken: '${request.body.name}'`)
