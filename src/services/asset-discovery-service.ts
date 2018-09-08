@@ -31,7 +31,7 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
-    profile('discoveredResources')
+    profile('-> assetDiscoveryService.discoverResources')
 
     if (!this.browser || !this.page) {
       logger.error('Puppeteer failed to open with a page.')
@@ -62,7 +62,7 @@ export default class AssetDiscoveryService extends PercyClientService {
       } catch (error) { logError(error) }
     })
 
-    profile('--> assetDiscoveryService.page.goto')
+    profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
     await this.page.goto(rootResourceUrl)
     profile('--> assetDiscoveryService.page.goto')
 
@@ -74,11 +74,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     resources = unique(resources)
 
-    profile(
-      'discoveredResources',
-      '-> assetDiscoveryService.discoverResources',
-      {resourcesDiscovered: resources.length}
-    )
+    profile('-> assetDiscoveryService.discoverResources', {resourcesDiscovered: resources.length})
 
     return resources
   }

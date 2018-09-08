@@ -1,5 +1,5 @@
 import PercyClientService from './percy-client-service'
-import logger, {logError} from '../utils/logger'
+import logger, {logError, profile} from '../utils/logger'
 import * as path from 'path'
 
 export default class ResourceService extends PercyClientService {
@@ -32,6 +32,8 @@ export default class ResourceService extends PercyClientService {
   }
 
   async uploadMissingResources(response: any, resources: any[]): Promise<boolean> {
+    profile('-> resourceService.uploadMissingResources')
+
     let snapshotResponse = {
       buildId: this.buildId,
       response,
@@ -44,24 +46,12 @@ export default class ResourceService extends PercyClientService {
         snapshotResponse.response,
         snapshotResponse.resources
       )
-      // logger('missing resources uploaded')
+      profile('-> resourceService.uploadMissingResources', {resources: resources.length})
 
       return true
     } catch (error) {
       logError(error)
       return false
     }
-  }
-
-  async upload(resources: any[]) {
-    logger.debug(`Uploading ${resources.length} resources`)
-    resources = resources.filter(resource => !this.resourcesUploaded.includes(resource))
-    logger.debug(`-> filtered to ${resources.length} resources`)
-
-    if (resources.length === 0) { return }
-
-    this.resourcesUploaded = this.resourcesUploaded.concat(resources)
-
-    await this.percyClient.uploadResources(this.buildId, resources).catch(logError)
   }
 }
