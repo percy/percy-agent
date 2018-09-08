@@ -1,7 +1,7 @@
 import PercyClientService from './percy-client-service'
 import AssetDiscoveryService from './asset-discovery-service'
 import ResourceService from './resource-service'
-import {profile} from '../utils/logger'
+import {logError, profile} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
   buildId: number
@@ -45,29 +45,27 @@ export default class SnapshotService extends PercyClientService {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
     ).then(async (response: any) => {
-      profile('resourceService.uploadMissingResources')
       await this.resourceService.uploadMissingResources(response, resources)
-      profile('resourceService.uploadMissingResources')
+      return response
+    }).then(async (response: any) => {
+      const snapshotId = response.body.data.id
+
+      profile('-> snapshotService.finalizeSnapshot')
+      await this.finalizeSnapshot(response.body.data.id)
+      profile('-> snapshotService.finalizeSnapshot', {snapshotId})
       return response
     })
 
     return snapshotCreationPromise
   }
 
-  uploadResources(resources: any[]): Promise<any> {
-    return this.resourceService.upload(resources)
+  async finalizeSnapshot(snapshotId: number): Promise<boolean> {
+    try {
+      await this.percyClient.finalizeSnapshot(snapshotId)
+      return true
+    } catch (error) {
+      logError(error)
+      return false
+    }
   }
-
-  // async finalizeSnapshot(snapshotId: number): Promise<boolean> {
-  //   logger.debug('finalizing snapshot: ' + snapshotId)
-
-  //   try {
-  //     await this.percyClient.finalizeSnapshot(snapshotId)
-  //     logger.info('finalized snapshot.')
-  //     return true
-  //   } catch (error) {
-  //     logError(error)
-  //     return false
-  //   }
-  // }
 }
