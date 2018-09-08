@@ -56,7 +56,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     this.page.on('response', async response => {
       try {
-        const resource = await this.responseService.processResponse(response)
+        const resource = await this.responseService.processResponse(rootResourceUrl, response)
 
         if (resource) { resources.push(resource) }
       } catch (error) { logError(error) }

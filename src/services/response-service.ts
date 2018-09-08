@@ -6,7 +6,7 @@ import ResourceService from './resource-service'
 import * as puppeteer from 'puppeteer'
 import {URL} from 'url'
 
-const ALLOWED_RESPONSE_STATUSES = [200, 201]
+const ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
 
 export default class ResponseService extends PercyClientService {
   static localCopiesPath = './tmp/'
@@ -18,15 +18,17 @@ export default class ResponseService extends PercyClientService {
     this.resourceService = new ResourceService(buildId)
   }
 
-  async processResponse(response: puppeteer.Response): Promise<any | null> {
+  async processResponse(rootResourceUrl: string, response: puppeteer.Response): Promise<any | null> {
     const request = response.request()
-    const parsedUrl = new URL(request.url())
-    const localhost = `${parsedUrl.protocol}//${parsedUrl.host}`
+    const parsedUrl = new URL(rootResourceUrl)
+    const rootUrl = `${parsedUrl.protocol}//${parsedUrl.host}`
 
     if (
       request.isNavigationRequest()
+      // Only allow 2XX responses:
       || !ALLOWED_RESPONSE_STATUSES.includes(response.status())
-      || !response.url().startsWith(localhost)
+      || !request.url().startsWith(rootUrl) // Disallow remote resource requests.
+      || !response.url().startsWith(rootUrl) // Disallow remote redirects.
       ) {
       logger.debug(`Skipping: ${response.url()}`)
       return
