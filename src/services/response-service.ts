@@ -6,6 +6,8 @@ import ResourceService from './resource-service'
 import * as puppeteer from 'puppeteer'
 import {URL} from 'url'
 
+const ALLOWED_RESPONSE_STATUSES = [200, 201]
+
 export default class ResponseService extends PercyClientService {
   static localCopiesPath = './tmp/'
   responsesProcessed: Map<string, string> = new Map()
@@ -17,16 +19,20 @@ export default class ResponseService extends PercyClientService {
   }
 
   async processResponse(response: puppeteer.Response): Promise<any | null> {
-    logger.debug(`processing ${response.url()} response...`)
     const request = response.request()
-
-    if (request.isNavigationRequest()) { return }
-
     const parsedUrl = new URL(request.url())
     const localhost = `${parsedUrl.protocol}//${parsedUrl.host}`
 
-    if (!response.url().startsWith(localhost)) { return }
+    if (
+      request.isNavigationRequest()
+      || !ALLOWED_RESPONSE_STATUSES.includes(response.status())
+      || !response.url().startsWith(localhost)
+      ) {
+      logger.debug(`Skipping: ${response.url()}`)
+      return
+    }
 
+    logger.debug(`processing response: ${response.url()}`)
     const url = this.parseRequestPath(response.url())
 
     if (this.responsesProcessed.has(url)) {
