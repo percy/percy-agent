@@ -5,8 +5,8 @@ export default class ProcessService {
   static PID_PATH = './.percy-agent.pid'
   static LOG_PATH = './percy-agent-process.log'
 
-  async runDetached(args: string[]): Promise<number | null> {
-    if (await this.isRunning()) { return null }
+  runDetached(args: string[]): number | undefined {
+    if (this.isRunning()) { return }
 
     const logFile = fs.openSync(ProcessService.LOG_PATH, 'a+')
 
@@ -15,34 +15,32 @@ export default class ProcessService {
       stdio: ['ignore', logFile, logFile] // logs and errors go into the same file
     })
 
-    await this.writePidFile(spawnedProcess.pid)
+    this.writePidFile(spawnedProcess.pid)
 
     spawnedProcess.unref()
 
     return spawnedProcess.pid
   }
 
-  async isRunning(): Promise<boolean> {
+  isRunning(): boolean {
     return fs.existsSync(ProcessService.PID_PATH)
   }
 
-  async getPid(): Promise<number> {
-    let pidFileContents: Buffer = await fs.readFileSync(ProcessService.PID_PATH)
+  getPid(): number {
+    let pidFileContents: Buffer = fs.readFileSync(ProcessService.PID_PATH)
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 
-  async kill() {
-    const running = await this.isRunning()
+  kill() {
+    if (this.isRunning()) {
+      const pid = this.getPid()
+      fs.unlinkSync(ProcessService.PID_PATH)
 
-    if (running) {
-      const pid = await this.getPid()
-
-      await fs.unlinkSync(ProcessService.PID_PATH)
       process.kill(pid, 'SIGHUP')
     }
   }
 
-  private async writePidFile(pid: number) {
-    await fs.writeFileSync(ProcessService.PID_PATH, pid)
+  private writePidFile(pid: number) {
+    fs.writeFileSync(ProcessService.PID_PATH, pid)
   }
 }

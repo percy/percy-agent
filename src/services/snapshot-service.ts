@@ -4,9 +4,11 @@ import ResourceService from './resource-service'
 import {logError, profile} from '../utils/logger'
 
 export default class SnapshotService extends PercyClientService {
-  buildId: number
   assetDiscoveryService: AssetDiscoveryService
   resourceService: ResourceService
+
+  buildId: number
+  defaultWidths = [1280]
 
   constructor(buildId: number) {
     super()

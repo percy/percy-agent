@@ -78,14 +78,14 @@ export class PercyAgentClient {
 
     inputElements.forEach((elem: HTMLInputElement) => {
       switch (elem.type) {
-        case 'checkbox':
-        case 'radio':
-          if (elem.checked) {
-            elem.setAttribute('checked', '')
-          }
-          break
-        default:
-          elem.setAttribute('value', elem.value)
+      case 'checkbox':
+      case 'radio':
+        if (elem.checked) {
+          elem.setAttribute('checked', '')
+        }
+        break
+      default:
+        elem.setAttribute('value', elem.value)
       }
     })
 

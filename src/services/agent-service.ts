@@ -87,7 +87,7 @@ export default class AgentService {
 
   private async handleStop(_request: express.Request, response: express.Response) {
     await this.stop()
-    await new ProcessService().kill()
+    new ProcessService().kill()
     return response.json({success: true})
   }
 
