@@ -62,7 +62,8 @@ export default class AgentService {
         request.body.domSnapshot,
         request.body.requestManifest,
         request.body.enableJavascript,
-        request.body.widths
+        request.body.widths,
+        request.body.minimumHeight
       )
 
       let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)

@@ -5,6 +5,7 @@ import logger, {logError} from '../utils/logger'
 export default class SnapshotService extends PercyClientService {
   buildId: number
   requestService: RequestService
+  defaultWidths = [1280]
 
   constructor(buildId: number) {
     super()
@@ -17,9 +18,9 @@ export default class SnapshotService extends PercyClientService {
     name: string,
     rootResourceUrl: string,
     domSnapshot = '',
-    requestManifest: string[] = [],
+    requests: string[] = [],
     enableJavaScript = false,
-    widths: number[] = [1280],
+    widths: number[] = this.defaultWidths,
     minimumHeight: number | null = null,
   ): Promise<any> {
     logger.info(`creating snapshot '${name}'...`)
@@ -33,13 +34,11 @@ export default class SnapshotService extends PercyClientService {
 
     let resources = [rootResource]
 
-    if (requestManifest) {
-      logger.debug('processing request manifest...')
-      let requestResources = await this.requestService.processManifest(requestManifest)
-      logger.debug('request manifest processed.')
+    logger.debug('processing request...')
+    let requestResources = await this.requestService.processRequests(requests)
+    logger.debug('request processed.')
 
-      resources = resources.concat(requestResources)
-    }
+    resources = resources.concat(requestResources)
 
     let response = await this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
