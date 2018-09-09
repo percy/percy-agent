@@ -1,17 +1,18 @@
 import PercyClientService from './percy-client-service'
+import ResourceService from './resource-service'
 import logger from '../utils/logger'
+import {URL} from 'url'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
-import ResourceService from './resource-service'
 import * as puppeteer from 'puppeteer'
-import {URL} from 'url'
+import * as os from 'os'
+import * as path from 'path'
 
 export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
 
   readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
   responsesProcessed: Map<string, string> = new Map()
-  resourceService: ResourceService
 
   constructor(buildId: number) {
     super()
@@ -53,10 +54,14 @@ export default class ResponseService extends PercyClientService {
 
     const buffer = await response.buffer()
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
-    const filename = ResponseService.localCopiesPath + sha
+    const filename = path.join(this.tmpDir(), sha)
 
     fs.writeFileSync(filename, buffer)
 
     return filename
+  }
+
+  tmpDir(): string {
+    return os.tmpdir()
   }
 }
