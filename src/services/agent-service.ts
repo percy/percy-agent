@@ -15,7 +15,7 @@ export default class AgentService {
   buildService: BuildService
   resourceService: ResourceService
   resourceUploadPromises: any[] = []
-  publicDirectory: string = `${__dirname}/../../dist/public`
+  publicDirectory = `${__dirname}/../../dist/public`
 
   constructor() {
     this.app = express()

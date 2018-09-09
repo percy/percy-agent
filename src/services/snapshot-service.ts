@@ -16,9 +16,9 @@ export default class SnapshotService extends PercyClientService {
   async createSnapshot(
     name: string,
     rootResourceUrl: string,
-    domSnapshot: string = '',
+    domSnapshot = '',
     requestManifest: string[] = [],
-    enableJavaScript: boolean = false,
+    enableJavaScript = false,
     widths: number[] = [1280],
     minimumHeight: number | null = null,
   ): Promise<any> {

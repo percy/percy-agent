@@ -28,7 +28,7 @@
     "@oclif/dev-cli": "^1.15.4",
     "@oclif/errors": "^1.1.2",
     "@oclif/test": "^1.1.0",
-    "@oclif/tslint": "^1.1.2",
+    "@oclif/tslint": "^3.1.0",
     "@types/chai": "^4.1.4",
     "@types/chai-http": "^3.0.5",
     "@types/cors": "^2.8.4",
@@ -39,12 +39,12 @@
     "browserify": "^16.2.2",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
-    "eslint-config-oclif": "^2.0.0",
+    "eslint-config-oclif": "^3.0.0",
     "globby": "^8.0.1",
     "husky": "^1.0.0-rc.13",
     "mocha": "^5.2.0",
     "nock": "^9.6.1",
-    "prettier": "1.13.7",
+    "prettier": "1.14.2",
     "pryjs": "^1.0.3",
     "sinon-chai": "^3.2.0",
     "stdout-stderr": "^0.1.9",
@@ -53,7 +53,7 @@
     "tsify": "^4.0.0",
     "tslib": "^1.9.3",
     "tslint": "^5.11.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.0.3"
   },
   "engines": {
     "node": ">=8.0.0"
