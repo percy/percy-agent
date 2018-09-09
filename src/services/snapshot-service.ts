@@ -37,7 +37,7 @@ export default class SnapshotService extends PercyClientService {
     return resources
   }
 
-  createSnapshot(
+  create(
     name: string,
     resources: any[],
     enableJavaScript = false,
@@ -53,7 +53,7 @@ export default class SnapshotService extends PercyClientService {
       const snapshotId = response.body.data.id
 
       profile('-> snapshotService.finalizeSnapshot')
-      await this.finalizeSnapshot(response.body.data.id)
+      await this.finalize(response.body.data.id)
       profile('-> snapshotService.finalizeSnapshot', {snapshotId})
       return response
     })
@@ -61,7 +61,7 @@ export default class SnapshotService extends PercyClientService {
     return snapshotCreationPromise
   }
 
-  async finalizeSnapshot(snapshotId: number): Promise<boolean> {
+  async finalize(snapshotId: number): Promise<boolean> {
     try {
       await this.percyClient.finalizeSnapshot(snapshotId)
       return true

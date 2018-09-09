@@ -18,7 +18,7 @@ describe('SnapshotService', () => {
 
   afterEach(() => nock.cleanAll())
 
-  describe('#createSnapshot', () => {
+  describe('#create', () => {
     beforeEach(async () => {
       nock('https://percy.io')
         .post(/\/api\/v1\/builds\/\d+\/snapshots/)
@@ -29,7 +29,7 @@ describe('SnapshotService', () => {
       let snapshotResponse: any
 
       await captureStdOut(async () => {
-        snapshotResponse = await subject.createSnapshot(
+        snapshotResponse = await subject.create(
           'my test', []
         )
       })
@@ -39,12 +39,12 @@ describe('SnapshotService', () => {
     })
   })
 
-  describe('#finalizeSnapshot', () => {
+  describe('#finalize', () => {
     it('creates finalizes a snapshot', async () => {
       let result = false
 
       await captureStdOut(async () => {
-        result = await subject.finalizeSnapshot(snapshotId)
+        result = await subject.finalize(snapshotId)
       })
 
       expect(result).to.equal(true)

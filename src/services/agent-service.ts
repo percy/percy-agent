@@ -70,7 +70,7 @@ export default class AgentService {
       request.body.domSnapshot,
     )
 
-    let snapshotCreation = this.snapshotService.createSnapshot(
+    let snapshotCreation = this.snapshotService.create(
       request.body.name,
       resources,
       request.body.enableJavascript,
