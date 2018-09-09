@@ -41,7 +41,7 @@ export default class SnapshotService extends PercyClientService {
     name: string,
     resources: any[],
     enableJavaScript = false,
-    widths: number[] = [1280],
+    widths: number[] = this.defaultWidths,
     minimumHeight: number | null = null,
   ): Promise<any> {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
