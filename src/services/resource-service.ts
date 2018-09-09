@@ -11,7 +11,7 @@ export default class ResourceService extends PercyClientService {
     this.buildId = buildId
   }
 
-  createResourceFromFile(responseUrl: string, copyFilePath: string): any {
+  createResourceFromFile(responseUrl: string, copyFilePath: string, contentType = ''): any {
     let copyFullPath = path.resolve(copyFilePath)
     let sha = path.basename(copyFilePath)
     let resourceUrl = responseUrl
@@ -22,12 +22,13 @@ export default class ResourceService extends PercyClientService {
     logger.debug(`-> resourceUrl: ${resourceUrl}`)
     logger.debug(`-> localPath: ${copyFullPath}`)
     logger.debug(`-> sha: ${sha}`)
+    logger.debug(`-> contentType: ${contentType}`)
 
     return this.percyClient.makeResource({
       resourceUrl,
       localPath: copyFullPath,
       sha,
-      // mimetype: response.headers['Content-Type']
+      mimetype: contentType
     })
   }
 

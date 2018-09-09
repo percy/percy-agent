@@ -43,7 +43,9 @@ export default class ResponseService extends PercyClientService {
     }
 
     const localCopy = await this.makeLocalCopy(response)
-    const resource = this.resourceService.createResourceFromFile(url, localCopy)
+    const contentType = response.headers()['content-type']
+
+    const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType)
     this.responsesProcessed.set(url, resource)
 
     return resource
