@@ -12,10 +12,11 @@ export default class AgentService {
   readonly publicDirectory: string = `${__dirname}/../../dist/public`
 
   buildService: BuildService
+  snapshotService: SnapshotService | null = null
+
   snapshotCreationPromises: any[] = []
   resourceUploadPromises: any[] = []
   server: Server | null = null
-  snapshotService: SnapshotService | null = null
   buildId: number | null = null
 
   constructor() {
