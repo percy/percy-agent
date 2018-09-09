@@ -8,7 +8,7 @@ export default class SnapshotService extends PercyClientService {
   resourceService: ResourceService
 
   buildId: number
-  defaultWidths = [1280]
+  readonly defaultWidths = [1280]
 
   constructor(buildId: number) {
     super()

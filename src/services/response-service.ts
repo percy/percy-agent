@@ -6,10 +6,10 @@ import ResourceService from './resource-service'
 import * as puppeteer from 'puppeteer'
 import {URL} from 'url'
 
-const ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
-
 export default class ResponseService extends PercyClientService {
-  static localCopiesPath = './tmp/'
+  resourceService: ResourceService
+
+  readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
   responsesProcessed: Map<string, string> = new Map()
   resourceService: ResourceService
 
@@ -26,7 +26,7 @@ export default class ResponseService extends PercyClientService {
     if (
       request.isNavigationRequest()
       // Only allow 2XX responses:
-      || !ALLOWED_RESPONSE_STATUSES.includes(response.status())
+      || !this.ALLOWED_RESPONSE_STATUSES.includes(response.status())
       || !request.url().startsWith(rootUrl) // Disallow remote resource requests.
       || !response.url().startsWith(rootUrl) // Disallow remote redirects.
       ) {
