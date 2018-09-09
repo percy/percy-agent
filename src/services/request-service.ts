@@ -1,47 +1,46 @@
 import PercyClientService from './percy-client-service'
+import ResourceService from './resource-service'
 import Axios from 'axios'
-import logger, {logError} from '../utils/logger'
+import logger from '../utils/logger'
 import unique from '../utils/unique-array'
 import * as fs from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 import * as crypto from 'crypto'
-import ResourceService from './resource-service'
 
 export default class RequestService extends PercyClientService {
-  static localCopiesPath = './tmp/'
+  resourceService: ResourceService
   requestsProcessed: Map<string, string> = new Map()
 
-  async processManifest(requestManifest: string[]): Promise<any[]> {
-    logger.info(`processing ${requestManifest.length} requests...`)
+  constructor() {
+    super()
+    this.resourceService = new ResourceService()
+  }
 
-    let filteredRequestManifests = this.filterRequestManifest(requestManifest)
-    logger.info(`filtered to ${filteredRequestManifests.length} requests...`)
+  async processRequests(requests: string[]): Promise<any[]> {
+    logger.info(`processing ${requests.length} requests...`)
 
-    let localCopies = await this.createLocalCopies(filteredRequestManifests)
+    const filteredRequests = this.filterRequests(requests)
+    logger.info(`filtered to ${filteredRequests.length} requests...`)
 
-    let resourceService = new ResourceService()
-    let resources = await resourceService.createResourcesFromLocalCopies(localCopies)
+    const localCopies = await this.createLocalCopies(filteredRequests)
+    const resources = await this.resourceService.createResourcesFromLocalCopies(localCopies)
 
     return resources
   }
 
-  filterRequestManifest(requestManifest: string[]): string[] {
-    requestManifest = requestManifest.map(request => {
-      return this.parseRequestPath(request)
-    })
-
-    return unique(requestManifest)
+  tmpDir(): string {
+    return os.tmpdir()
   }
 
-  async createLocalCopies(requestManifest: string[]): Promise<Map<string, string>> {
+  private async createLocalCopies(requests: string[]): Promise<Map<string, string>> {
     let localCopies: Map<string, string> = new Map()
     let requestPromises = []
 
-    for (let request of requestManifest) {
+    for (const request of requests) {
       let requestPromise = new Promise(async (resolve, _reject) => {
-        let localCopy = await this.makeLocalCopy(request)
-        if (localCopy) {
-          localCopies.set(request, localCopy)
-        }
+        const localCopy = await this.makeLocalCopy(request)
+        localCopies.set(request, localCopy)
         resolve()
       })
 
@@ -53,32 +52,47 @@ export default class RequestService extends PercyClientService {
     return localCopies
   }
 
-  async makeLocalCopy(request: string): Promise<string | null> {
-    let filename: string | null = null
+  private async makeLocalCopy(request: string): Promise<string> {
+    let processedRequest = this.requestsProcessed.get(request)
 
-    if (this.requestsProcessed.has(request)) {
+    if (processedRequest) {
       logger.info(`skipping request, local copy already present: '${request}'`)
-      return this.requestsProcessed.get(request) || null
-    } else {
-      logger.info(`making local copy of request: ${request}`)
+      return processedRequest
     }
 
-    await Axios({
+    logger.info(`making local copy of request: ${request}`)
+
+    let localFilename = await Axios({
       method: 'get',
       url: request,
       responseType: 'arraybuffer',
     } as any).then(response => {
-      if (response.data) {
-        let sha = crypto.createHash('sha256').update(response.data, 'utf8').digest('hex')
-        filename = RequestService.localCopiesPath + sha
-        fs.writeFileSync(filename, response.data)
-
-        this.requestsProcessed.set(request, filename)
-      } else {
+      if (!response.data) {
         logger.info(`skipping '${request}' - empty response body`)
       }
-    }).catch(logError)
 
-    return filename
+      const tmpFile = this.tmpFileFromData(response.data)
+      this.requestsProcessed.set(request, tmpFile)
+
+      return tmpFile
+    })
+
+    return localFilename
+  }
+
+  private filterRequests(requests: string[]): string[] {
+    requests = requests.map(request => {
+      return this.parseRequestPath(request)
+    })
+
+    return unique(requests)
+  }
+
+  private tmpFileFromData(data: any): string {
+    const sha = crypto.createHash('sha256').update(data, 'utf8').digest('hex')
+    const tmpFile = path.join(this.tmpDir(), sha)
+
+    fs.writeFileSync(tmpFile, data)
+    return tmpFile
   }
 }

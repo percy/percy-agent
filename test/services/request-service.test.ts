@@ -2,109 +2,78 @@ import {describe} from 'mocha'
 import {captureStdOut} from '../helpers/stdout'
 import RequestService from '../../src/services/request-service'
 import chai from '../support/chai'
+import * as sinon from 'sinon'
 import * as nock from 'nock'
+import * as os from 'os'
 const expect = chai.expect
 
 describe('RequestService', () => {
   let subject = new RequestService()
-  const requestManifest = ['https://percy.io/logo.svg']
+  let sandbox = sinon.createSandbox()
+  let tmpDir = os.tmpdir()
+  const resourceBody = '<svg></svg>'
+  const resourceSha = 'b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
 
   afterEach(() => {
     nock.cleanAll()
+    sandbox.restore()
 
     // Clear the requests processed after each test so caching doesn't occur
     subject.requestsProcessed.clear()
   })
 
-  describe('#processManifest', () => {
+  describe('#processRequests', () => {
+    const expectedResource = {
+      mimetype: undefined,
+      isRoot: undefined,
+      content: undefined,
+      resourceUrl: 'https://percy.io/logo.svg',
+      sha: resourceSha,
+      localPath: `${tmpDir}/${resourceSha}`
+    }
+
     beforeEach(async () => {
       nock('https://percy.io')
         .get('/logo.svg')
-        .reply(200, '<svg></svg>', {'Content-Type': 'image/svg+xml'})
+        .reply(200, resourceBody, {'Content-Type': 'image/svg+xml'})
+
+      sandbox.stub(subject, 'tmpDir').returns(tmpDir)
     })
 
-    it('processes a request manifest', async () => {
+    it('processes requests', async () => {
+      const requests = ['https://percy.io/logo.svg']
       let resources: any[] = []
 
       await captureStdOut(async () => {
-        resources = await subject.processManifest(requestManifest)
+        resources = await subject.processRequests(requests)
       })
 
-      expect(resources[0]).to.include({
-        mimetype: undefined,
-        isRoot: undefined,
-        resourceUrl: 'https://percy.io/logo.svg',
-        sha: 'b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
+      expect(resources.length).to.eq(requests.length)
+      expect(resources[0]).to.deep.equal(expectedResource)
+    })
+
+    it('filters anchors from requests', async () => {
+      let resources: any[] = []
+      const requestsWithAnchors = ['https://percy.io/logo.svg#thisIsAnAnchor']
+
+      await captureStdOut(async () => {
+        resources = await subject.processRequests(requestsWithAnchors)
       })
-    })
-  })
 
-  describe('#filterRequestManifest', () => {
-    it('filters request manifest', async () => {
-      let requestManifest: any[] = [
-        'http://percy.io/logo.png',
-        'http://percy.io/logo.png',
-        'http://percy.io/app.css',
-        'http://localhost:5338/percy/stop',
-      ]
-      let filteredRequestManifest = subject.filterRequestManifest(requestManifest)
-
-      expect(filteredRequestManifest).to.deep.equal([
-        'http://percy.io/logo.png',
-        'http://percy.io/app.css',
-        'http://localhost:5338/percy/stop',
-      ])
-    })
-  })
-
-  describe('#createLocalCopies', () => {
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .get('/logo.svg')
-        .reply(200, '<svg></svg>', {'Content-Type': 'image/svg+xml'})
-
-      nock('https://percy.io')
-        .get('/app.css')
-        .reply(200, 'body { background: green; }', {'Content-Type': 'image/svg+xml'})
+      expect(resources[0]).to.deep.equal(expectedResource)
     })
 
-    it('creates local copies', async () => {
-      let requestManifest: any[] = [
-        'https://percy.io/app.css',
+    it('filters duplicate requests', async () => {
+      const requestsWithDups = [
         'https://percy.io/logo.svg',
+        'https://percy.io/logo.svg'
       ]
-      let localCopies = await subject.createLocalCopies(requestManifest)
 
-      let expectedResult = new Map(
-        [['https://percy.io/app.css', './tmp/39c6ed7372d209cb3d8b85797161b7cadc7fa0c76370479dbe543f6c11c30b06'],
-         ['https://percy.io/logo.svg', './tmp/b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b']]
-      )
+      let stdout = await captureStdOut(async () => {
+        await subject.processRequests(requestsWithDups)
+      })
 
-      expect(localCopies).to.deep.equal(expectedResult)
-    })
-  })
-
-  describe('#makeLocalCopy', () => {
-    let request = 'https://percy.io/logo.svg'
-    let expectedFilename = './tmp/b12e0d83ce2357d80b89c57694814d0a3abdaf8c40724f2049af8b7f01b7812b'
-
-    beforeEach(async () => {
-      nock('https://percy.io')
-        .get('/logo.svg')
-        .reply(200, '<svg></svg>', {'Content-Type': 'image/svg+xml'})
-    })
-
-    it('creates a local copy', async () => {
-      let localCopy = await subject.makeLocalCopy(request)
-      expect(localCopy).to.deep.equal(expectedFilename)
-    })
-
-    it('skips requests that have already been made', async () => {
-      let localCopy = await subject.makeLocalCopy(request)
-      expect(localCopy).to.deep.equal(expectedFilename)
-
-      let stdout = await captureStdOut(() => subject.makeLocalCopy(request))
-      expect(stdout).to.match(/info: skipping request, local copy already present/)
+      expect(stdout).to.match(/info: filtered to 1 requests\.\.\./)
     })
   })
 })
