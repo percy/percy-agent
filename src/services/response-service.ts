@@ -20,9 +20,16 @@ export default class ResponseService extends PercyClientService {
   }
 
   async processResponse(rootResourceUrl: string, response: puppeteer.Response): Promise<any | null> {
+    logger.debug(`processing response: ${response.url()}`)
+    const url = this.parseRequestPath(response.url())
+
+    // skip responses already processed
+    let processResponse = this.responsesProcessed.get(url)
+    if (processResponse) { return processResponse }
+
     const request = response.request()
-    const parsedUrl = new URL(rootResourceUrl)
-    const rootUrl = `${parsedUrl.protocol}//${parsedUrl.host}`
+    const parsedRootResourceUrl = new URL(rootResourceUrl)
+    const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
 
     if (
       request.isNavigationRequest()
@@ -33,13 +40,6 @@ export default class ResponseService extends PercyClientService {
       ) {
       logger.debug(`Skipping: ${response.url()}`)
       return
-    }
-
-    logger.debug(`processing response: ${response.url()}`)
-    const url = this.parseRequestPath(response.url())
-
-    if (this.responsesProcessed.has(url)) {
-      return this.responsesProcessed.get(url)
     }
 
     const localCopy = await this.makeLocalCopy(response)
