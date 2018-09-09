@@ -32,7 +32,7 @@ export default class Start extends PercyCommand {
     if (this.percyEnvVarsMissing()) { return }
 
     if (flags.detached) {
-      await this.runDetached(port)
+      this.runDetached(port)
     } else {
       await this.runAttached(port)
     }
@@ -60,8 +60,8 @@ export default class Start extends PercyCommand {
     this.logStart(port)
   }
 
-  private async runDetached(port: number) {
-    const pid = await this.processService.runDetached(
+  private runDetached(port: number) {
+    const pid = this.processService.runDetached(
       [path.resolve(`${__dirname}/../../bin/run`), 'start', '--port', String(port)]
     )
 

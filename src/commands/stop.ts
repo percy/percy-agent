@@ -26,7 +26,7 @@ export default class Stop extends PercyCommand {
 
     if (this.percyEnvVarsMissing()) { return }
 
-    if (await this.processService.isRunning()) {
+    if (this.processService.isRunning()) {
       await this.postToRunningAgent('/percy/stop', port)
     } else {
       this.logger.warn('percy-agent is already stopped.')
