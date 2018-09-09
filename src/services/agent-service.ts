@@ -47,7 +47,6 @@ export default class AgentService {
 
     logger.info(`Waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
     await Promise.all(this.snapshotCreationPromises)
-    logger.info('All snapshots created with resources uploaded')
     logger.info('done.')
 
     if (this.snapshotService) {
