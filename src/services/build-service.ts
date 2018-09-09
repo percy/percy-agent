@@ -30,13 +30,9 @@ export default class BuildService extends PercyClientService {
 
     await this.percyClient
       .finalizeBuild(this.buildId)
-      .catch((error: any) => {
-        logger.error(`${error.name} ${error.message}`)
-        logger.debug(error)
-      })
+      .catch(logError)
 
     this.logEvent('finalized')
-
   }
 
   logEvent(event: string) {
