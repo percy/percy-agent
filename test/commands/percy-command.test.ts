@@ -8,7 +8,7 @@ const expect = chai.expect
 
 describe('PercyCommand', () => {
   let sandbox = sinon.createSandbox()
-  afterEach(async () => sandbox.restore())
+  afterEach(() => sandbox.restore())
 
   describe('#percyEnvVarsMissing', () => {
     it('errors when PERCY_TOKEN is missing', async () => {
