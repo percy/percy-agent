@@ -20,7 +20,7 @@ export default class SnapshotService extends PercyClientService {
 
   async buildResources(
     rootResourceUrl: string,
-    domSnapshot: string = '',
+    domSnapshot = '',
   ): Promise<any[]> {
     let rootResource = await this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,
@@ -40,7 +40,7 @@ export default class SnapshotService extends PercyClientService {
   createSnapshot(
     name: string,
     resources: any[],
-    enableJavaScript: boolean = false,
+    enableJavaScript = false,
     widths: number[] = [1280],
     minimumHeight: number | null = null,
   ): Promise<any> {

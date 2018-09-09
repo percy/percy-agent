@@ -25,48 +25,29 @@ describe('SnapshotService', () => {
         .reply(200, {data: {id: snapshotId}})
     })
 
-    let resourceUrl = 'http://localhost/index.html'
-
     it('creates a snapshot', async () => {
       let snapshotResponse: any
 
       await captureStdOut(async () => {
         snapshotResponse = await subject.createSnapshot(
-          'my test', []//, '<html><body></body></html>'
+          'my test', []
         )
       })
 
-      expect(snapshotResponse).to.deep.include({
-        buildId,
-        resources: [{
-          resourceUrl,
-          content: '<html><body></body></html>',
-          sha: 'f70b370debd085dd9e9fb6495c796cdccf41c44574cc185dbe124f3ea8237623',
-          mimetype: 'text/html',
-          isRoot: true,
-          localPath: undefined,
-        }],
-      })
-
-      expect(snapshotResponse.response).to.include({
-        statusCode: 200
-      })
-
-      expect(snapshotResponse.response).to.include({
-        statusCode: 200
-      })
+      expect(snapshotResponse.body).to.deep.equal({data: {id: snapshotId}})
+      expect(snapshotResponse.statusCode).to.eq(200)
     })
   })
 
-  // describe('#finalizeSnapshot', () => {
-  //   it('creates finalizes a snapshot', async () => {
-  //     let result = false
+  describe('#finalizeSnapshot', () => {
+    it('creates finalizes a snapshot', async () => {
+      let result = false
 
-  //     await captureStdOut(async () => {
-  //       result = await subject.finalizeSnapshot(snapshotId)
-  //     })
+      await captureStdOut(async () => {
+        result = await subject.finalizeSnapshot(snapshotId)
+      })
 
-  //     expect(result).to.equal(true)
-  //   })
-  // })
+      expect(result).to.equal(true)
+    })
+  })
 })
