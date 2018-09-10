@@ -1,49 +1,58 @@
 import PercyClientService from './percy-client-service'
-import logger from '../utils/logger'
+import logger, {logError, profile} from '../utils/logger'
 import * as path from 'path'
 
 export default class ResourceService extends PercyClientService {
-  async createResourcesFromLocalCopies(localCopies: Map<string, string>): Promise<any[]> {
-    let resources: any[] = []
+  resourcesUploaded: any[] = []
+  buildId: number
 
-    localCopies.forEach(async (localFileName: string, requestUrl: string) => {
-      let resource = await this.createResourceFromFile(requestUrl, localFileName)
-
-      if (resource !== undefined && resource !== null) {
-        resources.push(resource)
-      }
-    })
-
-    return resources
+  constructor(buildId: number) {
+    super()
+    this.buildId = buildId
   }
 
-  async createResourceFromFile(request: string, copyFilePath: string): Promise<any | null> {
+  createResourceFromFile(responseUrl: string, copyFilePath: string, contentType = ''): any {
     let copyFullPath = path.resolve(copyFilePath)
     let sha = path.basename(copyFilePath)
-    let resourceUrl = request
+    let resourceUrl = responseUrl
 
     logger.debug('creating resource')
-    logger.debug(`-> request: ${request}`)
+    logger.debug(`-> response: ${responseUrl}`)
     logger.debug(`-> copyFilePath: ${copyFilePath}`)
     logger.debug(`-> resourceUrl: ${resourceUrl}`)
     logger.debug(`-> localPath: ${copyFullPath}`)
     logger.debug(`-> sha: ${sha}`)
+    logger.debug(`-> contentType: ${contentType}`)
 
     return this.percyClient.makeResource({
       resourceUrl,
       localPath: copyFullPath,
       sha,
-      // mimetype: response.headers['Content-Type']
+      mimetype: contentType
     })
   }
 
-  uploadMissingResources(snapshotResponse: any): Promise<any> {
-    let uploadPromise: Promise<any> = this.percyClient.uploadMissingResources(
-      snapshotResponse.buildId,
-      snapshotResponse.response,
-      snapshotResponse.resources
-    )
+  async uploadMissingResources(response: any, resources: any[]): Promise<boolean> {
+    profile('-> resourceService.uploadMissingResources')
 
-    return uploadPromise
+    let snapshotResponse = {
+      buildId: this.buildId,
+      response,
+      resources
+    }
+
+    try {
+      await this.percyClient.uploadMissingResources(
+        snapshotResponse.buildId,
+        snapshotResponse.response,
+        snapshotResponse.resources
+      )
+      profile('-> resourceService.uploadMissingResources', {resources: resources.length})
+
+      return true
+    } catch (error) {
+      logError(error)
+      return false
+    }
   }
 }

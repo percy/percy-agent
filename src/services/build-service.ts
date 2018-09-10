@@ -6,7 +6,7 @@ export default class BuildService extends PercyClientService {
   buildNumber: number | null = null
   buildId: number | null = null
 
-  async createBuild(): Promise<number> {
+  async create(): Promise<number> {
     let build = await this.percyClient
       .createBuild(process.env.PERCY_PROJECT)
       .catch(logError)
@@ -22,20 +22,14 @@ export default class BuildService extends PercyClientService {
     return this.buildId
   }
 
-  async finalizeBuild() {
-    if (!this.buildId) {
-      logger.info('build could not be finalized as buildId was unknown.')
-      return
-    }
+  async finalize() {
+    if (!this.buildId) { return }
 
-    await this.percyClient
-      .finalizeBuild(this.buildId)
-      .catch(logError)
-
+    await this.percyClient.finalizeBuild(this.buildId).catch(logError)
     this.logEvent('finalized')
   }
 
-  logEvent(event: string) {
+  private logEvent(event: string) {
     logger.info(`${event} build #${this.buildNumber}: ${this.buildUrl}`)
   }
 }

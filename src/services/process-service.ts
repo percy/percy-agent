@@ -2,13 +2,13 @@ import * as childProcess from 'child_process'
 import * as fs from 'fs'
 
 export default class ProcessService {
-  static pidPath = './.percy-agent.pid'
-  static logPath = './percy-agent-process.log'
+  static PID_PATH = './.percy-agent.pid'
+  static LOG_PATH = './percy-agent-process.log'
 
   runDetached(args: string[]): number | undefined {
     if (this.isRunning()) { return }
 
-    const logFile = fs.openSync(ProcessService.logPath, 'a+')
+    const logFile = fs.openSync(ProcessService.LOG_PATH, 'a+')
 
     const spawnedProcess = childProcess.spawn(process.argv[0], args, {
       detached: false,
@@ -23,24 +23,24 @@ export default class ProcessService {
   }
 
   isRunning(): boolean {
-    return fs.existsSync(ProcessService.pidPath)
+    return fs.existsSync(ProcessService.PID_PATH)
   }
 
   getPid(): number {
-    let pidFileContents: Buffer = fs.readFileSync(ProcessService.pidPath)
+    let pidFileContents: Buffer = fs.readFileSync(ProcessService.PID_PATH)
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 
   kill() {
     if (this.isRunning()) {
       const pid = this.getPid()
+      fs.unlinkSync(ProcessService.PID_PATH)
 
-      fs.unlinkSync(ProcessService.pidPath)
       process.kill(pid, 'SIGHUP')
     }
   }
 
   private writePidFile(pid: number) {
-    fs.writeFileSync(ProcessService.pidPath, pid)
+    fs.writeFileSync(ProcessService.PID_PATH, pid)
   }
 }

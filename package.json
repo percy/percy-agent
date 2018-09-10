@@ -1,7 +1,7 @@
 {
   "name": "@percy/agent",
   "description": "A low-level Node process for interacting with Percy.",
-  "version": "0.0.20",
+  "version": "0.0.31",
   "author": "Perceptual Inc",
   "bin": {
     "percy-agent": "./bin/run"
@@ -13,6 +13,7 @@
     "@oclif/plugin-help": "^2.0.5",
     "@oclif/plugin-not-found": "^1.1.4",
     "@types/express": "^4.16.0",
+    "@types/puppeteer": "^1.6.0",
     "@types/sinon": "^5.0.1",
     "@types/winston": "^2.3.9",
     "axios": "^0.18.0",
@@ -20,6 +21,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "percy-client": "^2.11.0",
+    "puppeteer": "^1.7.0",
     "retry-axios": "^0.3.2",
     "sinon": "^6.1.5",
     "winston": "^2.0.0"
@@ -96,7 +98,7 @@
     "posttest": "npm run lint",
     "prepublishOnly": "npm run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "npm run clean",
-    "test": "npm run build-client && LOG_LEVEL=debug PERCY_TOKEN=abc PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
+    "test": "npm run build-client && PERCY_TOKEN=abc PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
     "version": "oclif-dev readme && git add README.md"
   },

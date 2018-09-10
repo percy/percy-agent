@@ -1,14 +1,3 @@
-interface Request {
-  name: string
-}
-
-class RequestManifest {
-  capture(): string[] {
-    let requests: Request[] = performance.getEntriesByType('resource')
-    return requests.map(request => request.name)
-  }
-}
-
 class PercyAgent {
   xhr: XMLHttpRequest
 
@@ -42,7 +31,6 @@ export class PercyAgentClient {
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
-    let requestManifest = new RequestManifest().capture()
     let domSnapshot = this.domSnapshot()
     let percyAgent = new PercyAgent(this.xhr)
 
@@ -53,7 +41,6 @@ export class PercyAgentClient {
       enableJavascript: options.enableJavascript,
       widths: options.widths,
       clientUserAgent: this.userAgent,
-      requestManifest,
       domSnapshot
     })
   }

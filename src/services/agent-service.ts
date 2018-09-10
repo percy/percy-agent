@@ -4,18 +4,20 @@ import * as express from 'express'
 import {Server} from 'http'
 import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
-import logger from '../utils/logger'
+import logger, {profile} from '../utils/logger'
 import ProcessService from './process-service'
-import ResourceService from './resource-service'
 
 export default class AgentService {
   readonly app: express.Application
-  server: Server | null = null
-  snapshotService: SnapshotService | null = null
+  readonly publicDirectory: string = `${__dirname}/../../dist/public`
+
   buildService: BuildService
-  resourceService: ResourceService
+  snapshotService: SnapshotService | null = null
+
+  snapshotCreationPromises: any[] = []
   resourceUploadPromises: any[] = []
-  publicDirectory = `${__dirname}/../../dist/public`
+  server: Server | null = null
+  buildId: number | null = null
 
   constructor() {
     this.app = express()
@@ -31,51 +33,56 @@ export default class AgentService {
     this.app.get('/percy/healthcheck', this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
-    this.resourceService = new ResourceService()
   }
 
   async start(port: number) {
     this.server = this.app.listen(port)
 
-    let buildId = await this.buildService.createBuild()
-    this.snapshotService = new SnapshotService(buildId)
+    this.buildId = await this.buildService.create()
+    this.snapshotService = new SnapshotService(this.buildId)
+    await this.snapshotService.assetDiscoveryService.setup()
   }
 
   async stop() {
-    logger.info('Stopping... waiting for snapshot resources to finish uploading...')
-    await Promise.all(this.resourceUploadPromises)
-    logger.info('...done')
+    logger.info('Stopping percy-agent...')
 
-    await this.buildService.finalizeBuild()
+    logger.info(`Waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
+    await Promise.all(this.snapshotCreationPromises)
+    logger.info('done.')
+
+    if (this.snapshotService) {
+      await this.snapshotService.assetDiscoveryService.teardown()
+    }
+
+    await this.buildService.finalize()
     if (this.server) { await this.server.close() }
   }
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
+    profile('agentService.handleSnapshot')
+
     // Use this once we have snapshot user agent support
     // let userAgent = request.headers['user-agent']
 
-    if (this.snapshotService) {
-      logger.info('before createSnapshot')
-      let snapshotResponse = await this.snapshotService.createSnapshot(
-        request.body.name,
-        request.body.url,
-        request.body.domSnapshot,
-        request.body.requestManifest,
-        request.body.enableJavascript,
-        request.body.widths,
-        request.body.minimumHeight
-      )
+    if (!this.snapshotService) { return response.json({success: false}) }
 
-      let uploadPromsie = this.resourceService.uploadMissingResources(snapshotResponse)
+    let resources = await this.snapshotService.buildResources(
+      request.body.url,
+      request.body.domSnapshot,
+    )
 
-      logger.info(`snapshot taken: '${request.body.name}'`)
+    let snapshotCreation = this.snapshotService.create(
+      request.body.name,
+      resources,
+      request.body.enableJavascript,
+      request.body.widths,
+    )
 
-      this.resourceUploadPromises.push(uploadPromsie)
+    this.snapshotCreationPromises.push(snapshotCreation)
+    logger.info(`Snapshot taken: '${request.body.name}'`)
 
-      return response.json({success: true})
-    }
-
-    return response.json({success: false})
+    profile('agentService.handleSnapshot')
+    return response.json({success: true})
   }
 
   private async handleStop(_request: express.Request, response: express.Response) {
