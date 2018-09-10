@@ -31,10 +31,10 @@ export default class Exec extends PercyCommand {
     const {flags} = this.parse(Exec)
     let port = flags.port as number
 
-    if (this.percyEnvVarsMissing()) { return }
-
-    await this.agentService.start(port)
-    this.logStart(port)
+    if (!this.percyEnvVarsMissing()) {
+      await this.agentService.start(port)
+      this.logStart(port)
+    }
 
     const spawnedProcess = childProcess.exec(args.command)
 
@@ -48,7 +48,10 @@ export default class Exec extends PercyCommand {
 
     spawnedProcess.on('close', async (code: any) => {
       this.logger.info(`exiting with code: ${code}`)
-      await this.agentService.stop()
+
+      if (!this.percyEnvVarsMissing()) {
+        await this.agentService.stop()
+      }
     })
 
     spawnedProcess.unref()
