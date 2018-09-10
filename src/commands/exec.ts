@@ -39,11 +39,11 @@ export default class Exec extends PercyCommand {
     const spawnedProcess = childProcess.exec(args.command)
 
     spawnedProcess.stdout.on('data', (data: any) => {
-      this.logger.info(data)
+      console.log(data)
     })
 
     spawnedProcess.stderr.on('data', (data: any) => {
-      this.logger.error(data)
+      console.error(data)
     })
 
     spawnedProcess.on('close', async (code: any) => {
