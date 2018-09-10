@@ -22,13 +22,16 @@ export interface SnapshotOptions {
 export class PercyAgentClient {
   userAgent: string | null
   xhr: any
+  port: number
   domTransformation: any | null
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(userAgent?: string, xhr?: any, domTransformation?: any) {
+  // TODO: make it so options here can be passed in any order
+  constructor(userAgent?: string, xhr?: any, domTransformation?: any, port?: number) {
     this.userAgent = userAgent || null
     this.xhr = xhr || XMLHttpRequest
     this.domTransformation = domTransformation || null
+    this.port = port || 5338
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
@@ -36,8 +39,7 @@ export class PercyAgentClient {
     let domSnapshot = this.domSnapshot(documentObject)
     let percyAgent = new PercyAgent(this.xhr)
 
-    // TODO: this cannot be hardcoded to this port
-    percyAgent.post('http://localhost:5338/percy/snapshot', {
+    percyAgent.post(`http://localhost:${this.port}/percy/snapshot`, {
       name,
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,
