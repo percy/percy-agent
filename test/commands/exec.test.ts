@@ -35,7 +35,7 @@ describe('Exec', () => {
       let agentServiceStub = AgentServiceStub()
 
       let stdout = await captureStdOut(async () => {
-        await Exec.run(['echo "hello"'])
+        await Exec.run(['--', 'echo', 'hello'])
       })
 
       expect(agentServiceStub.start).to.calledWithMatch(5338)

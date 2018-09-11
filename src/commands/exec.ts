@@ -1,21 +1,15 @@
 import PercyCommand from './percy-command'
 import {flags} from '@oclif/command'
-import * as childProcess from 'child_process'
+import {spawn} from 'child_process'
 
 export default class Exec extends PercyCommand {
   static description = 'Start and stop Percy agent around a supplied command'
   static hidden = false
+  static strict = false
 
   static examples = [
-    '$ percy-agent exec "echo \\"percy-agent is running around this echo command\\""'
-  ]
-
-  static args = [
-    {
-      name: 'command',
-      required: true,
-      description: 'command to run'
-    },
+    '$ percy-agent exec -- echo \"percy-agent is running around this echo command\\"',
+    '$ percy-agent exec -- bash -c "echo foo && echo bar"'
   ]
 
   static flags = {
@@ -27,26 +21,27 @@ export default class Exec extends PercyCommand {
   }
 
   async run() {
-    const {args} = this.parse(Exec)
+    const {argv} = this.parse(Exec)
     const {flags} = this.parse(Exec)
+
     let port = flags.port as number
+    let command = argv.shift()
+
+    if (!command) {
+      this.logger.info('You must supply a command to run after --')
+      this.logger.info('Example:')
+      this.logger.info('$ percy-agent exec -- echo "run your test suite"')
+      return
+    }
 
     if (!this.percyEnvVarsMissing()) {
       await this.agentService.start(port)
       this.logStart(port)
     }
 
-    const spawnedProcess = childProcess.exec(args.command)
+    const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
 
-    spawnedProcess.stdout.on('data', (data: any) => {
-      console.log(data)
-    })
-
-    spawnedProcess.stderr.on('data', (data: any) => {
-      console.error(data)
-    })
-
-    spawnedProcess.on('close', async (code: any) => {
+    spawnedProcess.on('exit', async (code: any) => {
       this.logger.info(`exiting with code: ${code}`)
 
       if (!this.percyEnvVarsMissing()) {
