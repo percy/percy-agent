@@ -12,7 +12,7 @@ describe('PercyCommand', () => {
 
   describe('#percyEnvVarsMissing', () => {
     it('errors when PERCY_TOKEN is missing', async () => {
-      sandbox.stub(process, 'env').value({PERCY_TOKEN: '', PERCY_PROJECT: 'ABC'})
+      sandbox.stub(process, 'env').value({PERCY_TOKEN: ''})
       let subject = new PercyCommand([], '')
 
       let stderr = await captureStdErr(async () => {
@@ -20,17 +20,6 @@ describe('PercyCommand', () => {
       })
 
       expect(stderr).to.contain('You must set PERCY_TOKEN.')
-    })
-
-    it('errors when PERCY_PROJECT is missing', async () => {
-      sandbox.stub(process, 'env').value({PERCY_TOKEN: 'ABC', PERCY_PROJECT: ''})
-      let subject = new PercyCommand([], '')
-
-      let stderr = await captureStdErr(async () => {
-        await subject.percyEnvVarsMissing()
-      })
-
-      expect(stderr).to.contain('You must set PERCY_PROJECT.')
     })
   })
 })
