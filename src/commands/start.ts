@@ -10,7 +10,7 @@ export default class Start extends PercyCommand {
 
   static examples = [
     '$ percy-agent start\n' +
-    'info: percy-agent has started on port 5338. Logs available at percy-agent.log',
+    'info: percy-agent has started on port 5338.',
   ]
 
   static flags = {
