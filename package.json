@@ -20,8 +20,8 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "percy-client": "^2.11.0",
     "puppeteer": "^1.7.0",
+    "percy-client": "^3.0.0",
     "retry-axios": "^0.3.2",
     "sinon": "^6.1.5",
     "winston": "^2.0.0"
@@ -98,7 +98,7 @@
     "posttest": "npm run lint",
     "prepublishOnly": "npm run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "npm run clean",
-    "test": "npm run build-client && PERCY_TOKEN=abc PERCY_PROJECT=test/test mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
+    "test": "npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
     "version": "oclif-dev readme && git add README.md"
   },
