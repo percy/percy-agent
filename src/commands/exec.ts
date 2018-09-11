@@ -8,7 +8,7 @@ export default class Exec extends PercyCommand {
   static strict = false
 
   static examples = [
-    '$ percy-agent exec -- echo \"percy-agent is running around this echo command\\"',
+    '$ percy-agent exec -- echo \"percy-agent is running around this echo command\"',
     '$ percy-agent exec -- bash -c "echo foo && echo bar"'
   ]
 
