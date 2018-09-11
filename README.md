@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy-agent COMMAND
 running command...
 $ percy-agent (-v|--version|version)
-@percy/agent/0.0.33 darwin-x64 node-v8.5.0
+@percy/agent/0.0.34 darwin-x64 node-v8.5.0
 $ percy-agent --help [COMMAND]
 USAGE
   $ percy-agent COMMAND
@@ -30,30 +30,28 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`percy-agent exec COMMAND`](#percy-agent-exec-command)
+* [`percy-agent exec`](#percy-agent-exec)
 * [`percy-agent help [COMMAND]`](#percy-agent-help-command)
 * [`percy-agent start`](#percy-agent-start)
 * [`percy-agent stop`](#percy-agent-stop)
 
-## `percy-agent exec COMMAND`
+## `percy-agent exec`
 
 Start and stop Percy agent around a supplied command
 
 ```
 USAGE
-  $ percy-agent exec COMMAND
-
-ARGUMENTS
-  COMMAND  command to run
+  $ percy-agent exec
 
 OPTIONS
   -p, --port=port  [default: 5338] port
 
-EXAMPLE
-  $ percy-agent exec "echo \"percy-agent is running around this echo command\""
+EXAMPLES
+  $ percy-agent exec -- echo "percy-agent is running around this echo command\"
+  $ percy-agent exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.33/dist/commands/exec.ts)_
+_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.34/dist/commands/exec.ts)_
 
 ## `percy-agent help [COMMAND]`
 
@@ -89,7 +87,7 @@ EXAMPLE
   info: percy-agent has started on port 5338. Logs available at percy-agent.log
 ```
 
-_See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.33/dist/commands/start.ts)_
+_See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.34/dist/commands/start.ts)_
 
 ## `percy-agent stop`
 
@@ -107,5 +105,5 @@ EXAMPLE
   info: percy-agent has stopped.
 ```
 
-_See code: [dist/commands/stop.ts](https://github.com/percy/percy-agent/blob/v0.0.33/dist/commands/stop.ts)_
+_See code: [dist/commands/stop.ts](https://github.com/percy/percy-agent/blob/v0.0.34/dist/commands/stop.ts)_
 <!-- commandsstop -->
