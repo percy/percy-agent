@@ -8,7 +8,7 @@ export default class BuildService extends PercyClientService {
 
   async create(): Promise<number> {
     let build = await this.percyClient
-      .createBuild(process.env.PERCY_PROJECT)
+      .createBuild()
       .catch(logError)
 
     const buildData = build.body.data

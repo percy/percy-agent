@@ -15,7 +15,7 @@ describe('BuildService', () => {
   describe('#createBuild', () => {
     beforeEach(() => {
       nock('https://percy.io')
-        .post('/api/v1/projects/test/test/builds/')
+        .post('/api/v1/builds/')
         .reply(201, buildCreateResponse)
     })
 
