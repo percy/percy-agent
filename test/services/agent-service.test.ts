@@ -56,9 +56,8 @@ describe('AgentService', () => {
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
-        .end((error, _response) => {
-          expect(error).to.be.an('error')
-            .with.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
+        .catch(async error => {
+          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
         })
     })
 
