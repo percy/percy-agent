@@ -1,4 +1,4 @@
-import {PercyAgentService} from './percy-agent-service'
+import {PercyAgentClient} from './percy-agent-client'
 import {SnapshotOptions} from './snapshot-options'
 
 export default class PercyAgent {
@@ -19,9 +19,9 @@ export default class PercyAgent {
   snapshot(name: string, options: SnapshotOptions = {}) {
     let documentObject = options.document || document
     let domSnapshot = this.domSnapshot(documentObject)
-    let percyAgent = new PercyAgentService(this.xhr)
+    let percyAgentClient = new PercyAgentClient(this.xhr)
 
-    percyAgent.post(`http://localhost:${this.port}/percy/snapshot`, {
+    percyAgentClient.post(`http://localhost:${this.port}/percy/snapshot`, {
       name,
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,

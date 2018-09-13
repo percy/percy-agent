@@ -1,4 +1,4 @@
-export class PercyAgentService {
+export class PercyAgentClient {
   xhr: XMLHttpRequest
 
   constructor(xhr?: any) {
