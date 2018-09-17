@@ -1,11 +1,11 @@
 import {expect} from 'chai'
-import {PercyAgentClient} from '../../src/percy-agent-client/percy-agent-client'
-require('../../src/percy-agent-client/percy-agent-client')
+import PercyAgent from '../../src/percy-agent-client/percy-agent'
+require('../../src/percy-agent-client/percy-agent')
 import * as sinon from 'sinon'
 
-describe('PercyAgentClient', () => {
+describe('PercyAgent', () => {
   let xhr = sinon.useFakeXMLHttpRequest()
-  const subject = new PercyAgentClient('Test Client', xhr)
+  const subject = new PercyAgent('Test Client', xhr)
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
 
   beforeEach(() => {
