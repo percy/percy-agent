@@ -26,6 +26,8 @@
     "winston": "^2.0.0"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/errors": "^1",
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@types/chai": "^4.1.4",
