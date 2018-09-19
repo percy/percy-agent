@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy-agent COMMAND
 running command...
 $ percy-agent (-v|--version|version)
-@percy/agent/0.0.37 darwin-x64 node-v8.10.0
+@percy/agent/0.0.38 darwin-x64 node-v8.10.0
 $ percy-agent --help [COMMAND]
 USAGE
   $ percy-agent COMMAND
@@ -51,7 +51,7 @@ EXAMPLES
   $ percy-agent exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.37/dist/commands/exec.ts)_
+_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.38/dist/commands/exec.ts)_
 
 ## `percy-agent help [COMMAND]`
 
@@ -87,7 +87,7 @@ EXAMPLE
   info: percy-agent has started on port 5338.
 ```
 
-_See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.37/dist/commands/start.ts)_
+_See code: [dist/commands/start.ts](https://github.com/percy/percy-agent/blob/v0.0.38/dist/commands/start.ts)_
 
 ## `percy-agent stop`
 
@@ -105,5 +105,5 @@ EXAMPLE
   info: percy-agent has stopped.
 ```
 
-_See code: [dist/commands/stop.ts](https://github.com/percy/percy-agent/blob/v0.0.37/dist/commands/stop.ts)_
+_See code: [dist/commands/stop.ts](https://github.com/percy/percy-agent/blob/v0.0.38/dist/commands/stop.ts)_
 <!-- commandsstop -->
