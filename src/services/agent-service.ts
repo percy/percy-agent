@@ -61,8 +61,13 @@ export default class AgentService {
   private async handleSnapshot(request: express.Request, response: express.Response) {
     profile('agentService.handleSnapshot')
 
-    // Use this once we have snapshot user agent support
-    // let userAgent = request.headers['user-agent']
+    logger.debug('handling snapshot:')
+    logger.debug(`-> headers: ${JSON.stringify(request.headers)}`)
+    logger.debug(`-> name: ${JSON.stringify(request.body.name)}`)
+    logger.debug(`-> url: ${JSON.stringify(request.body.url)}`)
+    logger.debug(`-> widths: ${JSON.stringify(request.body.widths)}`)
+    logger.debug(`-> enableJavascript: ${JSON.stringify(request.body.enableJavascript)}`)
+    logger.debug(`-> clientUserAgent: ${JSON.stringify(request.body.clientUserAgent)}`)
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
