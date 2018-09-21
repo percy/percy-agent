@@ -6,7 +6,7 @@ import unique from '../utils/unique-array'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 
 export default class AssetDiscoveryService extends PercyClientService {
-  readonly NETWORK_IDLE_TIMEOUT = 25 // ms
+  readonly NETWORK_IDLE_TIMEOUT = 50 // ms
 
   responseService: ResponseService
   browser: puppeteer.Browser | null
