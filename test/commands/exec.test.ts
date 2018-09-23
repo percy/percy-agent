@@ -39,7 +39,7 @@ describe('Exec', () => {
       })
 
       expect(agentServiceStub.start).to.calledWithMatch(5338)
-      expect(stdout).to.match(/info: percy-agent has started on port \d+./)
+      expect(stdout).to.match(/\[percy\] percy-agent has started on port \d+./)
     })
 
     it('starts percy agent on a specific port', async () => {

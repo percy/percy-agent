@@ -43,7 +43,7 @@ describe('AgentService', () => {
 
     it('logs to stdout that it created a build', async () => {
       let stdout = await captureStdOut(() => subject.start(port))
-      expect(stdout).to.match(/info: created build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
+      expect(stdout).to.match(/\[percy\] created build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
 
@@ -68,7 +68,7 @@ describe('AgentService', () => {
         await subject.stop()
       })
 
-      expect(stdout).to.match(/info: finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
+      expect(stdout).to.match(/\[percy\] finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
 })
