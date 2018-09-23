@@ -27,6 +27,7 @@ export default class PercyClientService {
   }
 
   private clientInfo(): string {
-    return 'percy-agent/XX'
+    const version = require('../../package.json').version
+    return `percy-agent/${version}`
   }
 }
