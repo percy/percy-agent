@@ -42,7 +42,7 @@ export default class Exec extends PercyCommand {
     const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
 
     spawnedProcess.on('exit', async (code: any) => {
-      this.logger.info(`exiting with code: ${code}`)
+      this.logger.info(`exited process with code: ${code}`)
 
       if (!this.percyEnvVarsMissing()) {
         await this.agentService.stop()
