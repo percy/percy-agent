@@ -44,9 +44,9 @@ export default class AgentService {
   }
 
   async stop() {
-    logger.info('Stopping percy-agent...')
+    logger.info('stopping percy-agent...')
 
-    logger.info(`Waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
+    logger.info(`waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
     await Promise.all(this.snapshotCreationPromises)
     logger.info('done.')
 
@@ -84,7 +84,7 @@ export default class AgentService {
     )
 
     this.snapshotCreationPromises.push(snapshotCreation)
-    logger.info(`Snapshot taken: '${request.body.name}'`)
+    logger.info(`snapshot taken: '${request.body.name}'`)
 
     profile('agentService.handleSnapshot')
     return response.json({success: true})
