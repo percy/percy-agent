@@ -6,7 +6,7 @@ const path = require('path')
 
 export default class Start extends PercyCommand {
   static description = 'Starts the percy-agent process.'
-  static hidden = false
+  static hidden = true
 
   static examples = [
     '$ percy-agent start\n' +
