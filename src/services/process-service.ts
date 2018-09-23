@@ -16,7 +16,6 @@ export default class ProcessService {
     })
 
     this.writePidFile(spawnedProcess.pid)
-
     spawnedProcess.unref()
 
     return spawnedProcess.pid
