@@ -5,7 +5,10 @@ import * as sinon from 'sinon'
 
 describe('PercyAgent', () => {
   let xhr = sinon.useFakeXMLHttpRequest()
-  const subject = new PercyAgent('Test Client', xhr)
+  const subject = new PercyAgent({
+    clientInfo: 'Test Client',
+    xhr
+  })
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
 
   beforeEach(() => {

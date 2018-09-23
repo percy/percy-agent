@@ -1,19 +1,21 @@
 import {PercyAgentClient} from './percy-agent-client'
 import {SnapshotOptions} from './snapshot-options'
+import {ClientOptions} from './client-options'
 
 export default class PercyAgent {
-  userAgent: string | null
+  clientInfo: string | null
+  environmentInfo: string | null
   xhr: any
   port: number
   domTransformation: any | null
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  // TODO: make it so options here can be passed in any order
-  constructor(userAgent?: string, xhr?: any, domTransformation?: any, port?: number) {
-    this.userAgent = userAgent || null
-    this.xhr = xhr || XMLHttpRequest
-    this.domTransformation = domTransformation || null
-    this.port = port || 5338
+  constructor(options: ClientOptions = {}) {
+    this.clientInfo = options.clientInfo || null
+    this.environmentInfo = options.environmentInfo || null
+    this.xhr = options.xhr || XMLHttpRequest
+    this.domTransformation = options.domTransformation || null
+    this.port = options.port || 5338
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
@@ -26,7 +28,8 @@ export default class PercyAgent {
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,
       widths: options.widths,
-      clientUserAgent: this.userAgent,
+      clientInfo: this.clientInfo,
+      environmentInfo: this.environmentInfo,
       domSnapshot
     })
   }

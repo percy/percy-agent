@@ -67,7 +67,8 @@ export default class AgentService {
     logger.debug(`-> url: ${JSON.stringify(request.body.url)}`)
     logger.debug(`-> widths: ${JSON.stringify(request.body.widths)}`)
     logger.debug(`-> enableJavascript: ${JSON.stringify(request.body.enableJavascript)}`)
-    logger.debug(`-> clientUserAgent: ${JSON.stringify(request.body.clientUserAgent)}`)
+    logger.debug(`-> clientInfo: ${JSON.stringify(request.body.clientInfo)}`)
+    logger.debug(`-> environmentInfo: ${JSON.stringify(request.body.environmentInfo)}`)
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
