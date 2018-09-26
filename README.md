@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy-agent COMMAND
 running command...
 $ percy-agent (-v|--version|version)
-@percy/agent/0.0.41 darwin-x64 node-v8.10.0
+@percy/agent/0.0.42 darwin-x64 node-v8.10.0
 $ percy-agent --help [COMMAND]
 USAGE
   $ percy-agent COMMAND
@@ -49,7 +49,7 @@ EXAMPLES
   $ percy-agent exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.41/dist/commands/exec.ts)_
+_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.42/dist/commands/exec.ts)_
 
 ## `percy-agent help [COMMAND]`
 
