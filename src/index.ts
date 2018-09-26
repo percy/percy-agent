@@ -1,1 +1,2 @@
-module.exports = require('./percy-agent-client/percy-agent').default
+import PercyAgent from './percy-agent-client/percy-agent'
+export default PercyAgent
