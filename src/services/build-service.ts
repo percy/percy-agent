@@ -63,8 +63,6 @@ export default class BuildService extends PercyClientService {
     const buildId = parseInt(build.body.data.id) as number
 
     await this.percyClient.finalizeBuild(buildId, {allShards: true}).catch(logError)
-
-    logger.info('Finalized parallel build.')
   }
 
   private logEvent(event: string) {

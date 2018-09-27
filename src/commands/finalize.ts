@@ -28,6 +28,7 @@ export default class Finalize extends PercyCommand {
 
     if (flags.all) {
       await this.buildService.finalizeAll()
+      this.logger.info('Finalized parallel build.')
     }
   }
 }
