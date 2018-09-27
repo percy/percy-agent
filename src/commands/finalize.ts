@@ -1,25 +1,33 @@
-import {Command, flags} from '@oclif/command'
+import {flags} from '@oclif/command'
+import PercyCommand from './percy-command'
+import BuildService from '../services/build-service'
 
-export default class Finalize extends Command {
-  static description = 'describe the command here'
+export default class Finalize extends PercyCommand {
+  static description = 'finalize a build'
+  static hidden = false
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    all: flags.boolean({char: 'a'}),
   }
 
-  static args = [{name: 'file'}]
+  static examples = [
+    '$ percy-agent finalize --all'
+  ]
+
+  buildService: BuildService = new BuildService()
 
   async run() {
-    const {args, flags} = this.parse(Finalize)
+    const {flags} = this.parse(Finalize)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/djones/Code/percy-agent/src/commands/finalize.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    if (this.percyEnvVarsMissing()) { return }
+
+    if (!process.env.PERCY_PARALLEL_NONCE) {
+      this.logMissingEnvVar('PERCY_PARALLEL_NONCE')
+      return
+    }
+
+    if (flags.all) {
+      await this.buildService.finalizeAll()
     }
   }
 }
