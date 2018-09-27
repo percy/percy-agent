@@ -1,14 +1,14 @@
 import * as chai from 'chai'
-import * as nock from 'nock'
 import * as sinon from 'sinon'
 import {describe} from 'mocha'
 import Finalize from '../../src/commands/finalize'
-import {captureStdOut} from '../helpers/stdout'
+import {captureStdOut, captureStdErr} from '../helpers/stdout'
 import BuildService from '../../src/services/build-service'
 const expect = chai.expect
 
 describe('Finalize', () => {
   let sandbox = sinon.createSandbox()
+  afterEach(() => sandbox.restore())
 
   function BuildServiceStub(): BuildService {
     let buildService = BuildService.prototype as BuildService
@@ -20,15 +20,9 @@ describe('Finalize', () => {
     return buildService
   }
 
-  afterEach(() => {
-    nock.cleanAll()
-    sandbox.restore()
-  })
-
   describe('#run', () => {
     it('finalizes a parallel build', async () => {
       let buildServiceStub = BuildServiceStub()
-
       let options = ['--all']
 
       let stdout = await captureStdOut(async () => {
@@ -37,10 +31,17 @@ describe('Finalize', () => {
       })
 
       expect(buildServiceStub.finalizeAll).to.calledOnce
-      console.log('--------')
-      console.log(stdout)
-      console.log('--------')
-      expect(stdout).to.contain('\[percy\] Finalized parallel build.')
+      expect(stdout).to.contain('Finalized parallel build.')
+    })
+
+    it('requires PERCY_PARALLEL_NONCE', async () => {
+      sandbox.stub(process, 'env').value({PERCY_PARALLEL_NONCE: '', PERCY_TOKEN: 'ABC'})
+
+      let stderr = await captureStdErr(async () => {
+        await Finalize.run([])
+      })
+
+      expect(stderr).to.contain('You must set PERCY_PARALLEL_NONCE')
     })
   })
 })
