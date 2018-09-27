@@ -31,7 +31,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`percy-agent exec`](#percy-agent-exec)
-* [`percy-agent finalize [FILE]`](#percy-agent-finalize-file)
+* [`percy-agent finalize`](#percy-agent-finalize)
 * [`percy-agent help [COMMAND]`](#percy-agent-help-command)
 
 ## `percy-agent exec`
@@ -52,19 +52,23 @@ EXAMPLES
 
 _See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.42/dist/commands/exec.ts)_
 
-## `percy-agent finalize [FILE]`
+## `percy-agent finalize`
 
-describe the command here
+finalize a build
 
 ```
 USAGE
-  $ percy-agent finalize [FILE]
+  $ percy-agent finalize
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -a, --all
+
+EXAMPLE
+  $ percy-agent finalize --all
+  [percy] Finalized parallel build.
 ```
+
+_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.0.42/dist/commands/finalize.ts)_
 
 ## `percy-agent help [COMMAND]`
 

@@ -11,7 +11,8 @@ export default class Finalize extends PercyCommand {
   }
 
   static examples = [
-    '$ percy-agent finalize --all'
+    '$ percy-agent finalize --all\n' +
+    '[percy] Finalized parallel build.',
   ]
 
   buildService: BuildService = new BuildService()
