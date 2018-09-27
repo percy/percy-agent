@@ -31,6 +31,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`percy-agent exec`](#percy-agent-exec)
+* [`percy-agent finalize [FILE]`](#percy-agent-finalize-file)
 * [`percy-agent help [COMMAND]`](#percy-agent-help-command)
 
 ## `percy-agent exec`
@@ -50,6 +51,20 @@ EXAMPLES
 ```
 
 _See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.42/dist/commands/exec.ts)_
+
+## `percy-agent finalize [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ percy-agent finalize [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
 
 ## `percy-agent help [COMMAND]`
 
