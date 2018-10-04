@@ -9,7 +9,7 @@ import AgentService from '../../src/services/agent-service'
 const expect = chai.expect
 
 describe('Exec', () => {
-  describe('#run', () => {
+  xdescribe('#run', () => {
     let sandbox = sinon.createSandbox()
 
     function AgentServiceStub(): AgentService {
