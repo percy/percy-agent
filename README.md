@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy-agent COMMAND
 running command...
 $ percy-agent (-v|--version|version)
-@percy/agent/0.0.43 darwin-x64 node-v8.10.0
+@percy/agent/0.0.44 darwin-x64 node-v8.10.0
 $ percy-agent --help [COMMAND]
 USAGE
   $ percy-agent COMMAND
@@ -42,14 +42,15 @@ USAGE
   $ percy-agent exec
 
 OPTIONS
-  -p, --port=port  [default: 5338] port
+  -p, --port=port                                  [default: 5338] port
+  -t, --network-idle-timeout=network-idle-timeout  [default: 50] asset discovery network idle timeout (in milliseconds)
 
 EXAMPLES
   $ percy-agent exec -- echo "percy-agent is running around this echo command"
   $ percy-agent exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.43/dist/commands/exec.ts)_
+_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.44/dist/commands/exec.ts)_
 
 ## `percy-agent help [COMMAND]`
 
