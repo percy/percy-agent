@@ -3,6 +3,10 @@ import AssetDiscoveryService from './asset-discovery-service'
 import ResourceService from './resource-service'
 import {logError, profile} from '../utils/logger'
 
+interface SnapshotServiceOptions {
+  networkIdleTimeout?: number
+}
+
 export default class SnapshotService extends PercyClientService {
   assetDiscoveryService: AssetDiscoveryService
   resourceService: ResourceService
@@ -10,11 +14,15 @@ export default class SnapshotService extends PercyClientService {
   buildId: number
   readonly defaultWidths = [1280]
 
-  constructor(buildId: number) {
+  constructor(buildId: number, options: SnapshotServiceOptions = {}) {
     super()
 
     this.buildId = buildId
-    this.assetDiscoveryService = new AssetDiscoveryService(buildId)
+    this.assetDiscoveryService = new AssetDiscoveryService(
+      buildId,
+      {networkIdleTimeout: options.networkIdleTimeout}
+    )
+
     this.resourceService = new ResourceService(buildId)
   }
 

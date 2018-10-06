@@ -34,8 +34,8 @@ export default class PercyCommand extends Command {
     return false
   }
 
-  logStart(port: number) {
-    this.logger.info(`percy-agent has started on port ${port}.`)
+  logStart() {
+    this.logger.info('percy-agent has started.')
   }
 
   logMissingEnvVar(name: string) {

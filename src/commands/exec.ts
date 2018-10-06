@@ -18,6 +18,11 @@ export default class Exec extends PercyCommand {
       description: 'port',
       default: 5338,
     }),
+    'network-idle-timeout': flags.integer({
+      char: 't',
+      description: 'asset discovery network idle timeout (in milliseconds)',
+      default: 50,
+    }),
   }
 
   async run() {
@@ -25,6 +30,7 @@ export default class Exec extends PercyCommand {
     const {flags} = this.parse(Exec)
 
     let port = flags.port as number
+    let networkIdleTimeout = flags['network-idle-timeout'] as number
     let command = argv.shift()
 
     if (!command) {
@@ -35,18 +41,18 @@ export default class Exec extends PercyCommand {
     }
 
     if (!this.percyEnvVarsMissing()) {
-      await this.agentService.start(port)
-      this.logStart(port)
+      await this.agentService.start({port, networkIdleTimeout})
+      this.logStart()
     }
 
     const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
 
     spawnedProcess.on('exit', async (code: any) => {
-      this.logger.info(`exited process with code: ${code}`)
-
       if (!this.percyEnvVarsMissing()) {
         await this.agentService.stop()
       }
+
+      process.exit(code)
     })
 
     spawnedProcess.unref()

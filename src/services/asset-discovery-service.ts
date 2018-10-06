@@ -5,16 +5,22 @@ import * as puppeteer from 'puppeteer'
 import unique from '../utils/unique-array'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 
-export default class AssetDiscoveryService extends PercyClientService {
-  readonly NETWORK_IDLE_TIMEOUT = 50 // ms
+interface AssetDiscoveryOptions {
+  networkIdleTimeout?: number
+}
 
+export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
   page: puppeteer.Page | null
 
-  constructor(buildId: number) {
+  readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
+  networkIdleTimeout: number // ms
+
+  constructor(buildId: number, options: AssetDiscoveryOptions = {}) {
     super()
     this.responseService = new ResponseService(buildId)
+    this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
     this.page = null
   }
@@ -70,7 +76,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('--> assetDiscoveryService.page.goto')
 
     profile('--> assetDiscoveryService.waitForNetworkIdle')
-    await waitForNetworkIdle(this.page, this.NETWORK_IDLE_TIMEOUT).catch(logError)
+    await waitForNetworkIdle(this.page, this.networkIdleTimeout).catch(logError)
     profile('--> assetDiscoveryService.waitForNetworkIdle')
 
     this.page.removeAllListeners()

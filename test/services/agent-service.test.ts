@@ -30,7 +30,7 @@ describe('AgentService', () => {
     })
 
     it('starts serving dist/public on supplied port', async () => {
-      await captureStdOut(() => subject.start(port))
+      await captureStdOut(() => subject.start({port}))
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
@@ -42,7 +42,7 @@ describe('AgentService', () => {
     })
 
     it('logs to stdout that it created a build', async () => {
-      let stdout = await captureStdOut(() => subject.start(port))
+      let stdout = await captureStdOut(() => subject.start({port}))
       expect(stdout).to.match(/\[percy\] created build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
@@ -50,7 +50,7 @@ describe('AgentService', () => {
   describe('#stop', () => {
     it('stops serving dist/public on supplied port', async () => {
       await captureStdOut(async () => {
-        await subject.start(port)
+        await subject.start({port})
         await subject.stop()
       })
 
@@ -62,7 +62,7 @@ describe('AgentService', () => {
     })
 
     it('logs to stdout that it finalized a build', async () => {
-      await captureStdOut(() => subject.start(port))
+      await captureStdOut(() => subject.start({port}))
 
       let stdout = await captureStdOut(async () => {
         await subject.stop()
