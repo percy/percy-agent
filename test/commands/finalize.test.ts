@@ -1,47 +1,57 @@
-import * as chai from 'chai'
-import * as sinon from 'sinon'
-import {describe} from 'mocha'
-import Finalize from '../../src/commands/finalize'
-import {captureStdOut, captureStdErr} from '../helpers/stdout'
-import BuildService from '../../src/services/build-service'
-const expect = chai.expect
+import {expect, test} from '@oclif/test'
 
-describe('Finalize', () => {
-  let sandbox = sinon.createSandbox()
-  afterEach(() => sandbox.restore())
+describe('finalize', () => {
+  test
+    .stub(process, 'env', {PERCY_TOKEN: 'abc'})
+    .stderr()
+    .command(['finalize'])
+    .catch(err => expect(err.message).to.equal(
+      'Missing required flag:\n' +
+      ' -a, --all\n' +
+      'See more help with --help'
+    ))
+    .it('requires -all flag')
 
-  function BuildServiceStub(): BuildService {
-    let buildService = BuildService.prototype as BuildService
-    sandbox.stub(buildService, 'finalizeAll')
+  test
+    .command(['finalize'])
+    .exit(2)
+    .it('exits with code 2')
 
-    let finalize = new Finalize([], '') as Finalize
-    sandbox.stub(finalize, 'buildService').returns(buildService)
+  describe('--all', () => {
+    test
+      .stub(process, 'env', {PERCY_TOKEN: 'abc'})
+      .stderr()
+      .command(['finalize', '--all'])
+      .catch(err => expect(err.message).to.equal(
+        'You must set PERCY_PARALLEL_NONCE'
+      ))
+      .it('requires PERCY_PARALLEL_NONCE to be set')
 
-    return buildService
-  }
+    test
+      .stub(process, 'env', {PERCY_TOKEN: 'abc'})
+      .command(['finalize', '--all'])
+      .exit(2)
+      .it('exits with code 2')
 
-  describe('#run', () => {
-    it('finalizes a parallel build', async () => {
-      let buildServiceStub = BuildServiceStub()
-      let options = ['--all']
-
-      let stdout = await captureStdOut(async () => {
-        process.env.PERCY_PARALLEL_NONCE = '123'
-        await Finalize.run(options)
-      })
-
-      expect(buildServiceStub.finalizeAll).to.calledOnce
-      expect(stdout).to.contain('Finalized parallel build.')
-    })
-
-    it('requires PERCY_PARALLEL_NONCE', async () => {
-      sandbox.stub(process, 'env').value({PERCY_PARALLEL_NONCE: '', PERCY_TOKEN: 'ABC'})
-
-      let stderr = await captureStdErr(async () => {
-        await Finalize.run([])
-      })
-
-      expect(stderr).to.contain('You must set PERCY_PARALLEL_NONCE')
-    })
+    testWithNock()
+      .stub(process, 'env', {PERCY_PARALLEL_NONCE: 'foo', PERCY_TOKEN: 'abc'})
+      .stdout()
+      .command(['finalize', '--all'])
+      .do(output => expect(output.stdout).to.equal(
+        '[percy] Finalized parallel build.\n' +
+        '[percy] Visual diffs are now processing: http://mockurl\n'
+      ))
+      .it('finalizes a parallel build')
   })
 })
+
+function testWithNock() {
+  return test
+    .nock('https://percy.io', api => api
+      .post('/api/v1/builds/123/finalize?all-shards=true')
+      .reply(201)
+    ).nock('https://percy.io', api => api
+      .post('/api/v1/builds/')
+      .reply(201, {data: {id: 123, attributes: {'build-number': '456', 'web-url': 'http://mockurl'}}})
+  )
+}

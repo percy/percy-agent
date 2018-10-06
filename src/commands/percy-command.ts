@@ -39,8 +39,6 @@ export default class PercyCommand extends Command {
   }
 
   logMissingEnvVar(name: string) {
-    this.logger.error(
-      `You must set ${name}. See https://percy.io/docs for how to set ${name} for your environment.`
-    )
+    this.error(`You must set ${name}`, {exit: 2})
   }
 }

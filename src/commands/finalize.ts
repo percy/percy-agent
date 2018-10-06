@@ -1,13 +1,14 @@
 import {flags} from '@oclif/command'
 import PercyCommand from './percy-command'
 import BuildService from '../services/build-service'
+import * as colors from 'colors'
 
 export default class Finalize extends PercyCommand {
   static description = 'finalize a build'
   static hidden = false
 
   static flags = {
-    all: flags.boolean({char: 'a'}),
+    all: flags.boolean({char: 'a', required: true}),
   }
 
   static examples = [
@@ -18,18 +19,21 @@ export default class Finalize extends PercyCommand {
   buildService: BuildService = new BuildService()
 
   async run() {
-    const {flags} = this.parse(Finalize)
+    this.parse(Finalize)
 
-    if (this.percyEnvVarsMissing()) { return }
+    if (this.percyEnvVarsMissing()) { this.exit(1) }
 
     if (!process.env.PERCY_PARALLEL_NONCE) {
       this.logMissingEnvVar('PERCY_PARALLEL_NONCE')
-      return
+      this.exit(1)
     }
 
-    if (flags.all) {
-      await this.buildService.finalizeAll()
+    const result = await this.buildService.finalizeAll()
+    if (result) {
       this.logger.info('Finalized parallel build.')
+
+      const webUrl = result.body.data.attributes['web-url']
+      this.logger.info('Visual diffs are now processing: ' + colors.blue(`${webUrl}`))
     }
   }
 }

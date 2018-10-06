@@ -29,7 +29,7 @@ export default class Start extends PercyCommand {
     const {flags} = this.parse(Start)
     let port = flags.port as number
 
-    if (this.percyEnvVarsMissing()) { return }
+    if (this.percyEnvVarsMissing()) { this.exit(1) }
 
     if (flags.detached) {
       this.runDetached(port)

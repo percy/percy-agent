@@ -24,7 +24,7 @@ export default class Stop extends PercyCommand {
     const {flags} = this.parse(Stop)
     const port = flags.port ? flags.port : 5338
 
-    if (this.percyEnvVarsMissing()) { return }
+    if (this.percyEnvVarsMissing()) { this.exit(1) }
 
     if (this.processService.isRunning()) {
       await this.postToRunningAgent('/percy/stop', port)
