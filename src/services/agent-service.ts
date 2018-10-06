@@ -6,6 +6,7 @@ import BuildService from './build-service'
 import SnapshotService from './snapshot-service'
 import logger, {profile} from '../utils/logger'
 import ProcessService from './process-service'
+import {AgentOptions} from './agent-options'
 
 export default class AgentService {
   readonly app: express.Application
@@ -35,11 +36,11 @@ export default class AgentService {
     this.buildService = new BuildService()
   }
 
-  async start(port: number) {
-    this.server = this.app.listen(port)
+  async start(options: AgentOptions = {}) {
+    this.server = this.app.listen(options.port)
 
     this.buildId = await this.buildService.create()
-    this.snapshotService = new SnapshotService(this.buildId)
+    this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
     await this.snapshotService.assetDiscoveryService.setup()
   }
 

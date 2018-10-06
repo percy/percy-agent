@@ -36,7 +36,8 @@ export default class PercyAgent {
 
   private domSnapshot(documentObject: Document): string {
     let doctype = this.getDoctype(documentObject)
-    let dom = this.stabalizeDOM(documentObject.documentElement as HTMLElement)
+    let dom = this.stabalizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
+
     let domClone = dom.cloneNode(true) as HTMLElement
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
