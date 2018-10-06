@@ -30,8 +30,8 @@ describe('finalize', () => {
     test
       .stub(process, 'env', {PERCY_TOKEN: 'abc'})
       .command(['finalize', '--all'])
-      .exit(2)
-      .it('exits with code 2')
+      .exit(1)
+      .it('exits with code 1')
 
     testWithNock()
       .stub(process, 'env', {PERCY_PARALLEL_NONCE: 'foo', PERCY_TOKEN: 'abc'})
