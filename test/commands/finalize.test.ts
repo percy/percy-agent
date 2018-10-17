@@ -28,6 +28,13 @@ describe('finalize', () => {
       .it('requires PERCY_PARALLEL_NONCE to be set')
 
     test
+      .stub(process, 'env', {PERCY_ENABLE: '0'})
+      .stderr()
+      .command(['finalize', '--all'])
+      .exit(0)
+      .it('does nothing if PERCY_ENABLE is disabled')
+
+    test
       .stub(process, 'env', {PERCY_TOKEN: 'abc'})
       .command(['finalize', '--all'])
       .exit(1)

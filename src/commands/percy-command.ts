@@ -22,7 +22,17 @@ export default class PercyCommand extends Command {
   }
 
   async run() {
-    if (this.percyEnvVarsMissing()) { this.exit(1) }
+    if (!this.percyEnabled()) {
+      this.exit(0)
+    }
+
+    if (this.percyEnvVarsMissing()) {
+      this.exit(1)
+    }
+  }
+
+  percyEnabled(): boolean {
+    return process.env.PERCY_ENABLE !== '0'
   }
 
   percyEnvVarsMissing(): boolean {
