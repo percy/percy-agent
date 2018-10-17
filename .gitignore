@@ -2,6 +2,6 @@
 .oclif.manifest.json
 /dist
 /node_modules
-.percy-agent.pid
+.percy.pid
 /tmp/*
 /dist-test

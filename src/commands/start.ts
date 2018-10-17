@@ -6,12 +6,12 @@ import {AgentOptions} from '../services/agent-options'
 const path = require('path')
 
 export default class Start extends PercyCommand {
-  static description = 'Starts the percy-agent process.'
+  static description = 'Starts the percy process.'
   static hidden = true
 
   static examples = [
-    '$ percy-agent start\n' +
-    'info: percy-agent has started on port 5338.',
+    '$ percy start\n' +
+    'info: percy has started on port 5338.',
   ]
 
   static flags = {
@@ -80,7 +80,7 @@ export default class Start extends PercyCommand {
     if (pid) {
       this.logStart()
     } else {
-      this.logger.warn('percy-agent is already running')
+      this.logger.warn('percy is already running')
     }
   }
 }

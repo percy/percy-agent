@@ -51,7 +51,7 @@ describe('Start', () => {
       })
 
       expect(agentServiceStub.start).to.calledWithMatch({port: 5338, networkIdleTimeout: 50})
-      expect(stdout).to.contain('[percy] percy-agent has started.')
+      expect(stdout).to.contain('[percy] percy has started.')
     })
 
     it('starts percy agent in detached mode', async () => {
@@ -77,7 +77,7 @@ describe('Start', () => {
       })
 
       expect(agentServiceStub.start).to.calledWithMatch({port: +port, networkIdleTimeout: 50})
-      expect(stdout).to.contain('[percy] percy-agent has started.')
+      expect(stdout).to.contain('[percy] percy has started.')
     })
 
     it('warns when percy agent is already running', async () => {
@@ -87,7 +87,7 @@ describe('Start', () => {
         await Start.run(['--detached'])
       })
 
-      expect(stdout).to.match(/\[percy\] percy-agent is already running/)
+      expect(stdout).to.match(/\[percy\] percy is already running/)
     })
   })
 })
