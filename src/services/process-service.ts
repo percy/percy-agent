@@ -2,8 +2,8 @@ import * as childProcess from 'child_process'
 import * as fs from 'fs'
 
 export default class ProcessService {
-  static PID_PATH = './.percy-agent.pid'
-  static LOG_PATH = './percy-agent-process.log'
+  static PID_PATH = './.percy.pid'
+  static LOG_PATH = './percy-process.log'
 
   runDetached(args: string[]): number | undefined {
     if (this.isRunning()) { return }

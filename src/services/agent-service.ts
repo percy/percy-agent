@@ -45,7 +45,7 @@ export default class AgentService {
   }
 
   async stop() {
-    logger.info('stopping percy-agent...')
+    logger.info('stopping percy...')
 
     logger.info(`waiting for ${this.snapshotCreationPromises.length} snapshots to complete...`)
     await Promise.all(this.snapshotCreationPromises)

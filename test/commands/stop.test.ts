@@ -34,7 +34,7 @@ describe('Stop', () => {
         await Stop.run([])
       })
 
-      expect(stdout).to.match(/\[percy\] percy-agent stopped\./)
+      expect(stdout).to.match(/\[percy\] percy stopped\./)
     })
 
     it('warns you when percy agent is already stopped', async () => {
@@ -44,7 +44,7 @@ describe('Stop', () => {
         await Stop.run([])
       })
 
-      expect(stdout).to.match(/\[percy\] percy-agent is already stopped\./)
+      expect(stdout).to.match(/\[percy\] percy is already stopped\./)
     })
   })
 })

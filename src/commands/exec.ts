@@ -3,13 +3,13 @@ import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
 
 export default class Exec extends PercyCommand {
-  static description = 'Start and stop Percy agent around a supplied command'
+  static description = 'Start and stop Percy around a supplied command'
   static hidden = false
   static strict = false
 
   static examples = [
-    '$ percy-agent exec -- echo \"percy-agent is running around this echo command\"',
-    '$ percy-agent exec -- bash -c "echo foo && echo bar"'
+    '$ percy exec -- echo \"percy is running around this echo command\"',
+    '$ percy exec -- bash -c "echo foo && echo bar"'
   ]
 
   static flags = {
@@ -38,7 +38,7 @@ export default class Exec extends PercyCommand {
     if (!command) {
       this.logger.info('You must supply a command to run after --')
       this.logger.info('Example:')
-      this.logger.info('$ percy-agent exec -- echo "run your test suite"')
+      this.logger.info('$ percy exec -- echo "run your test suite"')
       return
     }
 

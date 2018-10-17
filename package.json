@@ -4,7 +4,7 @@
   "version": "0.0.44",
   "author": "Perceptual Inc",
   "bin": {
-    "percy-agent": "./bin/run"
+    "percy": "./bin/run"
   },
   "bugs": "https://github.com/percy/percy-agent/issues",
   "dependencies": {
@@ -81,7 +81,7 @@
   "main": "dist/index.js",
   "oclif": {
     "commands": "./dist/commands",
-    "bin": "percy-agent",
+    "bin": "percy",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-not-found"

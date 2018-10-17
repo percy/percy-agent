@@ -18,7 +18,7 @@ async function healthCheck(port: number) {
     url: healthcheckUrl,
     raxConfig: retryConfig,
   } as any).then(() => {
-    logger.info('percy-agent is ready.')
+    logger.info('percy is ready.')
   }).catch(error => {
     logger.error(`Failed to establish a connection with ${healthcheckUrl}`)
     logger.debug(error)
