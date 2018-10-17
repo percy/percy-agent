@@ -15,4 +15,10 @@ describe('percy-command', () => {
     .command(['percy-command'])
     .exit(1)
     .it('exits with code 1')
+
+  test
+    .stub(process, 'env', {PERCY_ENABLE: '0', PERCY_TOKEN: ''})
+    .command(['percy-command'])
+    .exit(0)
+    .it('exits with code 0')
 })

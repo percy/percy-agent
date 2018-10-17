@@ -32,7 +32,7 @@ describe('finalize', () => {
       .stderr()
       .command(['finalize', '--all'])
       .exit(0)
-      .it('does nothing if PERCY_ENABLE is disabled')
+      .it('exits with code 0')
 
     test
       .stub(process, 'env', {PERCY_TOKEN: 'abc'})
