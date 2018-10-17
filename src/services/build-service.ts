@@ -56,6 +56,17 @@ export default class BuildService extends PercyClientService {
     this.logEvent('finalized')
   }
 
+  async finalizeAll(): Promise<any> {
+    process.env.PERCY_PARALLEL_TOTAL = '-1'
+
+    const build = await this.percyClient.createBuild().catch(logError)
+    const buildId = parseInt(build.body.data.id) as number
+
+    const result = await this.percyClient.finalizeBuild(buildId, {allShards: true}).catch(logError)
+
+    if (result) { return build }
+  }
+
   private logEvent(event: string) {
     logger.info(`${event} build #${this.buildNumber}: ` + colors.blue(`${this.buildUrl}`))
   }

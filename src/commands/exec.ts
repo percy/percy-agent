@@ -26,6 +26,8 @@ export default class Exec extends PercyCommand {
   }
 
   async run() {
+    await super.run()
+
     const {argv} = this.parse(Exec)
     const {flags} = this.parse(Exec)
 
@@ -40,10 +42,8 @@ export default class Exec extends PercyCommand {
       return
     }
 
-    if (!this.percyEnvVarsMissing()) {
-      await this.agentService.start({port, networkIdleTimeout})
-      this.logStart()
-    }
+    await this.agentService.start({port, networkIdleTimeout})
+    this.logStart()
 
     const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
 

@@ -21,10 +21,10 @@ export default class Stop extends PercyCommand {
   }
 
   async run() {
+    await super.run()
+
     const {flags} = this.parse(Stop)
     const port = flags.port ? flags.port : 5338
-
-    if (this.percyEnvVarsMissing()) { return }
 
     if (this.processService.isRunning()) {
       await this.postToRunningAgent('/percy/stop', port)

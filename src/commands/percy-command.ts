@@ -22,7 +22,17 @@ export default class PercyCommand extends Command {
   }
 
   async run() {
-    throw('Implement run() in subclass')
+    if (!this.percyEnabled()) {
+      this.exit(0)
+    }
+
+    if (this.percyEnvVarsMissing()) {
+      this.exit(1)
+    }
+  }
+
+  percyEnabled(): boolean {
+    return process.env.PERCY_ENABLE !== '0'
   }
 
   percyEnvVarsMissing(): boolean {
@@ -38,9 +48,7 @@ export default class PercyCommand extends Command {
     this.logger.info('percy-agent has started.')
   }
 
-  private logMissingEnvVar(name: string) {
-    this.logger.error(
-      `percy-agent is not running. You must set ${name}. See https://percy.io/docs for how to set ${name} for your environment.`
-    )
+  logMissingEnvVar(name: string) {
+    this.error(`You must set ${name}`, {exit: 1})
   }
 }
