@@ -22,7 +22,7 @@ export default class PercyCommand extends Command {
   }
 
   async run() {
-    throw('Implement run() in subclass')
+    if (this.percyEnvVarsMissing()) { this.exit(1) }
   }
 
   percyEnvVarsMissing(): boolean {

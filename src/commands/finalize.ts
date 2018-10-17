@@ -19,9 +19,9 @@ export default class Finalize extends PercyCommand {
   buildService: BuildService = new BuildService()
 
   async run() {
-    this.parse(Finalize)
+    await super.run()
 
-    if (this.percyEnvVarsMissing()) { this.exit(1) }
+    this.parse(Finalize)
 
     if (!process.env.PERCY_PARALLEL_NONCE) {
       this.logMissingEnvVar('PERCY_PARALLEL_NONCE')
