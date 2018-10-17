@@ -18,66 +18,62 @@ A low-level Node process for interacting with Percy.
 <!-- usage -->
 ```sh-session
 $ npm install -g @percy/agent
-$ percy-agent COMMAND
+$ percy COMMAND
 running command...
-$ percy-agent (-v|--version|version)
-@percy/agent/0.0.44 darwin-x64 node-v8.10.0
-$ percy-agent --help [COMMAND]
+$ percy (-v|--version|version)
+@percy/agent/0.0.45 darwin-x64 node-v8.10.0
+$ percy --help [COMMAND]
 USAGE
-  $ percy-agent COMMAND
+  $ percy COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`percy-agent exec`](#percy-agent-exec)
-* [`percy-agent finalize`](#percy-agent-finalize)
-* [`percy-agent help [COMMAND]`](#percy-agent-help-command)
+* [`percy exec`](#percy-exec)
+* [`percy finalize`](#percy-finalize)
+* [`percy help [COMMAND]`](#percy-help-command)
 
-## `percy-agent exec`
+## `percy exec`
 
-Start and stop Percy agent around a supplied command
+Start and stop Percy around a supplied command
 
 ```
 USAGE
-  $ percy-agent exec
+  $ percy exec
 
 OPTIONS
   -p, --port=port                                  [default: 5338] port
   -t, --network-idle-timeout=network-idle-timeout  [default: 50] asset discovery network idle timeout (in milliseconds)
 
 EXAMPLES
-  $ percy-agent exec -- echo "percy-agent is running around this echo command"
-  $ percy-agent exec -- bash -c "echo foo && echo bar"
+  $ percy exec -- echo "percy is running around this echo command"
+  $ percy exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.0.44/dist/commands/exec.ts)_
-
-## `percy-agent finalize`
+## `percy finalize`
 
 finalize a build
 
 ```
 USAGE
-  $ percy-agent finalize
+  $ percy finalize
 
 OPTIONS
-  -a, --all
+  -a, --all  (required)
 
 EXAMPLE
-  $ percy-agent finalize --all
+  $ percy finalize --all
   [percy] Finalized parallel build.
 ```
 
-_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.0.42/dist/commands/finalize.ts)_
+## `percy help [COMMAND]`
 
-## `percy-agent help [COMMAND]`
-
-display help for percy-agent
+display help for percy
 
 ```
 USAGE
-  $ percy-agent help [COMMAND]
+  $ percy help [COMMAND]
 
 ARGUMENTS
   COMMAND  command to show help for
