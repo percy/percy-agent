@@ -1,6 +1,6 @@
 {
   "name": "@percy/agent",
-  "description": "A low-level Node process for interacting with Percy.",
+  "description": "An agent process for integrating with Percy.",
   "version": "0.0.45",
   "author": "Perceptual Inc",
   "bin": {
