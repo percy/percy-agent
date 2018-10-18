@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker build . -t percyio/percy-agent:latest
-docker push percyio/percy-agent:latest
+docker build --no-cache -t percyio/agent:latest .
+docker push percyio/agent:latest
