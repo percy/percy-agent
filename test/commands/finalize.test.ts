@@ -19,26 +19,11 @@ describe('finalize', () => {
 
   describe('--all', () => {
     test
-      .stub(process, 'env', {PERCY_TOKEN: 'abc'})
-      .stderr()
-      .command(['finalize', '--all'])
-      .catch(err => expect(err.message).to.equal(
-        'You must set PERCY_PARALLEL_NONCE'
-      ))
-      .it('requires PERCY_PARALLEL_NONCE to be set')
-
-    test
       .stub(process, 'env', {PERCY_ENABLE: '0'})
       .stderr()
       .command(['finalize', '--all'])
       .exit(0)
       .it('exits with code 0')
-
-    test
-      .stub(process, 'env', {PERCY_TOKEN: 'abc'})
-      .command(['finalize', '--all'])
-      .exit(1)
-      .it('exits with code 1')
 
     testWithNock()
       .stub(process, 'env', {PERCY_PARALLEL_NONCE: 'foo', PERCY_TOKEN: 'abc'})
