@@ -64,7 +64,7 @@ export default class SnapshotService extends PercyClientService {
       await this.finalize(response.body.data.id)
       profile('-> snapshotService.finalizeSnapshot', {snapshotId})
       return response
-    })
+    }).catch(logError)
 
     return snapshotCreationPromise
   }
