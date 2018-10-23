@@ -64,12 +64,7 @@ export default class AgentService {
 
     logger.debug('handling snapshot:')
     logger.debug(`-> headers: ${JSON.stringify(request.headers)}`)
-    logger.debug(`-> name: ${JSON.stringify(request.body.name)}`)
-    logger.debug(`-> url: ${JSON.stringify(request.body.url)}`)
-    logger.debug(`-> widths: ${JSON.stringify(request.body.widths)}`)
-    logger.debug(`-> enableJavascript: ${JSON.stringify(request.body.enableJavascript)}`)
-    logger.debug(`-> clientInfo: ${JSON.stringify(request.body.clientInfo)}`)
-    logger.debug(`-> environmentInfo: ${JSON.stringify(request.body.environmentInfo)}`)
+    logger.debug(`-> body: ${JSON.stringify(request.body)}`)
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
@@ -83,6 +78,7 @@ export default class AgentService {
       resources,
       request.body.enableJavascript,
       request.body.widths,
+      request.body.minHeight,
     )
 
     this.snapshotCreationPromises.push(snapshotCreation)

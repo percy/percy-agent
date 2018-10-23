@@ -28,6 +28,7 @@ export default class PercyAgent {
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,
       widths: options.widths,
+      minHeight: options.minHeight || options.minimumHeight,
       clientInfo: this.clientInfo,
       environmentInfo: this.environmentInfo,
       domSnapshot

@@ -50,10 +50,10 @@ export default class SnapshotService extends PercyClientService {
     resources: any[],
     enableJavaScript = false,
     widths: number[] = this.defaultWidths,
-    minimumHeight: number | null = null,
+    minHeight: number | null = null,
   ): Promise<any> {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
-      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight}
+      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight: minHeight}
     ).then(async (response: any) => {
       await this.resourceService.uploadMissingResources(response, resources)
       return response
