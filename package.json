@@ -1,7 +1,7 @@
 {
   "name": "@percy/agent",
   "description": "An agent process for integrating with Percy.",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "author": "Perceptual Inc",
   "bin": {
     "percy": "./bin/run"
