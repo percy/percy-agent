@@ -1,0 +1,21 @@
+version: "2.1"
+description: Helpers for running Percy builds in parallel.
+executors:
+  default:
+    docker:
+      - image: percyio/agent:latest
+commands:
+  finalize-all:
+    description: Finalize all Percy builds
+    parameters:
+      percy-token:
+        description: PERCY_TOKEN for your project. It is found on your project settings.
+        type: string
+        default: $PERCY_TOKEN
+    steps:
+      - run: PERCY_TOKEN=<< parameters.percy-token >> percy finalize --all
+jobs:
+  finalize-all:
+    executor: default
+    steps:
+      - finalize-all
