@@ -1,21 +1,38 @@
 version: "2.1"
-description: Helpers for running Percy builds in parallel.
+description: Workflow for running Percy builds.
+
+examples:
+  finalize_all_percy_builds:
+    description: Finalize all Percy builds
+    usage:
+      version: 2.1
+
+      orbs:
+        percy: percy/agent@1.0.0
+
+      workflows:
+        percy_finalize_all:
+          jobs:
+            - percy/finalize_all
+
 executors:
   default:
     docker:
       - image: percyio/agent:latest
+
 commands:
-  finalize-all:
+  finalize_all:
     description: Finalize all Percy builds
     parameters:
-      percy-token:
+      percy_token:
         description: PERCY_TOKEN for your project. It is found on your project settings.
         type: string
         default: $PERCY_TOKEN
     steps:
-      - run: PERCY_TOKEN=<< parameters.percy-token >> percy finalize --all
+      - run: PERCY_TOKEN=<< parameters.percy_token >> percy finalize --all
+
 jobs:
-  finalize-all:
+  finalize_all:
     executor: default
     steps:
-      - finalize-all
+      - finalize_all
