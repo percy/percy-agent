@@ -13,10 +13,10 @@ export interface Configuration {
 }
 
 let configuration = (relativePath = '.percy.yml'): Configuration => {
-  const confFilePath = path.join(process.cwd(), relativePath)
+  const configFilePath = path.join(process.cwd(), relativePath)
 
   try {
-    return yaml.safeLoad(fs.readFileSync(confFilePath, 'utf8'))
+    return yaml.safeLoad(fs.readFileSync(configFilePath, 'utf8'))
   } catch {
     // this is ok because we just use this configuration as one of the fallbacks
     // in a chain. snapshot specific options -> agent configuration -> default values
