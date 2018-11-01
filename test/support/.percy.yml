@@ -2,4 +2,3 @@ version: 1
 snapshot:
   widths: [375, 1280]
   min-height: 1024
-  enable-javascript: false

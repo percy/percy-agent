@@ -79,7 +79,7 @@ export default class AgentService {
     let snapshotCreation = this.snapshotService.create(
       request.body.name,
       resources,
-      request.body.enableJavascript || snapshotConfiguration['enable-javascript'],
+      request.body.enableJavascript,
       request.body.widths || snapshotConfiguration.widths,
       request.body.minHeight || snapshotConfiguration['min-height'],
     )

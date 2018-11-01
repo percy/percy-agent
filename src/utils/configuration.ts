@@ -5,7 +5,6 @@ let path = require('path')
 export interface SnapshotConfiguration {
   widths?: [number],
   'min-height'?: number,
-  'enable-javascript'?: boolean
 }
 
 export interface Configuration {
