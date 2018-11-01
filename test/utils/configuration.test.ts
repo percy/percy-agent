@@ -12,7 +12,7 @@ describe('Configuration', () => {
   })
 
   it('gracefully handles a missing file', () => {
-    const subject = configuration('test/support/.file-does-not-exit.yml')
+    const subject = configuration('test/support/.file-does-not-exist.yml')
 
     expect(subject).to.eql({})
   })
