@@ -7,6 +7,7 @@ import SnapshotService from './snapshot-service'
 import logger, {profile} from '../utils/logger'
 import ProcessService from './process-service'
 import {AgentOptions} from './agent-options'
+import configuration from '../utils/configuration'
 
 export default class AgentService {
   readonly app: express.Application
@@ -73,12 +74,14 @@ export default class AgentService {
       request.body.domSnapshot,
     )
 
+    const conf = configuration()
+
     let snapshotCreation = this.snapshotService.create(
       request.body.name,
       resources,
-      request.body.enableJavascript,
-      request.body.widths,
-      request.body.minHeight,
+      request.body.enableJavascript || conf.snapshot.widths,
+      request.body.widths || conf.snapshot.widths,
+      request.body.minHeight || conf.snapshot['min-height'],
     )
 
     this.snapshotCreationPromises.push(snapshotCreation)
