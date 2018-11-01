@@ -11,11 +11,9 @@ describe('Configuration', () => {
     expect(subject.snapshot['enable-javascript']).to.eql(false)
   })
 
-  it('gracefully handles missing data', () => {
-    const subject = configuration('test/support/.percy-invalid.yml')
+  it('gracefully handles a missing file', () => {
+    const subject = configuration('test/support/.file-does-not-exit.yml')
 
-    // this is ok because we just use this configuration as one of the fallbacks
-    // in a chain. snapshot specific options -> agent configuration -> default values
-    expect(subject.snapshot).to.eql(undefined)
+    expect(subject).to.eql({})
   })
 })
