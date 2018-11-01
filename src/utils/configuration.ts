@@ -1,6 +1,5 @@
 let yaml = require('js-yaml')
 let fs = require('fs')
-import logger from './logger'
 
 interface Configuration {
   version: number,
@@ -12,15 +11,7 @@ interface Configuration {
 }
 
 let configuration = (filePath = '.percy.yml'): Configuration => {
-  let conf = {} as Configuration
-
-  try {
-    conf = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
-  } catch {
-    logger.warn('.percy.yml parse error!')
-  }
-
-  return conf
+  return yaml.safeLoad(fs.readFileSync(filePath, 'utf8'))
 }
 
 export default configuration
