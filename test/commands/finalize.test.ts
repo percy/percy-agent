@@ -10,7 +10,7 @@ describe('finalize', () => {
       ' -a, --all\n' +
       'See more help with --help'
     ))
-    .it('requires -all flag')
+    .it('requires --all flag')
 
   test
     .command(['finalize'])

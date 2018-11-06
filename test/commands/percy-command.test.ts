@@ -5,20 +5,24 @@ describe('percy-command', () => {
     .stub(process, 'env', {PERCY_TOKEN: ''})
     .stderr()
     .command(['percy-command'])
-    .catch(err => expect(err.message).to.equal(
-      'You must set PERCY_TOKEN'
+    .do(output => expect(output.stderr).to.contain(
+      'Warning: You must set PERCY_TOKEN'
     ))
-    .it('requires PERCY_TOKEN to be set')
-
-  test
-    .stub(process, 'env', {PERCY_TOKEN: ''})
-    .command(['percy-command'])
-    .exit(1)
-    .it('exits with code 1')
+    .it('warns about PERCY_TOKEN to be set')
 
   test
     .stub(process, 'env', {PERCY_ENABLE: '0', PERCY_TOKEN: ''})
+    .stderr()
     .command(['percy-command'])
-    .exit(0)
-    .it('exits with code 0')
+    .do(output => expect(output.stderr).to.contain(
+      'Warning: You must set PERCY_TOKEN'
+    ))
+    .it('warns about PERCY_TOKEN to be set')
+
+  test
+    .stub(process, 'env', {PERCY_ENABLE: '0', PERCY_TOKEN: 'ABC'})
+    .stderr()
+    .command(['percy-command'])
+    .do(output => expect(output.stderr).to.eql(''))
+    .it('outputs no errors')
 })
