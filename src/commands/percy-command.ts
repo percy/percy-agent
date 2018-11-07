@@ -36,7 +36,7 @@ export default class PercyCommand extends Command {
   }
 
   percyTokenPresent(): boolean {
-    return this.percyToken !== ''
+    return this.percyToken.trim() !== ''
   }
 
   logStart() {
