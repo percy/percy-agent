@@ -6,7 +6,7 @@ describe('percy-command', () => {
     .stderr()
     .command(['percy-command'])
     .do(output => expect(output.stderr).to.contain(
-      'Warning: Skipping visual tests. You must set PERCY_TOKEN'
+      'Warning: Skipping visual tests. PERCY_TOKEN was not provided.'
     ))
     .it('warns about PERCY_TOKEN to be set')
 
@@ -15,7 +15,7 @@ describe('percy-command', () => {
     .stderr()
     .command(['percy-command'])
     .do(output => expect(output.stderr).to.contain(
-      'Warning: Skipping visual tests. You must set PERCY_TOKEN'
+      'Warning: Skipping visual tests. PERCY_TOKEN was not provided.'
     ))
     .it('warns about PERCY_TOKEN to be set')
 
