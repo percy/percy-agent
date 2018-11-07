@@ -23,7 +23,7 @@ export default class PercyCommand extends Command {
 
   async run() {
     if (this.percyEnabled && !this.percyTokenPresent()) {
-      this.logMissingEnvVar('PERCY_TOKEN')
+      this.warn('Skipping visual tests, You must set PERCY_TOKEN')
     }
   }
 
@@ -41,9 +41,5 @@ export default class PercyCommand extends Command {
 
   logStart() {
     this.logger.info('percy has started.')
-  }
-
-  logMissingEnvVar(name: string) {
-    this.warn(`You must set ${name}`)
   }
 }
