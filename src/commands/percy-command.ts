@@ -22,12 +22,8 @@ export default class PercyCommand extends Command {
   }
 
   async run() {
-    if (!this.percyEnabled()) {
-      this.exit(0)
-    }
-
-    if (this.percyEnvVarsMissing()) {
-      this.exit(1)
+    if (this.percyEnabled && !this.percyTokenPresent()) {
+      this.warn('Skipping visual tests. PERCY_TOKEN was not provided.')
     }
   }
 
@@ -35,20 +31,15 @@ export default class PercyCommand extends Command {
     return process.env.PERCY_ENABLE !== '0'
   }
 
-  percyEnvVarsMissing(): boolean {
-    if (this.percyToken === '') {
-      this.logMissingEnvVar('PERCY_TOKEN')
-      return true
-    }
+  percyWillRun(): boolean {
+    return (this.percyEnabled() && this.percyTokenPresent())
+  }
 
-    return false
+  percyTokenPresent(): boolean {
+    return this.percyToken.trim() !== ''
   }
 
   logStart() {
     this.logger.info('percy has started.')
-  }
-
-  logMissingEnvVar(name: string) {
-    this.error(`You must set ${name}`, {exit: 1})
   }
 }

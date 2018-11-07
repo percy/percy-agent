@@ -42,19 +42,20 @@ export default class Exec extends PercyCommand {
       return
     }
 
-    await this.agentService.start({port, networkIdleTimeout})
-    this.logStart()
+    if (this.percyWillRun()) {
+      await this.agentService.start({port, networkIdleTimeout})
+      this.logStart()
+    }
 
+    // Even if Percy will not run, continue to run the subprocess
     const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
 
     spawnedProcess.on('exit', async (code: any) => {
-      if (!this.percyEnvVarsMissing()) {
+      if (this.percyWillRun()) {
         await this.agentService.stop()
       }
 
       process.exit(code)
     })
-
-    spawnedProcess.unref()
   }
 }

@@ -8,6 +8,8 @@ export default class PercyAgent {
   xhr: any
   port: number
   domTransformation: any | null
+  client: PercyAgentClient
+
   readonly defaultDoctype = '<!DOCTYPE html>'
 
   constructor(options: ClientOptions = {}) {
@@ -16,14 +18,18 @@ export default class PercyAgent {
     this.xhr = options.xhr || XMLHttpRequest
     this.domTransformation = options.domTransformation || null
     this.port = options.port || 5338
+
+    this.client = new PercyAgentClient(
+      `http://localhost:${this.port}`,
+      this.xhr
+    )
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
     let documentObject = options.document || document
     let domSnapshot = this.domSnapshot(documentObject)
-    let percyAgentClient = new PercyAgentClient(this.xhr)
 
-    percyAgentClient.post(`http://localhost:${this.port}/percy/snapshot`, {
+    this.client.post('/percy/snapshot', {
       name,
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,

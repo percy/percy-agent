@@ -1,24 +1,29 @@
 import {expect} from 'chai'
 import PercyAgent from '../../src/percy-agent-client/percy-agent'
-require('../../src/percy-agent-client/percy-agent')
 import * as sinon from 'sinon'
+require('../../src/percy-agent-client/percy-agent')
 
 describe('PercyAgent', () => {
-  let xhr = sinon.useFakeXMLHttpRequest()
-  const subject = new PercyAgent({
-    clientInfo: 'Test Client',
-    xhr
-  })
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
+  let subject: PercyAgent
+  let xhr: any
 
   beforeEach(() => {
-    xhr.onCreate = xhrRequest => {
+    xhr = sinon.useFakeXMLHttpRequest()
+    xhr.onCreate = (xhrRequest: any) => {
       requests.push(xhrRequest)
     }
+
+    subject = new PercyAgent({
+      clientInfo: 'Test Client',
+      xhr
+    })
+
+    subject.client.agentConnected = true
   })
 
   afterEach(() => {
-    // xhr.restore
+    xhr.restore()
     requests = []
   })
 

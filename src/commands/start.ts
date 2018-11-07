@@ -34,6 +34,9 @@ export default class Start extends PercyCommand {
   async run() {
     await super.run()
 
+    // If Percy is disabled or is missing a token, gracefully exit here
+    if (!this.percyWillRun()) { this.exit(0) }
+
     const {flags} = this.parse(Start)
     let port = flags.port as number
     let networkIdleTimeout = flags['network-idle-timeout'] as number

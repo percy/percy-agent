@@ -23,6 +23,9 @@ export default class Stop extends PercyCommand {
   async run() {
     await super.run()
 
+    // If Percy is disabled or is missing a token, gracefully exit here
+    if (!this.percyWillRun()) { this.exit(0) }
+
     const {flags} = this.parse(Stop)
     const port = flags.port ? flags.port : 5338
 

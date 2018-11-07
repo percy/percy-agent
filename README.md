@@ -69,6 +69,8 @@ EXAMPLE
   [percy] Finalized parallel build.
 ```
 
+_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.0.50/dist/commands/finalize.ts)_
+
 ## `percy help [COMMAND]`
 
 display help for percy
