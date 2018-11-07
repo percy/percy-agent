@@ -6,7 +6,7 @@ require('../../src/percy-agent-client/percy-agent')
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
   let subject: PercyAgent
-  let xhr: sinon.SinonFakeXMLHttpRequest
+  let xhr: any
 
   beforeEach(() => {
     xhr = sinon.useFakeXMLHttpRequest()
