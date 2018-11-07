@@ -18,12 +18,16 @@ export default class PercyAgent {
     this.port = options.port || 5338
   }
 
+  _agentHost(): string {
+    return `http://localhost:${this.port}`
+  }
+
   snapshot(name: string, options: SnapshotOptions = {}) {
     let documentObject = options.document || document
     let domSnapshot = this.domSnapshot(documentObject)
-    let percyAgentClient = new PercyAgentClient(this.xhr)
+    let percyAgentClient = new PercyAgentClient(this._agentHost(), this.xhr)
 
-    percyAgentClient.post(`http://localhost:${this.port}/percy/snapshot`, {
+    percyAgentClient.post('/percy/snapshot', {
       name,
       url: documentObject.URL,
       enableJavascript: options.enableJavascript,
