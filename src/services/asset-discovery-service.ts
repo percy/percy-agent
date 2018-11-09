@@ -2,7 +2,6 @@ import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 import logger, {logError, profile} from '../utils/logger'
 import * as puppeteer from 'puppeteer'
-import unique from '../utils/unique-array'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 
 interface AssetDiscoveryOptions {
@@ -81,7 +80,16 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     this.page.removeAllListeners()
 
-    resources = unique(resources)
+    let resourceUrls: string[] = []
+
+    // Dedup by resourceUrl as they must be unique when sent to Percy API down the line.
+    resources = resources.filter((resource: any) => {
+      if (!resourceUrls.includes(resource.resourceUrl)) {
+        resourceUrls.push(resource.resourceUrl as string)
+        return true
+      }
+      return false
+    })
 
     profile('-> assetDiscoveryService.discoverResources', {resourcesDiscovered: resources.length})
 
