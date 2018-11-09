@@ -82,6 +82,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let resourceUrls: string[] = []
 
+    // Dedup by resourceUrl as they must be unique when sent to Percy API down the line.
     resources = resources.filter((resource: any) => {
       if (!resourceUrls.includes(resource.resourceUrl)) {
         resourceUrls.push(resource.resourceUrl as string)
