@@ -25,7 +25,7 @@
     "puppeteer": "^1.10.0",
     "retry-axios": "^0.3.2",
     "sinon": "^6.1.5",
-    "winston": "^2.0.0"
+    "winston": "3.1.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
