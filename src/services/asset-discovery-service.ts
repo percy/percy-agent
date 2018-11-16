@@ -51,7 +51,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     let resources: any[] = []
 
     this.page.on('request', async request => {
-      if (request.isNavigationRequest()) {
+      if (request.url() === rootResourceUrl) {
         await request.respond({
           status: 200,
           contentType: 'text/html',
