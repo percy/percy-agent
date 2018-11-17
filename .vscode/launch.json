@@ -15,6 +15,10 @@
       ],
       "env": {
         "LOG_LEVEL": "debug",
+        // for local dev use: http://dev.percy.local:9090/api/v1
+        // for prod, leave blank
+        "PERCY_API": "",
+        // add your local or prod token to debug
         "PERCY_TOKEN": "",
       },
       "outFiles": [
