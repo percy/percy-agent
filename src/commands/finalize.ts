@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command'
-import PercyCommand from './percy-command'
-import BuildService from '../services/build-service'
 import * as colors from 'colors'
+import BuildService from '../services/build-service'
+import PercyCommand from './percy-command'
 
 export default class Finalize extends PercyCommand {
   static description = 'finalize a build'

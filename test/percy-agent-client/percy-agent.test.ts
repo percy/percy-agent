@@ -1,7 +1,6 @@
 import {expect} from 'chai'
-import PercyAgent from '../../src/percy-agent-client/percy-agent'
 import * as sinon from 'sinon'
-require('../../src/percy-agent-client/percy-agent')
+import PercyAgent from '../../src/percy-agent-client/percy-agent'
 
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
@@ -16,7 +15,7 @@ describe('PercyAgent', () => {
 
     subject = new PercyAgent({
       clientInfo: 'Test Client',
-      xhr
+      xhr,
     })
 
     subject.client.agentConnected = true
@@ -31,8 +30,8 @@ describe('PercyAgent', () => {
     it('posts the percy agent process', () => {
       subject.snapshot('test snapshot')
 
-      let request = requests[0]
-      let requestBody = JSON.parse(request.requestBody)
+      const request = requests[0]
+      const requestBody = JSON.parse(request.requestBody)
 
       expect(request.url).to.equal('http://localhost:5338/percy/snapshot')
       expect(request.method).to.equal('post')
@@ -40,34 +39,34 @@ describe('PercyAgent', () => {
     })
 
     it('serializes text input elements', () => {
-      let inputName = document.getElementById('testInputText') as HTMLInputElement
+      const inputName = document.getElementById('testInputText') as HTMLInputElement
       inputName.value = 'test input value'
       subject.snapshot('test snapshot')
 
-      let request = requests[0]
-      let requestBody = JSON.parse(request.requestBody)
+      const request = requests[0]
+      const requestBody = JSON.parse(request.requestBody)
 
       expect(requestBody.domSnapshot).to.contain('test input value')
     })
 
     it('serializes checkbox elements', () => {
-      let inputName = document.getElementById('testCheckbox') as HTMLInputElement
+      const inputName = document.getElementById('testCheckbox') as HTMLInputElement
       inputName.checked = true
 
       subject.snapshot('test snapshot')
-      let request = requests[0]
-      let requestBody = JSON.parse(request.requestBody)
+      const request = requests[0]
+      const requestBody = JSON.parse(request.requestBody)
 
       expect(requestBody.domSnapshot).to.contain('checked')
     })
 
     it('serializes radio button elements', () => {
-      let inputName = document.getElementById('testRadioButton') as HTMLInputElement
+      const inputName = document.getElementById('testRadioButton') as HTMLInputElement
       inputName.checked = true
 
       subject.snapshot('test snapshot')
-      let request = requests[0]
-      let requestBody = JSON.parse(request.requestBody)
+      const request = requests[0]
+      const requestBody = JSON.parse(request.requestBody)
 
       expect(requestBody.domSnapshot).to.contain('checked')
     })

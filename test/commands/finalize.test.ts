@@ -5,10 +5,10 @@ describe('finalize', () => {
     .stub(process, 'env', {PERCY_TOKEN: 'abc'})
     .stderr()
     .command(['finalize'])
-    .catch(err => expect(err.message).to.equal(
+    .catch((err) => expect(err.message).to.equal(
       'Missing required flag:\n' +
       ' -a, --all\n' +
-      'See more help with --help'
+      'See more help with --help',
     ))
     .it('requires --all flag')
 
@@ -29,9 +29,9 @@ describe('finalize', () => {
       .stub(process, 'env', {PERCY_PARALLEL_NONCE: 'foo', PERCY_TOKEN: 'abc'})
       .stdout()
       .command(['finalize', '--all'])
-      .do(output => expect(output.stdout).to.equal(
+      .do((output) => expect(output.stdout).to.equal(
         '[percy] Finalized parallel build.\n' +
-        '[percy] Visual diffs are now processing: http://mockurl\n'
+        '[percy] Visual diffs are now processing: http://mockurl\n',
       ))
       .it('finalizes a parallel build')
   })
@@ -39,11 +39,11 @@ describe('finalize', () => {
 
 function testWithNock() {
   return test
-    .nock('https://percy.io', api => api
+    .nock('https://percy.io', (api) => api
       .post('/api/v1/builds/123/finalize?all-shards=true')
-      .reply(201)
-    ).nock('https://percy.io', api => api
+      .reply(201),
+    ).nock('https://percy.io', (api) => api
       .post('/api/v1/builds/')
-      .reply(201, {data: {id: 123, attributes: {'build-number': '456', 'web-url': 'http://mockurl'}}})
+      .reply(201, {data: {id: 123, attributes: {'build-number': '456', 'web-url': 'http://mockurl'}}}),
   )
 }

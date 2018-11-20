@@ -1,12 +1,12 @@
-import PercyClientService from './percy-client-service'
-import ResourceService from './resource-service'
-import logger from '../utils/logger'
-import {URL} from 'url'
-import * as fs from 'fs'
 import * as crypto from 'crypto'
-import * as puppeteer from 'puppeteer'
+import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
+import * as puppeteer from 'puppeteer'
+import {URL} from 'url'
+import logger from '../utils/logger'
+import PercyClientService from './percy-client-service'
+import ResourceService from './resource-service'
 
 export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
@@ -24,7 +24,7 @@ export default class ResponseService extends PercyClientService {
     const url = this.parseRequestPath(response.url())
 
     // skip responses already processed
-    let processResponse = this.responsesProcessed.get(url)
+    const processResponse = this.responsesProcessed.get(url)
     if (processResponse) { return processResponse }
 
     const request = response.request()

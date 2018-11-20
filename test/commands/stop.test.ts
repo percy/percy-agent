@@ -1,20 +1,20 @@
 import * as chai from 'chai'
+import {describe} from 'mocha'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import {describe} from 'mocha'
-import ProcessService from '../../src/services/process-service'
 import Stop from '../../src/commands/stop'
+import ProcessService from '../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
 const expect = chai.expect
 
 describe('Stop', () => {
-  let sandbox = sinon.createSandbox()
+  const sandbox = sinon.createSandbox()
 
   function stubProcessServiceWithIsRunning(isRunning: boolean): any {
-    let processService = ProcessService.prototype as ProcessService
+    const processService = ProcessService.prototype as ProcessService
     sandbox.stub(processService, 'isRunning').returns(isRunning)
 
-    let stop = new Stop([], '') as Stop
+    const stop = new Stop([], '') as Stop
     sandbox.stub(stop, 'processService').returns(processService)
 
     return processService
@@ -30,7 +30,7 @@ describe('Stop', () => {
       stubProcessServiceWithIsRunning(true)
       nock(/localhost/).post('/percy/stop').replyWithError('socket hang up')
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await Stop.run([])
       })
 
@@ -40,7 +40,7 @@ describe('Stop', () => {
     it('warns you when percy agent is already stopped', async () => {
       stubProcessServiceWithIsRunning(false)
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await Stop.run([])
       })
 

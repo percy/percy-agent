@@ -2,24 +2,22 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
 import {Server} from 'http'
-import BuildService from './build-service'
-import SnapshotService from './snapshot-service'
-import logger, {profile} from '../utils/logger'
-import ProcessService from './process-service'
-import {AgentOptions} from './agent-options'
 import configuration, {SnapshotConfiguration} from '../utils/configuration'
+import logger, {profile} from '../utils/logger'
+import {AgentOptions} from './agent-options'
+import BuildService from './build-service'
+import ProcessService from './process-service'
+import SnapshotService from './snapshot-service'
 
 export default class AgentService {
-  readonly app: express.Application
-  readonly publicDirectory: string = `${__dirname}/../../dist/public`
-
   buildService: BuildService
   snapshotService: SnapshotService | null = null
 
-  snapshotCreationPromises: any[] = []
-  resourceUploadPromises: any[] = []
-  server: Server | null = null
-  buildId: number | null = null
+  private readonly app: express.Application
+  private readonly publicDirectory: string = `${__dirname}/../../dist/public`
+  private snapshotCreationPromises: any[] = []
+  private server: Server | null = null
+  private buildId: number | null = null
 
   constructor() {
     this.app = express()
@@ -69,14 +67,14 @@ export default class AgentService {
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
-    let resources = await this.snapshotService.buildResources(
+    const resources = await this.snapshotService.buildResources(
       request.body.url,
       request.body.domSnapshot,
     )
 
     const snapshotConfiguration = (configuration().snapshot || {}) as SnapshotConfiguration
 
-    let snapshotCreation = this.snapshotService.create(
+    const snapshotCreation = this.snapshotService.create(
       request.body.name,
       resources,
       request.body.enableJavascript,
@@ -91,13 +89,13 @@ export default class AgentService {
     return response.json({success: true})
   }
 
-  private async handleStop(_request: express.Request, response: express.Response) {
+  private async handleStop(_: express.Request, response: express.Response) {
     await this.stop()
     new ProcessService().kill()
     return response.json({success: true})
   }
 
-  private async handleHealthCheck(_request: express.Request, response: express.Response) {
+  private async handleHealthCheck(_: express.Request, response: express.Response) {
     return response.json({success: true})
   }
 }

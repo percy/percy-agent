@@ -12,7 +12,7 @@ export default class ProcessService {
 
     const spawnedProcess = childProcess.spawn(process.argv[0], args, {
       detached: false,
-      stdio: ['ignore', logFile, logFile] // logs and errors go into the same file
+      stdio: ['ignore', logFile, logFile], // logs and errors go into the same file
     })
 
     this.writePidFile(spawnedProcess.pid)
@@ -26,7 +26,7 @@ export default class ProcessService {
   }
 
   getPid(): number {
-    let pidFileContents: Buffer = fs.readFileSync(ProcessService.PID_PATH)
+    const pidFileContents: Buffer = fs.readFileSync(ProcessService.PID_PATH)
     return parseInt(pidFileContents.toString('utf8').trim())
   }
 

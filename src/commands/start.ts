@@ -1,9 +1,8 @@
 import {flags} from '@oclif/command'
+import * as path from 'path'
+import {AgentOptions} from '../services/agent-options'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
-import {AgentOptions} from '../services/agent-options'
-
-const path = require('path')
 
 export default class Start extends PercyCommand {
   static description = 'Starts the percy process.'
@@ -15,20 +14,20 @@ export default class Start extends PercyCommand {
   ]
 
   static flags = {
-    port: flags.integer({
-      char: 'p',
-      description: 'port',
-      default: 5338,
+    'detached': flags.boolean({
+      char: 'd',
+      description: 'start as a detached process',
     }),
     'network-idle-timeout': flags.integer({
       char: 't',
-      description: 'asset discovery network idle timeout (in milliseconds)',
       default: 50,
+      description: 'asset discovery network idle timeout (in milliseconds)',
     }),
-    detached: flags.boolean({
-      char: 'd',
-      description: 'start as a detached process',
-    })
+    'port': flags.integer({
+      char: 'p',
+      default: 5338,
+      description: 'port',
+    }),
   }
 
   async run() {
@@ -38,8 +37,8 @@ export default class Start extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const {flags} = this.parse(Start)
-    let port = flags.port as number
-    let networkIdleTimeout = flags['network-idle-timeout'] as number
+    const port = flags.port as number
+    const networkIdleTimeout = flags['network-idle-timeout'] as number
 
     if (flags.detached) {
       this.runDetached({port, networkIdleTimeout})
@@ -76,8 +75,8 @@ export default class Start extends PercyCommand {
         path.resolve(`${__dirname}/../../bin/run`),
         'start',
         '-p', String(options.port),
-        '-t', String(options.networkIdleTimeout)
-      ]
+        '-t', String(options.networkIdleTimeout),
+      ],
     )
 
     if (pid) {

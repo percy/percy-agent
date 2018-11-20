@@ -1,7 +1,7 @@
-import PercyClientService from './percy-client-service'
-import AssetDiscoveryService from './asset-discovery-service'
-import ResourceService from './resource-service'
 import {logError, profile} from '../utils/logger'
+import AssetDiscoveryService from './asset-discovery-service'
+import PercyClientService from './percy-client-service'
+import ResourceService from './resource-service'
 
 interface SnapshotServiceOptions {
   networkIdleTimeout?: number
@@ -19,7 +19,7 @@ export default class SnapshotService extends PercyClientService {
     this.buildId = buildId
     this.assetDiscoveryService = new AssetDiscoveryService(
       buildId,
-      {networkIdleTimeout: options.networkIdleTimeout}
+      {networkIdleTimeout: options.networkIdleTimeout},
     )
 
     this.resourceService = new ResourceService(buildId)
@@ -29,15 +29,15 @@ export default class SnapshotService extends PercyClientService {
     rootResourceUrl: string,
     domSnapshot = '',
   ): Promise<any[]> {
-    let rootResource = await this.percyClient.makeResource({
-      resourceUrl: rootResourceUrl,
+    const rootResource = await this.percyClient.makeResource({
       content: domSnapshot,
       isRoot: true,
       mimetype: 'text/html',
+      resourceUrl: rootResourceUrl,
     })
 
     let resources: any[] = []
-    let discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
+    const discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
     resources = resources.concat([rootResource])
     resources = resources.concat(discoveredResources)
 
@@ -52,7 +52,7 @@ export default class SnapshotService extends PercyClientService {
     minHeight: number | null = null,
   ): Promise<any> {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
-      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight: minHeight}
+      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight: minHeight},
     ).then(async (response: any) => {
       await this.resourceService.uploadMissingResources(response, resources)
       return response

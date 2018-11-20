@@ -1,6 +1,6 @@
+import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
 import {SnapshotOptions} from './snapshot-options'
-import {ClientOptions} from './client-options'
 
 export default class PercyAgent {
   clientInfo: string | null
@@ -21,13 +21,13 @@ export default class PercyAgent {
 
     this.client = new PercyAgentClient(
       `http://localhost:${this.port}`,
-      this.xhr
+      this.xhr,
     )
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
-    let documentObject = options.document || document
-    let domSnapshot = this.domSnapshot(documentObject)
+    const documentObject = options.document || document
+    const domSnapshot = this.domSnapshot(documentObject)
 
     this.client.post('/percy/snapshot', {
       name,
@@ -37,13 +37,13 @@ export default class PercyAgent {
       minHeight: options.minHeight || options.minimumHeight,
       clientInfo: this.clientInfo,
       environmentInfo: this.environmentInfo,
-      domSnapshot
+      domSnapshot,
     })
   }
 
   private domSnapshot(documentObject: Document): string {
-    let doctype = this.getDoctype(documentObject)
-    let dom = this.stabalizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
+    const doctype = this.getDoctype(documentObject)
+    const dom = this.stabalizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
 
     let domClone = dom.cloneNode(true) as HTMLElement
 
@@ -71,7 +71,7 @@ export default class PercyAgent {
 
   private serializeInputElements(domClone: HTMLElement): HTMLElement {
     const inputNodes = domClone.getElementsByTagName('input')
-    let inputElements = Array.prototype.slice.call(inputNodes) as HTMLInputElement[]
+    const inputElements = Array.prototype.slice.call(inputNodes) as HTMLInputElement[]
 
     inputElements.forEach((elem: HTMLInputElement) => {
       switch (elem.type) {
@@ -90,7 +90,7 @@ export default class PercyAgent {
   }
 
   private stabalizeDOM(dom: HTMLElement) {
-    let stabilizedDOM = this.serializeInputElements(dom)
+    const stabilizedDOM = this.serializeInputElements(dom)
     // more calls to come here
 
     return stabilizedDOM

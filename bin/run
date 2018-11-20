@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 
+// tslint:disable
 require('@oclif/command').run()
-.catch(require('@oclif/errors/handle'))
+.catch(require('@oclif/errors/handle'));

@@ -1,17 +1,17 @@
-const {stdout, stderr} = require('stdout-stderr')
+import * as std from 'stdout-stderr'
 
 export async function captureStdOut(callback: any): Promise<string> {
-  stdout.start()
+  std.stdout.start()
   await callback()
-  stdout.stop()
+  std.stdout.stop()
 
-  return stdout.output
+  return std.stdout.output
 }
 
 export async function captureStdErr(callback: any): Promise<string> {
-  stderr.start()
+  std.stderr.start()
   await callback()
-  stderr.stop()
+  std.stderr.stop()
 
-  return stderr.output
+  return std.stderr.output
 }
