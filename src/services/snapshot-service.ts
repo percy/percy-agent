@@ -30,10 +30,10 @@ export default class SnapshotService extends PercyClientService {
     domSnapshot = '',
   ): Promise<any[]> {
     const rootResource = await this.percyClient.makeResource({
+      resourceUrl: rootResourceUrl,
       content: domSnapshot,
       isRoot: true,
       mimetype: 'text/html',
-      resourceUrl: rootResourceUrl,
     })
 
     let resources: any[] = []

@@ -8,8 +8,8 @@ export default class PercyClientService {
 
     this.percyClient = new PercyClient({
       apiUrl: process.env.PERCY_API,
-      clientInfo: this.clientInfo(),
       token: process.env.PERCY_TOKEN,
+      clientInfo: this.clientInfo(),
     })
   }
 
