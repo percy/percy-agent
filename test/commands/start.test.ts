@@ -24,7 +24,7 @@ describe('Start', () => {
       return agentService
     }
 
-    function ProcessServiceStub(pid: number | null): ProcessService {
+    function ProcessServiceStub(pid?: number): ProcessService {
       const processService = ProcessService.prototype as ProcessService
       sandbox.stub(processService, 'runDetached').returns(pid)
 
@@ -55,7 +55,7 @@ describe('Start', () => {
     })
 
     it('starts percy agent in detached mode', async () => {
-      const processService = ProcessServiceStub(null)
+      const processService = ProcessServiceStub()
 
       await captureStdOut(async () => {
         await Start.run(['--detached'])
@@ -81,7 +81,7 @@ describe('Start', () => {
     })
 
     it('warns when percy agent is already running', async () => {
-      ProcessServiceStub(null)
+      ProcessServiceStub()
 
       const stdout = await captureStdOut(async () => {
         await Start.run(['--detached'])
