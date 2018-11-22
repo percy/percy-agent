@@ -1,7 +1,7 @@
 import {flags} from '@oclif/command'
 import Axios from 'axios'
-import PercyCommand from './percy-command'
 import {logError} from '../utils/logger'
+import PercyCommand from './percy-command'
 
 export default class Stop extends PercyCommand {
   static description = 'Stops the percy process.'
@@ -15,8 +15,8 @@ export default class Stop extends PercyCommand {
   static flags = {
     port: flags.integer({
       char: 'p',
-      description: 'port',
       default: 5338,
+      description: 'port',
     }),
   }
 

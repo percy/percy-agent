@@ -7,7 +7,7 @@ function waitForNetworkIdle(page: puppeteer.Page, timeout = 50, maxInflightReque
 
   let inflight = 0
   let fulfill: any
-  let promise = new Promise(x => fulfill = x)
+  const promise = new Promise((x) => fulfill = x)
   let timeoutId = setTimeout(onTimeoutDone, timeout)
   return promise
 
@@ -20,16 +20,19 @@ function waitForNetworkIdle(page: puppeteer.Page, timeout = 50, maxInflightReque
 
   function onRequestStarted() {
     ++inflight
-    if (inflight > maxInflightRequests)
+    if (inflight > maxInflightRequests) {
       clearTimeout(timeoutId)
+    }
   }
 
   function onRequestFinished() {
-    if (inflight === 0)
+    if (inflight === 0) {
       return
+    }
     --inflight
-    if (inflight === maxInflightRequests)
+    if (inflight === maxInflightRequests) {
       timeoutId = setTimeout(onTimeoutDone, timeout)
+    }
   }
 }
 

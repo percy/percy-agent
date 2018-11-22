@@ -1,8 +1,8 @@
 import {describe} from 'mocha'
-import {captureStdOut} from '../helpers/stdout'
-import AgentService from '../../src/services/agent-service'
-import chai from '../support/chai'
 import * as nock from 'nock'
+import AgentService from '../../src/services/agent-service'
+import {captureStdOut} from '../helpers/stdout'
+import chai from '../support/chai'
 const expect = chai.expect
 
 describe('AgentService', () => {
@@ -35,14 +35,14 @@ describe('AgentService', () => {
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
         .end((error, response) => {
-          expect(error).to.be.null
+          expect(error).to.be.eq(null)
           expect(response).to.have.status(200)
           expect(response).to.have.header('content-type', /application\/javascript/)
         })
     })
 
     it('logs to stdout that it created a build', async () => {
-      let stdout = await captureStdOut(() => subject.start({port}))
+      const stdout = await captureStdOut(() => subject.start({port}))
       expect(stdout).to.match(/\[percy\] created build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })
@@ -56,7 +56,7 @@ describe('AgentService', () => {
 
       chai.request(`http://${host}`)
         .get('/percy-agent.js')
-        .catch(async error => {
+        .catch(async (error) => {
           await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
         })
     })
@@ -64,7 +64,7 @@ describe('AgentService', () => {
     it('logs to stdout that it finalized a build', async () => {
       await captureStdOut(() => subject.start({port}))
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await subject.stop()
       })
 

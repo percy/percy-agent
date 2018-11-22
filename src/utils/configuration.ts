@@ -1,6 +1,6 @@
-let yaml = require('js-yaml')
-let fs = require('fs')
-let path = require('path')
+import * as fs from 'fs'
+import * as yaml from 'js-yaml'
+import * as path from 'path'
 
 export interface SnapshotConfiguration {
   widths?: [number],
@@ -12,7 +12,7 @@ export interface Configuration {
   snapshot: SnapshotConfiguration
 }
 
-let configuration = (relativePath = '.percy.yml'): Configuration => {
+const configuration = (relativePath = '.percy.yml'): Configuration => {
   const configFilePath = path.join(process.cwd(), relativePath)
 
   try {
@@ -20,7 +20,13 @@ let configuration = (relativePath = '.percy.yml'): Configuration => {
   } catch {
     // this is ok because we just use this configuration as one of the fallbacks
     // in a chain. snapshot specific options -> agent configuration -> default values
-    return {} as Configuration
+
+    const defaultConfiguration: Configuration = {
+      version: 1.0, snapshot: {},
+    }
+
+    return defaultConfiguration
+
   }
 }
 

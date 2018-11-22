@@ -1,14 +1,14 @@
-import {describe} from 'mocha'
 import {expect} from 'chai'
-import {captureStdOut} from '../helpers/stdout'
-import SnapshotService from '../../src/services/snapshot-service'
+import {describe} from 'mocha'
 import * as nock from 'nock'
+import SnapshotService from '../../src/services/snapshot-service'
+import {captureStdOut} from '../helpers/stdout'
 
 describe('SnapshotService', () => {
   const snapshotId = 1
   const buildId = 10
 
-  let subject = new SnapshotService(buildId)
+  const subject = new SnapshotService(buildId)
 
   beforeEach(async () => {
     nock('https://percy.io')
@@ -30,7 +30,7 @@ describe('SnapshotService', () => {
 
       await captureStdOut(async () => {
         snapshotResponse = await subject.create(
-          'my test', []
+          'my test', [],
         )
       })
 

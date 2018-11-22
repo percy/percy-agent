@@ -1,34 +1,34 @@
 import * as chai from 'chai'
-import * as nock from 'nock'
-import * as sinon from 'sinon'
 import {describe} from 'mocha'
-import {captureStdOut} from '../helpers/stdout'
+import * as nock from 'nock'
+import * as path from 'path'
+import * as sinon from 'sinon'
 import Start from '../../src/commands/start'
-import ProcessService from '../../src/services/process-service'
 import AgentService from '../../src/services/agent-service'
+import ProcessService from '../../src/services/process-service'
+import {captureStdOut} from '../helpers/stdout'
 
 const expect = chai.expect
-const path = require('path')
 
 describe('Start', () => {
   describe('#run', () => {
-    let sandbox = sinon.createSandbox()
+    const sandbox = sinon.createSandbox()
 
     function AgentServiceStub(): AgentService {
-      let agentService = AgentService.prototype as AgentService
+      const agentService = AgentService.prototype as AgentService
       sandbox.stub(agentService, 'start')
 
-      let start = new Start([], '') as Start
+      const start = new Start([], '') as Start
       sandbox.stub(start, 'agentService').returns(agentService)
 
       return agentService
     }
 
-    function ProcessServiceStub(pid: number | null): ProcessService {
-      let processService = ProcessService.prototype as ProcessService
+    function ProcessServiceStub(pid?: number): ProcessService {
+      const processService = ProcessService.prototype as ProcessService
       sandbox.stub(processService, 'runDetached').returns(pid)
 
-      let start = new Start([], '') as Start
+      const start = new Start([], '') as Start
       sandbox.stub(start, 'processService').returns(processService)
 
       return processService
@@ -44,9 +44,9 @@ describe('Start', () => {
     })
 
     it('starts percy agent', async () => {
-      let agentServiceStub = AgentServiceStub()
+      const agentServiceStub = AgentServiceStub()
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await Start.run([])
       })
 
@@ -55,24 +55,24 @@ describe('Start', () => {
     })
 
     it('starts percy agent in detached mode', async () => {
-      let processService = ProcessServiceStub(null)
+      const processService = ProcessServiceStub()
 
       await captureStdOut(async () => {
         await Start.run(['--detached'])
       })
 
       expect(processService.runDetached).to.calledWithMatch(
-        [path.resolve(`${__dirname}/../../bin/run`), 'start', '-p', '5338', '-t', '50']
+        [path.resolve(`${__dirname}/../../bin/run`), 'start', '-p', '5338', '-t', '50'],
       )
     })
 
     it('starts percy agent on a specific port', async () => {
-      let agentServiceStub = AgentServiceStub()
+      const agentServiceStub = AgentServiceStub()
 
-      let port = '55000'
-      let options = ['--port', port]
+      const port = '55000'
+      const options = ['--port', port]
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await Start.run(options)
       })
 
@@ -81,9 +81,9 @@ describe('Start', () => {
     })
 
     it('warns when percy agent is already running', async () => {
-      ProcessServiceStub(null)
+      ProcessServiceStub()
 
-      let stdout = await captureStdOut(async () => {
+      const stdout = await captureStdOut(async () => {
         await Start.run(['--detached'])
       })
 

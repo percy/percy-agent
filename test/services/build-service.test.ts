@@ -1,11 +1,11 @@
-import {describe} from 'mocha'
 import {expect} from 'chai'
-import {captureStdOut} from '../helpers/stdout'
-import BuildService from '../../src/services/build-service'
+import {describe} from 'mocha'
 import * as nock from 'nock'
+import BuildService from '../../src/services/build-service'
+import {captureStdOut} from '../helpers/stdout'
 
 describe('BuildService', () => {
-  let subject = new BuildService()
+  const subject = new BuildService()
 
   const buildCreateResponse = require('../fixtures/build-create.json')
   const buildId = buildCreateResponse.data.id
@@ -38,7 +38,7 @@ describe('BuildService', () => {
     })
 
     it('finalizes a build', async () => {
-      let stdout = await captureStdOut(() => subject.finalize())
+      const stdout = await captureStdOut(() => subject.finalize())
       expect(stdout).to.match(/\[percy\] finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })

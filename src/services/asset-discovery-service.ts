@@ -1,8 +1,8 @@
+import * as puppeteer from 'puppeteer'
+import logger, {logError, profile} from '../utils/logger'
+import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
-import logger, {logError, profile} from '../utils/logger'
-import * as puppeteer from 'puppeteer'
-import waitForNetworkIdle from '../utils/wait-for-network-idle'
 
 interface AssetDiscoveryOptions {
   networkIdleTimeout?: number
@@ -28,7 +28,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('-> assetDiscoveryService.puppeteer.launch')
     this.browser = await puppeteer.launch({
       args: ['--no-sandbox'],
-      handleSIGINT : false
+      handleSIGINT : false,
     })
     profile('-> assetDiscoveryService.puppeteer.launch')
 
@@ -50,19 +50,19 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let resources: any[] = []
 
-    this.page.on('request', async request => {
+    this.page.on('request', async (request) => {
       if (request.url() === rootResourceUrl) {
         await request.respond({
-          status: 200,
-          contentType: 'text/html',
           body: domSnapshot,
+          contentType: 'text/html',
+          status: 200,
         })
       } else {
         await request.continue()
       }
     })
 
-    this.page.on('response', async response => {
+    this.page.on('response', async (response) => {
       try {
         const resource = await this.responseService.processResponse(rootResourceUrl, response)
 
@@ -80,7 +80,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     this.page.removeAllListeners()
 
-    let resourceUrls: string[] = []
+    const resourceUrls: string[] = []
 
     // Dedup by resourceUrl as they must be unique when sent to Percy API down the line.
     resources = resources.filter((resource: any) => {

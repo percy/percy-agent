@@ -1,10 +1,10 @@
-import {describe} from 'mocha'
 import {expect} from 'chai'
+import {describe} from 'mocha'
 import ProcessService from '../../src/services/process-service'
 import {createPidFile, deletePidFile} from '../helpers/process'
 
 describe('ProcessService', () => {
-  let subject = new ProcessService()
+  const subject = new ProcessService()
 
   afterEach(() => {
     deletePidFile()

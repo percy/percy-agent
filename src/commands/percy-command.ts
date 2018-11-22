@@ -1,8 +1,8 @@
 import {Command} from '@oclif/command'
-import logger from '../utils/logger'
+import * as winston from 'winston'
 import AgentService from '../services/agent-service'
 import ProcessService from '../services/process-service'
-import * as winston from 'winston'
+import logger from '../utils/logger'
 
 export default class PercyCommand extends Command {
   static hidden = true

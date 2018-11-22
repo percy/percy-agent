@@ -1,6 +1,6 @@
-import PercyClientService from './percy-client-service'
-import logger, {logError, profile} from '../utils/logger'
 import * as path from 'path'
+import logger, {logError, profile} from '../utils/logger'
+import PercyClientService from './percy-client-service'
 
 export default class ResourceService extends PercyClientService {
   resourcesUploaded: any[] = []
@@ -12,9 +12,9 @@ export default class ResourceService extends PercyClientService {
   }
 
   createResourceFromFile(responseUrl: string, copyFilePath: string, contentType = ''): any {
-    let copyFullPath = path.resolve(copyFilePath)
-    let sha = path.basename(copyFilePath)
-    let resourceUrl = responseUrl
+    const copyFullPath = path.resolve(copyFilePath)
+    const sha = path.basename(copyFilePath)
+    const resourceUrl = responseUrl
 
     logger.debug('creating resource')
     logger.debug(`-> response: ${responseUrl}`)
@@ -28,24 +28,24 @@ export default class ResourceService extends PercyClientService {
       resourceUrl,
       localPath: copyFullPath,
       sha,
-      mimetype: contentType
+      mimetype: contentType,
     })
   }
 
   async uploadMissingResources(response: any, resources: any[]): Promise<boolean> {
     profile('-> resourceService.uploadMissingResources')
 
-    let snapshotResponse = {
+    const snapshotResponse = {
       buildId: this.buildId,
       response,
-      resources
+      resources,
     }
 
     try {
       await this.percyClient.uploadMissingResources(
         snapshotResponse.buildId,
         snapshotResponse.response,
-        snapshotResponse.resources
+        snapshotResponse.resources,
       )
       profile('-> resourceService.uploadMissingResources', {resources: resources.length})
 

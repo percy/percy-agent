@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 
+// tslint:disable:no-var-requires no-submodule-imports
 require('@oclif/command').run()
 .catch(require('@oclif/errors/handle'))
