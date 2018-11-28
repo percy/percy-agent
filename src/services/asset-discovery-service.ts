@@ -11,7 +11,6 @@ interface AssetDiscoveryOptions {
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
-  page: puppeteer.Page | null
 
   readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
   networkIdleTimeout: number // ms
@@ -21,7 +20,6 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService(buildId)
     this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
-    this.page = null
   }
 
   async setup() {
@@ -31,26 +29,26 @@ export default class AssetDiscoveryService extends PercyClientService {
       handleSIGINT : false,
     })
     profile('-> assetDiscoveryService.puppeteer.launch')
-
-    profile('-> assetDiscoveryService.browser.newPage')
-    this.page = await this.browser.newPage()
-    await this.page.setRequestInterception(true)
-    profile('-> assetDiscoveryService.browser.newPage')
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
-    if (!this.browser || !this.page) {
+    if (!this.browser) {
       logger.error('Puppeteer failed to open with a page.')
       return []
     }
 
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
+    profile('-> assetDiscoveryService.browser.newPage')
+    const page = await this.browser.newPage()
+    await page.setRequestInterception(true)
+    profile('-> assetDiscoveryService.browser.newPage')
+
     let resources: any[] = []
 
-    this.page.on('request', async (request) => {
+    page.on('request', async (request) => {
       if (request.url() === rootResourceUrl) {
         await request.respond({
           body: domSnapshot,
@@ -62,7 +60,7 @@ export default class AssetDiscoveryService extends PercyClientService {
       }
     })
 
-    this.page.on('response', async (response) => {
+    page.on('response', async (response) => {
       try {
         const resource = await this.responseService.processResponse(rootResourceUrl, response)
 
@@ -71,14 +69,12 @@ export default class AssetDiscoveryService extends PercyClientService {
     })
 
     profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
-    await this.page.goto(rootResourceUrl)
+    await page.goto(rootResourceUrl)
     profile('--> assetDiscoveryService.page.goto')
 
     profile('--> assetDiscoveryService.waitForNetworkIdle')
-    await waitForNetworkIdle(this.page, this.networkIdleTimeout).catch(logError)
+    await waitForNetworkIdle(page, this.networkIdleTimeout).catch(logError)
     profile('--> assetDiscoveryService.waitForNetworkIdle')
-
-    this.page.removeAllListeners()
 
     const resourceUrls: string[] = []
 
@@ -91,13 +87,14 @@ export default class AssetDiscoveryService extends PercyClientService {
       return false
     })
 
+    await page.close()
+
     profile('-> assetDiscoveryService.discoverResources', {resourcesDiscovered: resources.length})
 
     return resources
   }
 
   async teardown() {
-    await this.closePage()
     await this.closeBrowser()
   }
 
@@ -105,11 +102,5 @@ export default class AssetDiscoveryService extends PercyClientService {
     if (!this.browser) { return }
     await this.browser.close()
     this.browser = null
-  }
-
-  private async closePage() {
-    if (!this.page) { return }
-    await this.page.close()
-    this.page = null
   }
 }
