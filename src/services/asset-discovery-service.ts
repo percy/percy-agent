@@ -46,6 +46,8 @@ export default class AssetDiscoveryService extends PercyClientService {
       return []
     }
 
+    rootResourceUrl = this.parseRequestPath(rootResourceUrl)
+
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     let resources: any[] = []
