@@ -80,6 +80,8 @@ export default class AgentService {
       request.body.enableJavascript,
       request.body.widths || snapshotConfiguration.widths,
       request.body.minHeight || snapshotConfiguration['min-height'],
+      request.body.clientInfo,
+      request.body.environmentInfo,
     )
 
     this.snapshotCreationPromises.push(snapshotCreation)
