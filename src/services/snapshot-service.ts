@@ -50,8 +50,8 @@ export default class SnapshotService extends PercyClientService {
     enableJavaScript = false,
     widths: number[] | null = null,
     minHeight: number | null = null,
-    clientInfo: string | null= null,
-    environmentInfo: string | null= null,
+    clientInfo: string | null = null,
+    environmentInfo: string | null = null,
   ): Promise<any> {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
       this.buildId, resources, {name, widths, enableJavaScript, minimumHeight: minHeight, clientInfo, environmentInfo},
