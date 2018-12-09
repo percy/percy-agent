@@ -35,6 +35,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('-> assetDiscoveryService.browser.newPage')
     this.page = await this.browser.newPage()
     await this.page.setRequestInterception(true)
+    await this.page.setJavaScriptEnabled(false)
     profile('-> assetDiscoveryService.browser.newPage')
   }
 
