@@ -9,28 +9,46 @@ export class PercyAgentClient {
     this.healthCheck()
   }
 
-  post(path: string, data: any) {
+  post(path: string, data: any): Promise <any> {
     if (!this.agentConnected) {
       console.warn('percy agent not started.')
-      return
+      return Promise.resolve()
     }
 
-    this.xhr.open('post', `${this.agentHost}${path}`, false) // synchronous request
-    this.xhr.setRequestHeader('Content-Type', 'application/json')
-    this.xhr.send(JSON.stringify(data))
+    return this._makeRequest(
+      `${this.agentHost}${path}`,
+      'post',
+      JSON.stringify(data),
+      'application/json',
+    )
   }
 
-  healthCheck() {
-    try {
-      this.xhr.open('get', `${this.agentHost}/percy/healthcheck`, false)
-      this.xhr.onload = () => {
-        if (this.xhr.status === 200) {
-          this.agentConnected = true
+  healthCheck(): Promise <any> {
+    return this._makeRequest(
+      `${this.agentHost}/percy/healthcheck`, 'get')
+    .then(() => {
+      this.agentConnected = true
+    })
+  }
+
+  _makeRequest(url: string, method?: string, data?: any, contentType?: string): Promise <any> {
+    return new Promise<any>(
+      (resolve, reject) => {
+        this.xhr.onload = function() {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(this.response)
+          } else {
+            reject(new Error(this.statusText))
+          }
         }
-      }
-      this.xhr.send()
-    } catch {
-      this.agentConnected = false
-    }
+        this.xhr.onerror = function() {
+          reject(new Error('XMLHttpRequest Error: ' + this.statusText))
+        }
+        this.xhr.open(method || 'get', url)
+        if (contentType) {
+          this.xhr.setRequestHeader('Content-Type', contentType)
+        }
+        this.xhr.send(data)
+    })
   }
 }
