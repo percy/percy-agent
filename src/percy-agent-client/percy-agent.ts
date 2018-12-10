@@ -32,7 +32,7 @@ export default class PercyAgent {
     this.client.post('/percy/snapshot', {
       name,
       url: documentObject.URL,
-      enableJavascript: options.enableJavascript,
+      enableJavaScript: options.enableJavaScript || options.enableJavascript,
       widths: options.widths,
       minHeight: options.minHeight || options.minimumHeight,
       clientInfo: this.clientInfo,

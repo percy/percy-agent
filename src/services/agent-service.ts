@@ -70,6 +70,7 @@ export default class AgentService {
     const resources = await this.snapshotService.buildResources(
       request.body.url,
       request.body.domSnapshot,
+      request.body.enableJavaScript,
     )
 
     const snapshotConfiguration = (configuration().snapshot || {}) as SnapshotConfiguration
@@ -77,7 +78,7 @@ export default class AgentService {
     const snapshotCreation = this.snapshotService.create(
       request.body.name,
       resources,
-      request.body.enableJavascript,
+      request.body.enableJavaScript,
       request.body.widths || snapshotConfiguration.widths,
       request.body.minHeight || snapshotConfiguration['min-height'],
       request.body.clientInfo,

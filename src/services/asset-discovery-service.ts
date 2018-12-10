@@ -35,11 +35,11 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('-> assetDiscoveryService.browser.newPage')
     this.page = await this.browser.newPage()
     await this.page.setRequestInterception(true)
-    await this.page.setJavaScriptEnabled(false)
+
     profile('-> assetDiscoveryService.browser.newPage')
   }
 
-  async discoverResources(rootResourceUrl: string, domSnapshot: string): Promise<any[]> {
+  async discoverResources(rootResourceUrl: string, domSnapshot: string, enableJavaScript = false): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
     if (!this.browser || !this.page) {
@@ -52,6 +52,8 @@ export default class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     let resources: any[] = []
+
+    await this.page.setJavaScriptEnabled(enableJavaScript)
 
     this.page.on('request', async (request) => {
       if (request.url() === rootResourceUrl) {
