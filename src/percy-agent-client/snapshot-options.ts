@@ -1,7 +1,8 @@
 export interface SnapshotOptions {
-  enableJavascript?: boolean,
+  enableJavaScript?: boolean,
+  enableJavascript?: boolean, // deprecated. Use enableJavaScript
   widths?: number[],
   minHeight?: number,
-  minimumHeight?: number,
+  minimumHeight?: number, // deprecated. Use minHeight
   document?: Document,
 }

@@ -28,6 +28,7 @@ export default class SnapshotService extends PercyClientService {
   async buildResources(
     rootResourceUrl: string,
     domSnapshot = '',
+    enableJavaScript = false,
   ): Promise<any[]> {
     const rootResource = await this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,
@@ -37,7 +38,11 @@ export default class SnapshotService extends PercyClientService {
     })
 
     let resources: any[] = []
-    const discoveredResources = await this.assetDiscoveryService.discoverResources(rootResourceUrl, domSnapshot)
+    const discoveredResources = await this.assetDiscoveryService.discoverResources(
+      rootResourceUrl,
+      domSnapshot,
+      enableJavaScript,
+    )
     resources = resources.concat([rootResource])
     resources = resources.concat(discoveredResources)
 
