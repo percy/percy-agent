@@ -32,8 +32,10 @@ export default class PercyAgent {
     this.client.post('/percy/snapshot', {
       name,
       url: documentObject.URL,
+      // enableJavascript is deprecated. Use enableJavaScript
       enableJavaScript: options.enableJavaScript || options.enableJavascript,
       widths: options.widths,
+      // minimumHeight is deprecated. Use minHeight
       minHeight: options.minHeight || options.minimumHeight,
       clientInfo: this.clientInfo,
       environmentInfo: this.environmentInfo,
