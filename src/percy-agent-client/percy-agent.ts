@@ -45,7 +45,7 @@ export default class PercyAgent {
 
   private domSnapshot(documentObject: Document): string {
     const doctype = this.getDoctype(documentObject)
-    const dom = this.stabalizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
+    const dom = this.stabilizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
 
     let domClone = dom.cloneNode(true) as HTMLElement
 
@@ -91,7 +91,7 @@ export default class PercyAgent {
     return domClone
   }
 
-  private stabalizeDOM(dom: HTMLElement) {
+  private stabilizeDOM(dom: HTMLElement) {
     const stabilizedDOM = this.serializeInputElements(dom)
     // more calls to come here
 
