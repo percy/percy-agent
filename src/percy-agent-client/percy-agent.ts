@@ -16,6 +16,7 @@ export default class PercyAgent {
   constructor(options: ClientOptions = {}) {
     this.clientInfo = options.clientInfo || null
     this.environmentInfo = options.environmentInfo || null
+    // Default to 'true' unless explicitly disabled.
     this.postSnapshotDirectly = options.postSnapshotDirectly !== false
     this.domTransformation = options.domTransformation || null
     this.port = options.port || 5338
