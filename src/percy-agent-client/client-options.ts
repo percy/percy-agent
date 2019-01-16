@@ -1,7 +1,7 @@
 export interface ClientOptions {
   clientInfo?: string,
   environmentInfo?: string,
-  postSnapshotDirectly?: boolean,
+  handleAgentCommunication?: boolean,
   xhr?: any,
   domTransformation?: any,
   port?: number

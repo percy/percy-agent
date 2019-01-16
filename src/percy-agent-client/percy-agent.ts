@@ -6,10 +6,10 @@ export default class PercyAgent {
   clientInfo: string | null
   environmentInfo: string | null
   xhr: any
-  postSnapshotDirectly: boolean
+  handleAgentCommunication: boolean
   port: number
   domTransformation: any | null
-  client: PercyAgentClient | null
+  client: PercyAgentClient | null = null
 
   readonly defaultDoctype = '<!DOCTYPE html>'
 
@@ -17,19 +17,16 @@ export default class PercyAgent {
     this.clientInfo = options.clientInfo || null
     this.environmentInfo = options.environmentInfo || null
     // Default to 'true' unless explicitly disabled.
-    this.postSnapshotDirectly = options.postSnapshotDirectly !== false
+    this.handleAgentCommunication = options.handleAgentCommunication !== false
     this.domTransformation = options.domTransformation || null
     this.port = options.port || 5338
 
-    if (this.postSnapshotDirectly) {
+    if (this.handleAgentCommunication) {
       this.xhr = options.xhr || XMLHttpRequest
       this.client = new PercyAgentClient(
         `http://localhost:${this.port}`,
         this.xhr,
       )
-    } else {
-      this.xhr = null
-      this.client = null
     }
   }
 
@@ -37,7 +34,7 @@ export default class PercyAgent {
     const documentObject = options.document || document
     const domSnapshot = this.domSnapshot(documentObject)
 
-    if (this.postSnapshotDirectly && this.client) {
+    if (this.handleAgentCommunication && this.client) {
       this.client.post('/percy/snapshot', {
         name,
         url: documentObject.URL,
