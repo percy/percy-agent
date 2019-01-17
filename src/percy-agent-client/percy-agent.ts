@@ -6,41 +6,50 @@ export default class PercyAgent {
   clientInfo: string | null
   environmentInfo: string | null
   xhr: any
+  handleAgentCommunication: boolean
   port: number
   domTransformation: any | null
-  client: PercyAgentClient
+  client: PercyAgentClient | null = null
 
   readonly defaultDoctype = '<!DOCTYPE html>'
 
   constructor(options: ClientOptions = {}) {
     this.clientInfo = options.clientInfo || null
     this.environmentInfo = options.environmentInfo || null
-    this.xhr = options.xhr || XMLHttpRequest
+    // Default to 'true' unless explicitly disabled.
+    this.handleAgentCommunication = options.handleAgentCommunication !== false
     this.domTransformation = options.domTransformation || null
     this.port = options.port || 5338
 
-    this.client = new PercyAgentClient(
-      `http://localhost:${this.port}`,
-      this.xhr,
-    )
+    if (this.handleAgentCommunication) {
+      this.xhr = options.xhr || XMLHttpRequest
+      this.client = new PercyAgentClient(
+        `http://localhost:${this.port}`,
+        this.xhr,
+      )
+    }
   }
 
   snapshot(name: string, options: SnapshotOptions = {}) {
     const documentObject = options.document || document
     const domSnapshot = this.domSnapshot(documentObject)
 
-    this.client.post('/percy/snapshot', {
-      name,
-      url: documentObject.URL,
-      // enableJavascript is deprecated. Use enableJavaScript
-      enableJavaScript: options.enableJavaScript || options.enableJavascript,
-      widths: options.widths,
-      // minimumHeight is deprecated. Use minHeight
-      minHeight: options.minHeight || options.minimumHeight,
-      clientInfo: this.clientInfo,
-      environmentInfo: this.environmentInfo,
-      domSnapshot,
-    })
+    if (this.handleAgentCommunication && this.client) {
+      this.client.post('/percy/snapshot', {
+        name,
+        url: documentObject.URL,
+        // enableJavascript is deprecated. Use enableJavaScript
+        enableJavaScript: options.enableJavaScript || options.enableJavascript,
+        widths: options.widths,
+        // minimumHeight is deprecated. Use minHeight
+        minHeight: options.minHeight || options.minimumHeight,
+        clientInfo: this.clientInfo,
+        environmentInfo: this.environmentInfo,
+        domSnapshot,
+      })
+    }
+
+    return domSnapshot
   }
 
   private domSnapshot(documentObject: Document): string {

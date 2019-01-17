@@ -18,7 +18,9 @@ describe('PercyAgent', () => {
       xhr,
     })
 
-    subject.client.agentConnected = true
+    if (subject.client) {
+      subject.client.agentConnected = true
+    }
   })
 
   afterEach(() => {
