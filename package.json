@@ -9,7 +9,7 @@
   "watch": {
     "build": {
       "patterns": [
-        "src"
+        "src/percy-agent-client"
       ],
       "extensions": "ts",
       "legacyWatch": true,
