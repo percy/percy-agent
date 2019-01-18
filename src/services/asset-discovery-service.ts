@@ -66,6 +66,7 @@ export default class AssetDiscoveryService extends PercyClientService {
           contentType: 'text/html',
           status: 200,
         })
+        return
       }
 
       await request.continue()
