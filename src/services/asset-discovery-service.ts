@@ -55,15 +55,20 @@ export default class AssetDiscoveryService extends PercyClientService {
     await this.page.setJavaScriptEnabled(enableJavaScript)
 
     this.page.on('request', async (request) => {
+      if (!this.shouldRequestResolve(request)) {
+        await request.abort()
+        return
+      }
+
       if (request.url() === rootResourceUrl) {
         await request.respond({
           body: domSnapshot,
           contentType: 'text/html',
           status: 200,
         })
-      } else {
-        await request.continue()
       }
+
+      await request.continue()
     })
 
     this.page.on('response', async (response) => {
@@ -98,6 +103,22 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('-> assetDiscoveryService.discoverResources', {resourcesDiscovered: resources.length})
 
     return resources
+  }
+
+  shouldRequestResolve(request: puppeteer.Request) {
+    const requestPurpose = request.headers().purpose
+
+    switch (requestPurpose) {
+      case 'prefetch':
+      case 'preload':
+      case 'dns-prefetch':
+      case 'prerender':
+      case 'preconnect':
+      case 'subresource':
+        return false
+      default:
+        return true
+    }
   }
 
   async teardown() {
