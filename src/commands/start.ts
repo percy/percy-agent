@@ -1,6 +1,7 @@
 import {flags} from '@oclif/command'
 import * as path from 'path'
 import {AgentOptions} from '../services/agent-options'
+import Constants from '../services/constants'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
@@ -10,7 +11,7 @@ export default class Start extends PercyCommand {
 
   static examples = [
     '$ percy start\n' +
-    'info: percy has started on port 5338.',
+    `info: percy has started on port ${Constants.PORT}.`,
   ]
 
   static flags = {
@@ -25,7 +26,7 @@ export default class Start extends PercyCommand {
     }),
     'port': flags.integer({
       char: 'p',
-      default: 5338,
+      default: Constants.PORT,
       description: 'port',
     }),
   }

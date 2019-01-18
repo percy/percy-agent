@@ -6,6 +6,7 @@ import configuration, {SnapshotConfiguration} from '../utils/configuration'
 import logger, {profile} from '../utils/logger'
 import {AgentOptions} from './agent-options'
 import BuildService from './build-service'
+import Constants from './constants'
 import ProcessService from './process-service'
 import SnapshotService from './snapshot-service'
 
@@ -27,10 +28,10 @@ export default class AgentService {
     this.app.use(bodyParser.json({limit: '50mb'}))
     this.app.use(express.static(this.publicDirectory))
 
-    this.app.post('/percy/snapshot', this.handleSnapshot.bind(this))
-    this.app.post('/percy/stop', this.handleStop.bind(this))
+    this.app.post(Constants.SNAPSHOT_PATH, this.handleSnapshot.bind(this))
+    this.app.post(Constants.STOP_PATH, this.handleStop.bind(this))
 
-    this.app.get('/percy/healthcheck', this.handleHealthCheck.bind(this))
+    this.app.get(Constants.HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
   }
