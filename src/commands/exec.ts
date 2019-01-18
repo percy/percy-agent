@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import {spawn} from 'child_process'
+import Constants from '../services/constants'
 import PercyCommand from './percy-command'
 
 export default class Exec extends PercyCommand {
@@ -20,7 +21,7 @@ export default class Exec extends PercyCommand {
     }),
     'port': flags.integer({
       char: 'p',
-      default: 5338,
+      default: Constants.PORT,
       description: 'port',
     }),
   }

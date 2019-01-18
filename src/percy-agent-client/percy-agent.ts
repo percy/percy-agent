@@ -1,3 +1,4 @@
+import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
 import {SnapshotOptions} from './snapshot-options'
@@ -19,7 +20,7 @@ export default class PercyAgent {
     // Default to 'true' unless explicitly disabled.
     this.handleAgentCommunication = options.handleAgentCommunication !== false
     this.domTransformation = options.domTransformation || null
-    this.port = options.port || 5338
+    this.port = options.port || Constants.PORT
 
     if (this.handleAgentCommunication) {
       this.xhr = options.xhr || XMLHttpRequest
@@ -35,7 +36,7 @@ export default class PercyAgent {
     const domSnapshot = this.domSnapshot(documentObject)
 
     if (this.handleAgentCommunication && this.client) {
-      this.client.post('/percy/snapshot', {
+      this.client.post(Constants.SNAPSHOT_PATH, {
         name,
         url: documentObject.URL,
         // enableJavascript is deprecated. Use enableJavaScript

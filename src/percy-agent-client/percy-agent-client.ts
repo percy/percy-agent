@@ -1,3 +1,5 @@
+import Constants from '../services/constants'
+
 export class PercyAgentClient {
   xhr: XMLHttpRequest
   agentHost: string
@@ -22,7 +24,7 @@ export class PercyAgentClient {
 
   healthCheck() {
     try {
-      this.xhr.open('get', `${this.agentHost}/percy/healthcheck`, false)
+      this.xhr.open('get', `${this.agentHost}${Constants.HEALTHCHECK_PATH}`, false)
       this.xhr.onload = () => {
         if (this.xhr.status === 200) {
           this.agentConnected = true

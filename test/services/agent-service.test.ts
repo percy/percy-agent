@@ -1,13 +1,14 @@
 import {describe} from 'mocha'
 import * as nock from 'nock'
 import AgentService from '../../src/services/agent-service'
+import Constants from '../../src/services/constants'
 import {captureStdOut} from '../helpers/stdout'
 import chai from '../support/chai'
 const expect = chai.expect
 
 describe('AgentService', () => {
   const subject = new AgentService()
-  const port = 5338
+  const port = Constants.PORT
   const host = `localhost:${port}`
   const buildCreateResponse = require('../fixtures/build-create.json')
   const buildId = buildCreateResponse.data.id
