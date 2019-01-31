@@ -55,7 +55,7 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "eslint-config-oclif": "^3.0.0",
-    "globby": "^8.0.1",
+    "globby": "^9.0.0",
     "husky": "^1.0.0-rc.13",
     "mocha": "^5.2.0",
     "nock": "^9.6.1",
