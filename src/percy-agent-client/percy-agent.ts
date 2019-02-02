@@ -1,6 +1,7 @@
 import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
+import {serializeCssOm} from './serialize-cssom'
 import {SnapshotOptions} from './snapshot-options'
 
 export default class PercyAgent {
@@ -55,7 +56,7 @@ export default class PercyAgent {
 
   private domSnapshot(documentObject: Document): string {
     const doctype = this.getDoctype(documentObject)
-    const dom = this.stabilizeDOM(documentObject.documentElement as HTMLElement) as HTMLElement
+    const dom = this.stabilizeDOM(documentObject)
 
     let domClone = dom.cloneNode(true) as HTMLElement
 
@@ -101,8 +102,9 @@ export default class PercyAgent {
     return domClone
   }
 
-  private stabilizeDOM(dom: HTMLElement) {
-    const stabilizedDOM = this.serializeInputElements(dom)
+  private stabilizeDOM(doc: Document): HTMLElement {
+    const docWithSerializedCSSOM: Document = serializeCssOm(doc)
+    const stabilizedDOM = this.serializeInputElements(docWithSerializedCSSOM.documentElement)
     // more calls to come here
 
     return stabilizedDOM
