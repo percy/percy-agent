@@ -25,5 +25,18 @@
       <input id="testCheckbox" type="checkbox"/>
       <input id="testRadioButton" type="radio"/>
     </p>
+
+    <!-- Test elements for CSSOM serialization. -->
+    <div id="jsStyled"></div>
+
+    <!-- Owner node of style has no inner text -->
+    <svg>
+      <defs>
+        <style>.cls-1 { fill: #8d7bd8 }</style>
+      </defs>
+    </svg>
+
+    <!-- End of test elements for CSSOM serialization. -->
+
   </body>
 </html>
