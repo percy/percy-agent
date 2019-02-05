@@ -82,7 +82,8 @@ export default class PercyAgent {
     return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
   }
 
-  private serializeInputElements(domClone: HTMLElement): HTMLElement {
+  private serializeInputElements(doc: HTMLDocument): HTMLDocument {
+    const domClone = doc.documentElement
     const inputNodes = domClone.getElementsByTagName('input')
     const inputElements = Array.prototype.slice.call(inputNodes) as HTMLInputElement[]
 
@@ -99,14 +100,15 @@ export default class PercyAgent {
       }
     })
 
-    return domClone
+    return doc
   }
 
-  private stabilizeDOM(doc: Document): HTMLElement {
-    const docWithSerializedCSSOM = serializeCssOm(doc)
-    const stabilizedDOM = this.serializeInputElements(docWithSerializedCSSOM.documentElement)
+  private stabilizeDOM(doc: HTMLDocument): HTMLElement {
+    let stabilizedDOM = doc
+    stabilizedDOM = serializeCssOm(stabilizedDOM)
+    stabilizedDOM = this.serializeInputElements(stabilizedDOM)
     // more calls to come here
 
-    return stabilizedDOM
+    return stabilizedDOM.documentElement
   }
 }
