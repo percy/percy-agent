@@ -103,7 +103,7 @@ export default class PercyAgent {
   }
 
   private stabilizeDOM(doc: Document): HTMLElement {
-    const docWithSerializedCSSOM: Document = serializeCssOm(doc)
+    const docWithSerializedCSSOM = serializeCssOm(doc)
     const stabilizedDOM = this.serializeInputElements(docWithSerializedCSSOM.documentElement)
     // more calls to come here
 
