@@ -12,8 +12,9 @@ describe('serializeCssOm', () => {
       jsStyledDiv.style.background = 'red'
 
       const domSnapshot = subject.snapshot('test snapshot')
-      const parsedDoc = (new DOMParser()).parseFromString(domSnapshot, 'text/html')
+      expect(domSnapshot).to.contain('data-percy-cssom-serialized')
 
+      const parsedDoc = (new DOMParser()).parseFromString(domSnapshot, 'text/html')
       expect(parsedDoc.getElementById('jsStyled')!.style.background).to.contain('red')
     })
   })
