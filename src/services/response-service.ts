@@ -39,7 +39,7 @@ export default class ResponseService extends PercyClientService {
 
     if (!this.ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
       // Only allow 2XX responses:
-      logger.debug(`Skipping [disallowed_response_status]: ${response.url()}`)
+      logger.debug(`Skipping [disallowed_response_status_${response.status()}]: ${response.url()}`)
       return
     }
 
