@@ -31,15 +31,27 @@ export default class ResponseService extends PercyClientService {
     const parsedRootResourceUrl = new URL(rootResourceUrl)
     const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
 
-    if (
+    if (request.url() === rootResourceUrl) {
       // Always skip the root resource
-      request.url() === rootResourceUrl
+      logger.debug(`Skipping [is_root_resource]: ${request.url()}`)
+      return
+    }
+
+    if (!this.ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
       // Only allow 2XX responses:
-      || !this.ALLOWED_RESPONSE_STATUSES.includes(response.status())
-      || !request.url().startsWith(rootUrl) // Disallow remote resource requests.
-      || !response.url().startsWith(rootUrl) // Disallow remote redirects.
-      ) {
-      logger.debug(`Skipping: ${response.url()}`)
+      logger.debug(`Skipping [disallowed_response_status_${response.status()}]: ${response.url()}`)
+      return
+    }
+
+    if (!request.url().startsWith(rootUrl)) {
+      // Disallow remote resource requests.
+      logger.debug(`Skipping [is_remote_resource]: ${request.url()}`)
+      return
+    }
+
+    if (!response.url().startsWith(rootUrl)) {
+      // Disallow remote redirects.
+      logger.debug(`Skipping [is_remote_redirect]: ${response.url()}`)
       return
     }
 
