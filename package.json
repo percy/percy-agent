@@ -114,6 +114,7 @@
     "preversion": "npm run clean",
     "test": "npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\"",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
+    "test-integration": "npm run build-client && percy exec -- mocha test/integration/**/*.test.ts",
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
