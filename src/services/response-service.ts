@@ -33,7 +33,7 @@ export default class ResponseService extends PercyClientService {
 
     if (request.url() === rootResourceUrl) {
       // Always skip the root resource
-      logger.debug(`Skipping [is_root_resource]: ${response.url()}`)
+      logger.debug(`Skipping [is_root_resource]: ${request.url()}`)
       return
     }
 
@@ -45,7 +45,7 @@ export default class ResponseService extends PercyClientService {
 
     if (!request.url().startsWith(rootUrl)) {
       // Disallow remote resource requests.
-      logger.debug(`Skipping [is_remote_resource]: ${response.url()}`)
+      logger.debug(`Skipping [is_remote_resource]: ${request.url()}`)
       return
     }
 
