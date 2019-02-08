@@ -1,8 +1,6 @@
 import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
-import AgentService from '../../src/services/agent-service'
-import Constants from '../../src/services/constants'
-import { agentJsFilename } from '../../src/utils/sdk-utils'
+import { agentJsFilename } from '../../src/utils/sdk-utils';
 import chai from '../support/chai'
 const expect = chai.expect
 
@@ -18,8 +16,8 @@ async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
 }
 
 describe('Integration test', () => {
-  let browser: puppeteer.Browser | null = null
-  let page: puppeteer.Page | null = null
+  let browser: puppeteer.Browser
+  let page: puppeteer.Page
 
   before(async () => {
     browser = await puppeteer.launch({
@@ -33,12 +31,12 @@ describe('Integration test', () => {
   })
 
   after(async () => {
-    browser!.close()
+    browser.close()
   })
 
   it('takes a snapshot and uploads it to Percy', async () => {
-    await page!.goto('http://example.com')
-    const domSnapshot = await snapshot(page!, 'Example.com snapshot')
+    await page.goto('http://example.com')
+    const domSnapshot = await snapshot(page, 'Example.com snapshot')
     expect(domSnapshot).contains('Example Domain')
   })
 })
