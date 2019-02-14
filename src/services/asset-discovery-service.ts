@@ -1,4 +1,5 @@
 import * as puppeteer from 'puppeteer'
+import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, {logError, profile} from '../utils/logger'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
@@ -38,7 +39,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('-> assetDiscoveryService.browser.newPage')
   }
 
-  async discoverResources(rootResourceUrl: string, domSnapshot: string, enableJavaScript = false): Promise<any[]> {
+  async discoverResources(rootResourceUrl: string, domSnapshot: string, options: SnapshotOptions): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
     if (!this.browser || !this.page) {
@@ -52,7 +53,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     let resources: any[] = []
 
-    await this.page.setJavaScriptEnabled(enableJavaScript)
+    await this.page.setJavaScriptEnabled(options.enableJavaScript || false)
 
     this.page.on('request', async (request) => {
       if (!this.shouldRequestResolve(request)) {
