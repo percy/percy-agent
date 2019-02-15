@@ -21,6 +21,9 @@ export default class AssetDiscoveryService extends PercyClientService {
   // We will only be able to process at most these many snapshot widths.
   readonly PAGE_POOL_SIZE: number = 10
 
+  // Default widths to use for asset discovery. Must match Percy service defaults.
+  readonly DEFAULT_WIDTHS: number[] = [1280, 375]
+
   constructor(buildId: number, options: AssetDiscoveryOptions = {}) {
     super()
     this.responseService = new ResponseService(buildId)
@@ -67,7 +70,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     const enableJavaScript = options.enableJavaScript || false
-    const widths = (options.widths || [this.pages[0].viewport().width])
+    const widths = options.widths || this.DEFAULT_WIDTHS
 
     // Do asset discovery for each requested width in parallel. We don't keep track of which page
     // is doing work, and instead rely on the fact that we always have fewer widths to work on than
@@ -165,7 +168,9 @@ export default class AssetDiscoveryService extends PercyClientService {
 
     page.removeAllListeners()
 
+    profile('--> assetDiscoveryServer.waitForResourceProcessing')
     const maybeResources: any[] = await Promise.all(maybeResourcePromises)
+    profile('--> assetDiscoveryServer.waitForResourceProcessing')
     return maybeResources.filter((maybeResource) => maybeResource != null)
   }
 
