@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Responsive asset test case</title>
+    <meta charset="utf-8"/>
+    <style>
+      .responsive-style {
+        background-image: url('fairy-emojione.png');
+        height: 120px;
+      }
+      @media (max-width: 400px) {
+        .responsive-style {
+          background-image: url('taxi-emojione.png');
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Styled depending on browser width</h1>
+    <p class="responsive-style"></p>
+  </body>
+</html>
