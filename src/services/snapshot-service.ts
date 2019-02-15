@@ -1,3 +1,4 @@
+import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import {logError, profile} from '../utils/logger'
 import AssetDiscoveryService from './asset-discovery-service'
 import PercyClientService from './percy-client-service'
@@ -28,7 +29,7 @@ export default class SnapshotService extends PercyClientService {
   async buildResources(
     rootResourceUrl: string,
     domSnapshot = '',
-    enableJavaScript = false,
+    options: SnapshotOptions,
   ): Promise<any[]> {
     const rootResource = await this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,
@@ -41,7 +42,7 @@ export default class SnapshotService extends PercyClientService {
     const discoveredResources = await this.assetDiscoveryService.discoverResources(
       rootResourceUrl,
       domSnapshot,
-      enableJavaScript,
+      options,
     )
     resources = resources.concat([rootResource])
     resources = resources.concat(discoveredResources)
@@ -52,14 +53,12 @@ export default class SnapshotService extends PercyClientService {
   create(
     name: string,
     resources: any[],
-    enableJavaScript = false,
-    widths: number[] | null = null,
-    minHeight: number | null = null,
+    options: SnapshotOptions = {},
     clientInfo: string | null = null,
     environmentInfo: string | null = null,
   ): Promise<any> {
     const snapshotCreationPromise: Promise<any> = this.percyClient.createSnapshot(
-      this.buildId, resources, {name, widths, enableJavaScript, minimumHeight: minHeight, clientInfo, environmentInfo},
+      this.buildId, resources, { name, ...options, minimumHeight: options.minHeight, clientInfo, environmentInfo },
     ).then(async (response: any) => {
       await this.resourceService.uploadMissingResources(response, resources)
       return response
