@@ -71,7 +71,11 @@ export default class ResponseService extends PercyClientService {
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
     const filename = path.join(this.tmpDir(), sha)
 
-    fs.writeFileSync(filename, buffer)
+    if (!fs.existsSync(filename)) {
+      fs.writeFileSync(filename, buffer)
+    } else {
+      logger.debug(`Skipping file copy (already copied): ${response.url()}`)
+    }
 
     return filename
   }
