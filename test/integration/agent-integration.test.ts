@@ -84,7 +84,7 @@ describe('Integration test', () => {
     })
 
     it('snapshots all test cases', async () => {
-      const testFiles = fs.readdirSync(testCaseDir)
+      const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
       for (const fname of testFiles) {
         await page.goto(`http://localhost:${PORT}/${fname}`)
         const domSnapshot = await snapshot(page, `Test case: ${fname}`)
