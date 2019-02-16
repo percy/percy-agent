@@ -16,7 +16,13 @@ export function profile(
   callback?: (err: Error, level: string, msg: string, meta: any) => void,
 ): winston.LoggerInstance | undefined {
   if (process.env.LOG_LEVEL === 'debug') {
-    return logger.profile(id, id, meta, callback)
+    // Only pass the callback through if it is defined, because the winston.Logger implementation
+    // does not behave as expected if you pass a null callback (it will ignore the meta parameter).
+    if (callback) {
+      return logger.profile(id, id, meta, callback)
+    } else {
+      return logger.profile(id, id, meta)
+    }
   }
 }
 
