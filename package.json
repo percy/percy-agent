@@ -35,7 +35,7 @@
     "percy-client": "^3.0.3",
     "puppeteer": "1.11.0",
     "retry-axios": "^0.4.1",
-    "sinon": "7.1.1",
+    "sinon": "7.2.3",
     "winston": "^2.0.0"
   },
   "devDependencies": {
