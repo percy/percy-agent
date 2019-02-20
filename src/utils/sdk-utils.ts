@@ -23,7 +23,7 @@ export async function isAgentRunning() {
   }
 
 export async function postSnapshot(body: any) {
-    const url =`http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`
+    const url = `http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`
     return Axios({
       method: 'post',
       url,
