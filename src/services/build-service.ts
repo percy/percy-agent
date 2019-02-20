@@ -7,20 +7,25 @@ export default class BuildService extends PercyClientService {
   buildNumber: number | null = null
   buildId: number | null = null
 
-  async create(): Promise<number> {
-    const build = await this.percyClient
-      .createBuild()
-      .catch(logError)
+  async create(): Promise<number | null> {
+    try {
+      const build = await this.percyClient
+        .createBuild()
 
-    const buildData = build.body.data
+      const buildData = build.body.data
 
-    this.buildId = parseInt(buildData.id) as number
-    this.buildNumber = parseInt(buildData.attributes['build-number'])
-    this.buildUrl = buildData.attributes['web-url']
+      this.buildId = parseInt(buildData.id) as number
+      this.buildNumber = parseInt(buildData.attributes['build-number'])
+      this.buildUrl = buildData.attributes['web-url']
 
-    this.logEvent('created')
+      this.logEvent('created')
 
-    return this.buildId
+      return this.buildId
+    } catch (e) {
+      logError(e)
+    }
+
+    return null
   }
 
   async finalize() {

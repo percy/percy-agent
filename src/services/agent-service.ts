@@ -38,11 +38,16 @@ export default class AgentService {
   }
 
   async start(options: AgentOptions = {}) {
-    this.server = this.app.listen(options.port)
-
     this.buildId = await this.buildService.create()
-    this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
-    await this.snapshotService.assetDiscoveryService.setup()
+
+    if (this.buildId !== null) {
+      this.server = this.app.listen(options.port)
+      this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
+      await this.snapshotService.assetDiscoveryService.setup()
+      return
+    }
+
+    await this.stop()
   }
 
   async stop() {
