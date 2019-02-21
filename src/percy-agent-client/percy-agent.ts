@@ -96,7 +96,8 @@ export default class PercyAgent {
         }
         break
       case 'textarea':
-        elem.setAttribute('text', elem.value)
+        // setting text or value does not work but innerText does
+        elem.innerText = elem.value
       default:
         elem.setAttribute('value', elem.value)
       }
