@@ -117,6 +117,13 @@ describe('Integration test', () => {
         expect(domSnapshot).to.contain('type="checkbox" checked')
         expect(domSnapshot).to.contain('type="radio" checked')
       })
+
+      it('serializes textarea elements', async () => {
+        await page.type('#testTextarea', 'test textarea value')
+
+        const domSnapshot = await snapshot(page, 'Serialize textarea elements')
+        expect(domSnapshot).to.contain('test textarea value')
+      })
     })
   })
 })
