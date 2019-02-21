@@ -84,10 +84,10 @@ export default class PercyAgent {
 
   private serializeInputElements(doc: HTMLDocument): HTMLDocument {
     const domClone = doc.documentElement
-    const inputNodes = domClone.getElementsByTagName('input')
-    const inputElements = Array.prototype.slice.call(inputNodes) as HTMLInputElement[]
+    const formNodes = domClone.querySelectorAll('input, textarea')
+    const formElements = Array.prototype.slice.call(formNodes)
 
-    inputElements.forEach((elem: HTMLInputElement) => {
+    formElements.forEach((elem: HTMLInputElement) => {
       switch (elem.type) {
       case 'checkbox':
       case 'radio':
@@ -95,6 +95,9 @@ export default class PercyAgent {
           elem.setAttribute('checked', '')
         }
         break
+      case 'textarea':
+        // setting text or value does not work but innerText does
+        elem.innerText = elem.value
       default:
         elem.setAttribute('value', elem.value)
       }
