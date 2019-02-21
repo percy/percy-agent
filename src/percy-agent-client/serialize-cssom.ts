@@ -19,11 +19,8 @@ export function serializeCssOm(document: HTMLDocument) {
 
       // Append the serialized styles to the styleSheet's ownerNode to minimize
       // the chances of messing up the cascade order.
-      const serializedSheet = document.createElement('style')
-      serializedSheet.setAttribute('data-percy-cssom-serialized', 'true')
-      serializedSheet.type = 'text/css'
-      serializedSheet.appendChild(document.createTextNode(serializedStyles))
-      ownerNode.appendChild(serializedSheet)
+      ownerNode.setAttribute('data-percy-cssom-serialized', 'true')
+      ownerNode.appendChild(document.createTextNode(serializedStyles))
     }
   })
 
