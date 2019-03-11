@@ -19,8 +19,8 @@ export default class ResponseService extends PercyClientService {
     this.resourceService = new ResourceService(buildId)
   }
 
-  async processResponse(rootResourceUrl: string, response: puppeteer.Response): Promise<any | null> {
-    logger.debug(`processing response: ${response.url()}`)
+  async processResponse(rootResourceUrl: string, response: puppeteer.Response, width: number): Promise<any | null> {
+    logger.debug(`processing response: ${response.url()} for width: ${width}`)
     const url = this.parseRequestPath(response.url())
 
     // skip responses already processed
@@ -39,19 +39,19 @@ export default class ResponseService extends PercyClientService {
 
     if (!this.ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
       // Only allow 2XX responses:
-      logger.debug(`Skipping [disallowed_response_status_${response.status()}]: ${response.url()}`)
+      logger.debug(`Skipping [disallowed_response_status_${response.status()}] [${width} px]: ${response.url()}`)
       return
     }
 
     if (!request.url().startsWith(rootUrl)) {
       // Disallow remote resource requests.
-      logger.debug(`Skipping [is_remote_resource]: ${request.url()}`)
+      logger.debug(`Skipping [is_remote_resource] [${width} px]: ${request.url()}`)
       return
     }
 
     if (!response.url().startsWith(rootUrl)) {
       // Disallow remote redirects.
-      logger.debug(`Skipping [is_remote_redirect]: ${response.url()}`)
+      logger.debug(`Skipping [is_remote_redirect] [${width} px]: ${response.url()}`)
       return
     }
 

@@ -153,7 +153,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     page.on('response', async (response) => {
       // Parallelize the work in processResponse as much as possible, but make sure to
       // wait for it to complete before returning from the asset discovery phase.
-      const promise = this.responseService.processResponse(rootResourceUrl, response)
+      const promise = this.responseService.processResponse(rootResourceUrl, response, width)
       promise.catch(logError)
       maybeResourcePromises.push(promise)
     })
