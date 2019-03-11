@@ -67,6 +67,11 @@ describe('Integration test', () => {
       const domSnapshot = await snapshot(page, 'Buildkite snapshot')
       expect(domSnapshot).contains('Buildkite')
     })
+
+    it('snapshots with multiple widths and a video resource', async () => {
+      await page.goto('https://www.nash.io/company/careers')
+      const domSnapshot = await snapshot(page, 'Nash careers', {widths: [300, 1200]})
+    })
   })
 
   describe('on local test cases', () => {
