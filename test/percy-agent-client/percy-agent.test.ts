@@ -90,5 +90,14 @@ describe('PercyAgent', () => {
 
       expect(requestBody.domSnapshot).to.contain('checked')
     })
+
+    it('scopes the snapshot to the given selector', () => {
+      const classSnapshot = subject.snapshot('test snapshot', { scope: '.scope-class' })
+      expect(classSnapshot).to.contain('First content')
+      expect(classSnapshot).to.contain('Second content')
+      expect(classSnapshot).to.not.contain('inside of id #scope-id')
+    })
+
+    // TODO: Add more exhaustive tests for failure cases.
   })
 })

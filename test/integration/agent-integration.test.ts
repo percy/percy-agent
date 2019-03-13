@@ -43,7 +43,7 @@ describe('Integration test', () => {
     browser.close()
   })
 
-  describe('on live sites', () => {
+  xdescribe('on live sites', () => {
     it('snapshots a simple site', async () => {
       await page.goto('http://example.com')
       const domSnapshot = await snapshot(page, 'Example.com snapshot')
@@ -83,7 +83,7 @@ describe('Integration test', () => {
       server.close()
     })
 
-    it('snapshots all test cases', async () => {
+    xit('snapshots all test cases', async () => {
       const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
       for (const fname of testFiles) {
         await page.goto(`http://localhost:${PORT}/${fname}`)
@@ -91,7 +91,7 @@ describe('Integration test', () => {
       }
     })
 
-    describe('stabilizes DOM', () => {
+    xdescribe('stabilizes DOM', () => {
       before(async () => {
         await page.goto(`http://localhost:${PORT}/stabilize-dom.html`)
       })
@@ -123,6 +123,27 @@ describe('Integration test', () => {
 
         const domSnapshot = await snapshot(page, 'Serialize textarea elements')
         expect(domSnapshot).to.contain('test textarea value')
+      })
+    })
+
+    describe('scopes snapshot to a selector', () => {
+      before(async () => {
+        await page.goto(`http://localhost:${PORT}/scope.html`)
+      })
+
+      it('scopes snapshot to a class selector', async () => {
+         const classSnapshot = await snapshot(page, 'Class scope', { scope: '.scope-class' })
+         expect(classSnapshot).to.not.contain('UNSNAPSHOTTABLE')
+         expect(classSnapshot).to.contain('First content')
+         expect(classSnapshot).to.contain('Second content')
+         expect(classSnapshot).to.not.contain('inside of id #scope-id')
+      })
+
+      it('scopes snapshot to an id selector', async () => {
+         const idSnapshot = await snapshot(page, 'Id scope', { scope: '#scope-id' })
+         expect(idSnapshot).to.not.contain('UNSNAPSHOTTABLE')
+         expect(idSnapshot).to.not.contain('scope-class')
+         expect(idSnapshot).to.contain('inside of id #scope-id')
       })
     })
   })

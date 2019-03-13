@@ -1,8 +1,8 @@
 import Constants from '../services/constants'
-import {ClientOptions} from './client-options'
-import {PercyAgentClient} from './percy-agent-client'
-import {serializeCssOm} from './serialize-cssom'
-import {SnapshotOptions} from './snapshot-options'
+import { ClientOptions } from './client-options'
+import { PercyAgentClient } from './percy-agent-client'
+import { serializeCssOm } from './serialize-cssom'
+import { SnapshotOptions } from './snapshot-options'
 
 export default class PercyAgent {
   clientInfo: string | null
@@ -34,7 +34,7 @@ export default class PercyAgent {
 
   snapshot(name: string, options: SnapshotOptions = {}) {
     const documentObject = options.document || document
-    const domSnapshot = this.domSnapshot(documentObject)
+    const domSnapshot = this.domSnapshot(documentObject, options.scope)
 
     if (this.handleAgentCommunication && this.client) {
       this.client.post(Constants.SNAPSHOT_PATH, {
@@ -47,6 +47,7 @@ export default class PercyAgent {
         minHeight: options.minHeight || options.minimumHeight,
         clientInfo: this.clientInfo,
         environmentInfo: this.environmentInfo,
+        scope: options.scope,
         domSnapshot,
       })
     }
@@ -54,11 +55,15 @@ export default class PercyAgent {
     return domSnapshot
   }
 
-  private domSnapshot(documentObject: Document): string {
+  private domSnapshot(documentObject: Document, scope?: string): string {
     const doctype = this.getDoctype(documentObject)
     const dom = this.stabilizeDOM(documentObject)
 
     let domClone = dom.cloneNode(true) as HTMLElement
+
+    if (scope) {
+      domClone = this.scopeDomSnapshot(domClone, scope)
+    }
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
@@ -72,14 +77,22 @@ export default class PercyAgent {
   }
 
   private getDoctype(documentObject: Document): string {
-    return documentObject.doctype ? this.doctypeToString(documentObject.doctype) : this.defaultDoctype
+    return documentObject.doctype
+      ? this.doctypeToString(documentObject.doctype)
+      : this.defaultDoctype
   }
 
   private doctypeToString(doctype: DocumentType): string {
-    const publicDeclaration = doctype.publicId ? ` PUBLIC "${doctype.publicId}" ` : ''
-    const systemDeclaration = doctype.systemId ? ` SYSTEM "${doctype.systemId}" ` : ''
+    const publicDeclaration = doctype.publicId
+      ? ` PUBLIC "${doctype.publicId}" `
+      : ''
+    const systemDeclaration = doctype.systemId
+      ? ` SYSTEM "${doctype.systemId}" `
+      : ''
 
-    return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
+    return (
+      `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
+    )
   }
 
   private serializeInputElements(doc: HTMLDocument): HTMLDocument {
@@ -89,17 +102,17 @@ export default class PercyAgent {
 
     formElements.forEach((elem: HTMLInputElement) => {
       switch (elem.type) {
-      case 'checkbox':
-      case 'radio':
-        if (elem.checked) {
-          elem.setAttribute('checked', '')
-        }
-        break
-      case 'textarea':
-        // setting text or value does not work but innerText does
-        elem.innerText = elem.value
-      default:
-        elem.setAttribute('value', elem.value)
+        case 'checkbox':
+        case 'radio':
+          if (elem.checked) {
+            elem.setAttribute('checked', '')
+          }
+          break
+        case 'textarea':
+          // setting text or value does not work but innerText does
+          elem.innerText = elem.value
+        default:
+          elem.setAttribute('value', elem.value)
       }
     })
 
@@ -113,5 +126,30 @@ export default class PercyAgent {
     // more calls to come here
 
     return stabilizedDOM.documentElement
+  }
+
+  private scopeDomSnapshot(domClone: HTMLElement, scope: string): HTMLElement {
+    try {
+      const elements = Array.from(domClone.querySelectorAll(scope))
+      if (elements.length === 0) {
+        return domClone
+      }
+      // Empty the body element.
+      const body = domClone.querySelector('body')
+      if (!body) {
+        return domClone
+      }
+
+      while (body.firstChild) {
+        body.removeChild(body.firstChild)
+      }
+      // Append only the scoped elements back to the body.
+      elements.forEach((el) => body!.appendChild(el))
+
+      return domClone
+    } catch (error) {
+      console.log(`[percy] Could not scope snapshot to: ${scope} ; Error: ${error}`)
+      return domClone
+    }
   }
 }
