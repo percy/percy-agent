@@ -150,12 +150,24 @@ export default class AssetDiscoveryService extends PercyClientService {
     })
 
     const maybeResourcePromises: Array<Promise<any>> = []
-    page.on('response', async (response) => {
-      // Parallelize the work in processResponse as much as possible, but make sure to
-      // wait for it to complete before returning from the asset discovery phase.
-      const promise = this.responseService.processResponse(rootResourceUrl, response, width)
-      promise.catch(logError)
-      maybeResourcePromises.push(promise)
+    // Listen on 'requestfinished', which tells us a request completed successfully.
+    // We could also listen on 'response', but then we'd have to check if it was successful.
+    page.on('requestfinished', async (request) => {
+      const response = request.response()
+      if (response) {
+        // Parallelize the work in processResponse as much as possible, but make sure to
+        // wait for it to complete before returning from the asset discovery phase.
+        const promise = this.responseService.processResponse(rootResourceUrl, response, width)
+        promise.catch(logError)
+        maybeResourcePromises.push(promise)
+      } else {
+        logger.debug(`No response for ${request.url()}. Skipping.`)
+      }
+    })
+
+    // Debug log failed requests.
+    page.on('requestfailed', async (request) => {
+      logger.debug(`Failed to load ${request.url()} : ${request.failure()!.errorText}}`)
     })
 
     profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
