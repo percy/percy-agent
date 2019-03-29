@@ -32,8 +32,9 @@ export function serializeCssOm(document: HTMLDocument) {
 
 export function cleanSerializedCssOm(document: HTMLDocument) {
   // IMPORTANT: querySelectorAll(...) will not always work. In particular, in certain
-  // cases with malformed HTML (e.g. a <style> tag instead of another one), some of
-  // the elements we are looking for will not be returned.
+  // cases with malformed HTML (e.g. a <style> tag inside of another one), some of
+  // the elements we are looking for will not be returned. In that case, we will
+  // leave traces of ourselves in the underlying DOM.
   const nodes = document.querySelectorAll(`[${DATA_ATTRIBUTE}]`)
   Array.from(nodes).forEach((node: Element) => {
     node.removeAttribute(DATA_ATTRIBUTE)
