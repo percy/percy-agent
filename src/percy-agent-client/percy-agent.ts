@@ -2,6 +2,7 @@ import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
 import {cleanSerializedCssOm, serializeCssOm} from './serialize-cssom'
+import {cleanSerializedInputElements, serializeInputElements} from './serialize-input'
 import {SnapshotOptions} from './snapshot-options'
 
 export default class PercyAgent {
@@ -75,6 +76,7 @@ export default class PercyAgent {
     // method, and operate on that, but this turns out to be hard to do while
     // retaining CSS OM and input element state. Instead, we carefully remove what we added.
     cleanSerializedCssOm(documentObject)
+    cleanSerializedInputElements(documentObject)
 
     return snapshotString
   }
@@ -90,34 +92,10 @@ export default class PercyAgent {
     return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
   }
 
-  private serializeInputElements(doc: HTMLDocument): HTMLDocument {
-    const domClone = doc.documentElement
-    const formNodes = domClone.querySelectorAll('input, textarea')
-    const formElements = Array.prototype.slice.call(formNodes)
-
-    formElements.forEach((elem: HTMLInputElement) => {
-      switch (elem.type) {
-      case 'checkbox':
-      case 'radio':
-        if (elem.checked) {
-          elem.setAttribute('checked', '')
-        }
-        break
-      case 'textarea':
-        // setting text or value does not work but innerText does
-        elem.innerText = elem.value
-      default:
-        elem.setAttribute('value', elem.value)
-      }
-    })
-
-    return doc
-  }
-
   private stabilizeDOM(doc: HTMLDocument): HTMLElement {
     let stabilizedDOM = doc
     stabilizedDOM = serializeCssOm(stabilizedDOM)
-    stabilizedDOM = this.serializeInputElements(stabilizedDOM)
+    stabilizedDOM = serializeInputElements(stabilizedDOM)
     // more calls to come here
 
     return stabilizedDOM.documentElement
