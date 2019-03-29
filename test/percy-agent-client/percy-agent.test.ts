@@ -59,39 +59,6 @@ describe('PercyAgent', () => {
       expect(requestBody.minHeight).to.equal(512)
     })
 
-    it('serializes text input elements', () => {
-      const inputName = document.getElementById('testInputText') as HTMLInputElement
-      inputName.value = 'test input value'
-      subject.snapshot('test snapshot')
-
-      const request = requests[0]
-      const requestBody = JSON.parse(request.requestBody)
-
-      expect(requestBody.domSnapshot).to.contain('test input value')
-    })
-
-    it('serializes checkbox elements', () => {
-      const inputName = document.getElementById('testCheckbox') as HTMLInputElement
-      inputName.checked = true
-
-      subject.snapshot('test snapshot')
-      const request = requests[0]
-      const requestBody = JSON.parse(request.requestBody)
-
-      expect(requestBody.domSnapshot).to.contain('checked')
-    })
-
-    it('serializes radio button elements', () => {
-      const inputName = document.getElementById('testRadioButton') as HTMLInputElement
-      inputName.checked = true
-
-      subject.snapshot('test snapshot')
-      const request = requests[0]
-      const requestBody = JSON.parse(request.requestBody)
-
-      expect(requestBody.domSnapshot).to.contain('checked')
-    })
-
     it('does not alter the DOM being snapshotted', () => {
       const originalHTML = htmlWithoutSelector(document, '#mocha')
 
