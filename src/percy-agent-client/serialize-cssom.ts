@@ -1,3 +1,6 @@
+const DATA_ATTRIBUTE = 'data-percy-cssom-serialized'
+const START_COMMENT = '/* Start of Percy serialized CSSOM */'
+
 // Take all the CSS created in the CSS Object Model (CSSOM), and inject it
 // into the DOM so Percy can render it safely in our browsers.
 // Design doc:
@@ -15,14 +18,29 @@ export function serializeCssOm(document: HTMLDocument) {
         .call(styleSheet.cssRules)
         .reduce((prev: string, cssRule: CSSRule) => {
           return prev + cssRule.cssText
-        }, '')
+        }, `${START_COMMENT}\n`)
 
       // Append the serialized styles to the styleSheet's ownerNode to minimize
       // the chances of messing up the cascade order.
-      ownerNode.setAttribute('data-percy-cssom-serialized', 'true')
+      ownerNode.setAttribute(DATA_ATTRIBUTE, 'true')
       ownerNode.appendChild(document.createTextNode(serializedStyles))
     }
   })
 
   return document
+}
+
+export function cleanSerializedCssOm(document: HTMLDocument) {
+  // IMPORTANT: querySelectorAll(...) will not always work. In particular, in certain
+  // cases with malformed HTML (e.g. a <style> tag instead of another one), some of
+  // the elements we are looking for will not be returned.
+  const nodes = document.querySelectorAll(`[${DATA_ATTRIBUTE}]`)
+  Array.from(nodes).forEach((node: Element) => {
+    node.removeAttribute(DATA_ATTRIBUTE)
+    const startOfSerialized = node.innerHTML.indexOf(START_COMMENT)
+    if (startOfSerialized < 0) {
+      return
+    }
+    node.innerHTML = node.innerHTML.substring(0, startOfSerialized)
+  })
 }

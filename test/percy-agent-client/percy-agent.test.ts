@@ -90,5 +90,18 @@ describe('PercyAgent', () => {
 
       expect(requestBody.domSnapshot).to.contain('checked')
     })
+
+    it('does not alter the DOM being snapshotted', () => {
+      const originalHTML = document.documentElement.outerHTML
+
+      const firstDOMSnapshot = subject.snapshot('a snapshot')
+
+      const postSnapshotHTML = document.documentElement.outerHTML
+      expect(postSnapshotHTML).to.eq(originalHTML)
+      expect(postSnapshotHTML).to.not.contain('data-percy')
+
+      const secondDOMSnapshot = subject.snapshot('a second snapshot')
+      expect(secondDOMSnapshot).to.eq(firstDOMSnapshot)
+    })
   })
 })
