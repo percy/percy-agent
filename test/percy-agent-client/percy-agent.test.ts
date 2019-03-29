@@ -2,6 +2,7 @@ import {expect} from 'chai'
 import * as sinon from 'sinon'
 import PercyAgent from '../../src/percy-agent-client/percy-agent'
 import Constants from '../../src/services/constants'
+import { htmlWithoutSelector } from '../helpers/html-string'
 
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
@@ -92,14 +93,17 @@ describe('PercyAgent', () => {
     })
 
     it('does not alter the DOM being snapshotted', () => {
-      const originalHTML = document.documentElement.outerHTML
+      const originalHTML = htmlWithoutSelector(document, '#mocha')
 
-      const firstDOMSnapshot = subject.snapshot('a snapshot')
+      subject.snapshot('a snapshot')
 
-      const postSnapshotHTML = document.documentElement.outerHTML
+      const postSnapshotHTML = htmlWithoutSelector(document, '#mocha')
       expect(postSnapshotHTML).to.eq(originalHTML)
       expect(postSnapshotHTML).to.not.contain('data-percy')
+    })
 
+    it('multiple snapshots produce the same result', () => {
+      const firstDOMSnapshot = subject.snapshot('a snapshot')
       const secondDOMSnapshot = subject.snapshot('a second snapshot')
       expect(secondDOMSnapshot).to.eq(firstDOMSnapshot)
     })
