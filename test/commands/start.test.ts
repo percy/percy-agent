@@ -67,6 +67,26 @@ describe('Start', () => {
       )
     })
 
+    it('starts percy agent in detached mode with asset domains', async () => {
+      const processService = ProcessServiceStub()
+
+      const assetDomains = 'http://cdn1.example.com,http://cdn2.example.com'
+      const options = ['--detached', '--asset-domains', assetDomains]
+
+      await captureStdOut(async () => {
+        await Start.run(options)
+      })
+
+      expect(processService.runDetached).to.calledWithMatch(
+        [
+          path.resolve(`${__dirname}/../../bin/run`), 'start',
+          '-p', String(Constants.PORT),
+          '-t', '50',
+          '-a', assetDomains,
+        ],
+      )
+    })
+
     it('starts percy agent on a specific port', async () => {
       const agentServiceStub = AgentServiceStub()
 
@@ -78,6 +98,24 @@ describe('Start', () => {
       })
 
       expect(agentServiceStub.start).to.calledWithMatch({port: +port, networkIdleTimeout: 50})
+      expect(stdout).to.contain('[percy] percy has started.')
+    })
+
+    it('starts percy agent with additional asset domains', async () => {
+      const agentServiceStub = AgentServiceStub()
+
+      const assetDomains = 'http://cdn1.example.com,http://cdn2.example.com'
+      const options = ['--asset-domains', assetDomains]
+
+      const stdout = await captureStdOut(async () => {
+        await Start.run(options)
+      })
+
+      expect(agentServiceStub.start).to.calledWithMatch({
+        port: Constants.PORT,
+        networkIdleTimeout: 50,
+        assetDomains,
+      })
       expect(stdout).to.contain('[percy] percy has started.')
     })
 

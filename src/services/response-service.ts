@@ -10,13 +10,22 @@ import ResourceService from './resource-service'
 
 export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
+  assetDomains: string[]
 
   readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
   responsesProcessed: Map<string, string> = new Map()
 
-  constructor(buildId: number) {
+  constructor(buildId: number, assetDomains: string = '') {
     super()
     this.resourceService = new ResourceService(buildId)
+    this.assetDomains = assetDomains.split(',')
+  }
+
+  allowRequestedResource(rootUrl: string, resourceUrl: string): boolean {
+    const isRootUrl = resourceUrl.startsWith(rootUrl)
+    const isAdditionalDomain = this.assetDomains.some((d) => resourceUrl.startsWith(d))
+
+    return isRootUrl || isAdditionalDomain
   }
 
   async processResponse(rootResourceUrl: string, response: puppeteer.Response, width: number): Promise<any | null> {
@@ -43,7 +52,7 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    if (!request.url().startsWith(rootUrl)) {
+    if (!this.allowRequestedResource(rootUrl, request.url())) {
       // Disallow remote resource requests.
       logger.debug(`Skipping [is_remote_resource] [${width} px]: ${request.url()}`)
       return

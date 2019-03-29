@@ -5,7 +5,8 @@ import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
 interface SnapshotServiceOptions {
-  networkIdleTimeout?: number
+  networkIdleTimeout?: number,
+  assetDomains?: string
 }
 
 export default class SnapshotService extends PercyClientService {
@@ -20,7 +21,7 @@ export default class SnapshotService extends PercyClientService {
     this.buildId = buildId
     this.assetDiscoveryService = new AssetDiscoveryService(
       buildId,
-      {networkIdleTimeout: options.networkIdleTimeout},
+      {networkIdleTimeout: options.networkIdleTimeout, assetDomains: options.assetDomains},
     )
 
     this.resourceService = new ResourceService(buildId)

@@ -6,7 +6,8 @@ import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 
 interface AssetDiscoveryOptions {
-  networkIdleTimeout?: number
+  networkIdleTimeout?: number,
+  assetDomains?: string
 }
 
 export default class AssetDiscoveryService extends PercyClientService {
@@ -26,7 +27,7 @@ export default class AssetDiscoveryService extends PercyClientService {
 
   constructor(buildId: number, options: AssetDiscoveryOptions = {}) {
     super()
-    this.responseService = new ResponseService(buildId)
+    this.responseService = new ResponseService(buildId, options.assetDomains)
     this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
     this.pages = null

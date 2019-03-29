@@ -29,6 +29,11 @@ export default class Start extends PercyCommand {
       default: Constants.PORT,
       description: 'port',
     }),
+    'asset-domains': flags.string({
+      char: 'a',
+      default: '',
+      description: 'additional domains for asset discovery',
+    }),
   }
 
   async run() {
@@ -40,11 +45,17 @@ export default class Start extends PercyCommand {
     const {flags} = this.parse(Start)
     const port = flags.port as number
     const networkIdleTimeout = flags['network-idle-timeout'] as number
+    const assetDomains = flags['asset-domains']
+    const agentOptions: AgentOptions = {port, networkIdleTimeout}
+
+    if (assetDomains) {
+      agentOptions.assetDomains = assetDomains
+    }
 
     if (flags.detached) {
-      this.runDetached({port, networkIdleTimeout})
+      this.runDetached(agentOptions)
     } else {
-      await this.runAttached({port, networkIdleTimeout})
+      await this.runAttached(agentOptions)
     }
 
     await healthCheck(port)
@@ -71,14 +82,19 @@ export default class Start extends PercyCommand {
   }
 
   private runDetached(options: AgentOptions = {}) {
-    const pid = this.processService.runDetached(
-      [
-        path.resolve(`${__dirname}/../../bin/run`),
-        'start',
-        '-p', String(options.port),
-        '-t', String(options.networkIdleTimeout),
-      ],
-    )
+    const runOptions = [
+      path.resolve(`${__dirname}/../../bin/run`),
+      'start',
+      '-p', String(options.port),
+      '-t', String(options.networkIdleTimeout),
+    ]
+
+    if (options.assetDomains) {
+      runOptions.push('-a')
+      runOptions.push(options.assetDomains)
+    }
+
+    const pid = this.processService.runDetached(runOptions)
 
     if (pid) {
       this.logStart()

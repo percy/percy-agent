@@ -42,7 +42,10 @@ export default class AgentService {
 
     if (this.buildId !== null) {
       this.server = this.app.listen(options.port)
-      this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
+      this.snapshotService = new SnapshotService(this.buildId, {
+        networkIdleTimeout: options.networkIdleTimeout,
+        assetDomains: options.assetDomains,
+      })
       await this.snapshotService.assetDiscoveryService.setup()
       return
     }
