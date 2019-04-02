@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import * as path from 'path'
 import Constants from '../services/constants'
-import logger from './logger'
+import {logError} from './logger'
 
 export function agentJsFilename() {
   try {
@@ -33,10 +33,8 @@ export async function postSnapshot(body: any) {
       data: body,
     } as any).then(() => {
       return true
-    }).catch(() => {
-      // This code runs in the context of the SDK, so the SDK needs to have LOG_LEVEL=debug
-      // enabled for these logs to appear.
-      logger.debug(`Error posting snapshot to ${URL}`)
+    }).catch((error) => {
+      logError(error)
       return false
     })
   }
