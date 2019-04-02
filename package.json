@@ -118,8 +118,7 @@
   "repository": "percy/percy-agent",
   "scripts": {
     "build": "npm run clean && rm -rf dist && tsc && npm run build-client",
-    "build-client:new": "rollup -c",
-    "build-client": "mkdir -p dist/public && browserify src/percy-agent-client/index.ts -p [ tsify --noImplicitAny ] --standalone PercyAgent > dist/public/percy-agent.js",
+    "build-client": "rollup -c",
     "build-client-test": "npm run build-client && browserify test/percy-agent-client/*.ts -p [ tsify --noImplicitAny ] > dist-test/browserified-tests.js",
     "clean": "rm -f .oclif.manifest.json",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish --fix",
@@ -129,7 +128,7 @@
     "preversion": "npm run clean",
     "test": "npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\"",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
-    "test-integration": "npm run build-client:new && node ./bin/run exec -- mocha test/integration/**/*.test.ts",
+    "test-integration": "npm run build-client && node ./bin/run exec -- mocha test/integration/**/*.test.ts",
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
