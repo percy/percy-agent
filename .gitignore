@@ -5,3 +5,4 @@
 .percy.pid
 /tmp/*
 /dist-test
+/.rpt2_cache

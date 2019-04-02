@@ -16,6 +16,7 @@
       "delay": 1000
     }
   },
+  "browser": "dist/public/percy-agent.js",
   "bugs": "https://github.com/percy/percy-agent/issues",
   "dependencies": {
     "@oclif/command": "^1",
@@ -26,7 +27,6 @@
     "@types/express": "^4.16.0",
     "@types/js-yaml": "^3.11.2",
     "@types/puppeteer": "^1.6.0",
-    "@types/sinon": "^7.0.11",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "colors": "^1.3.2",
@@ -36,10 +36,14 @@
     "percy-client": "^3.0.3",
     "puppeteer": "^1.13.0",
     "retry-axios": "^0.4.1",
-    "sinon": "7.3.1",
     "winston": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-typescript": "^7.3.3",
     "@oclif/dev-cli": "^1",
     "@oclif/errors": "^1",
     "@oclif/test": "^1",
@@ -53,6 +57,7 @@
     "@types/mocha": "^5.2.5",
     "@types/nock": "^9.3.0",
     "@types/node": "^10.7.1",
+    "@types/sinon": "^5.0.1",
     "@types/sinon-chai": "^3.2.0",
     "browserify": "^16.2.3",
     "chai": "^4.1.2",
@@ -67,6 +72,11 @@
     "prettier": "1.14.2",
     "pryjs": "^1.0.3",
     "semantic-release": "^15.13.3",
+    "rollup": "^1.8.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.3",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "sinon": "7.2.3",
     "sinon-chai": "^3.2.0",
     "stdout-stderr": "^0.1.9",
     "testem": "^2.9.3",
@@ -109,7 +119,7 @@
   "repository": "percy/percy-agent",
   "scripts": {
     "build": "npm run clean && rm -rf dist && tsc && npm run build-client",
-    "build-client": "mkdir -p dist/public && browserify src/percy-agent-client/index.ts -p [ tsify --noImplicitAny ] --standalone PercyAgent > dist/public/percy-agent.js",
+    "build-client": "rollup -c",
     "build-client-test": "npm run build-client && browserify test/percy-agent-client/*.ts -p [ tsify --noImplicitAny ] > dist-test/browserified-tests.js",
     "clean": "rm -f .oclif.manifest.json",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish --fix",
