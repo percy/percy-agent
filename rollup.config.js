@@ -6,7 +6,7 @@ import pkg from "./package.json";
 export default {
   input: "src/percy-agent-client/index.ts",
   output: {
-    name: "percy-agent",
+    name: "PercyAgent",
     file: pkg.main,
     format: "umd"
   },
