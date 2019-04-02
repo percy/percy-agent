@@ -2,4 +2,6 @@
 // and then simply use `var percyAgent = new PercyAgent()` to create a new client instance.
 
 // tslint:disable-next-line:no-var-requires
-module.exports = require('./percy-agent').default
+import PercyAgent from './percy-agent'
+
+export default PercyAgent

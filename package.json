@@ -40,6 +40,11 @@
     "winston": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-typescript": "^7.3.3",
     "@oclif/dev-cli": "^1",
     "@oclif/errors": "^1",
     "@oclif/test": "^1",
@@ -66,6 +71,10 @@
     "npm-watch": "^0.6.0",
     "prettier": "1.14.2",
     "pryjs": "^1.0.3",
+    "rollup": "^1.8.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.2.3",
+    "rollup-plugin-node-resolve": "^4.0.1",
     "sinon": "7.2.3",
     "sinon-chai": "^3.2.0",
     "stdout-stderr": "^0.1.9",
@@ -97,7 +106,7 @@
     "agent"
   ],
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "dist/public/percy-agent.js",
   "oclif": {
     "commands": "./dist/commands",
     "bin": "percy",
@@ -109,6 +118,7 @@
   "repository": "percy/percy-agent",
   "scripts": {
     "build": "npm run clean && rm -rf dist && tsc && npm run build-client",
+    "build-client:new": "rollup -c",
     "build-client": "mkdir -p dist/public && browserify src/percy-agent-client/index.ts -p [ tsify --noImplicitAny ] --standalone PercyAgent > dist/public/percy-agent.js",
     "build-client-test": "npm run build-client && browserify test/percy-agent-client/*.ts -p [ tsify --noImplicitAny ] > dist-test/browserified-tests.js",
     "clean": "rm -f .oclif.manifest.json",
