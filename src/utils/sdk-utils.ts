@@ -23,18 +23,20 @@ export async function isAgentRunning() {
   }
 
 export async function postSnapshot(body: any) {
-    const url = `http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`
+    const URL = `http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`
+    const ONE_HUNDRED_MB_IN_BYTES = 100_000_000
+
     return Axios({
       method: 'post',
-      url,
+      maxContentLength: ONE_HUNDRED_MB_IN_BYTES,
+      url: URL,
       data: body,
     } as any).then(() => {
       return true
-    }).catch((error) => {
+    }).catch(() => {
       // This code runs in the context of the SDK, so the SDK needs to have LOG_LEVEL=debug
       // enabled for these logs to appear.
-      logger.debug(`Error posting snapshot to ${url} with body: ${body}`)
-      logger.debug(error)
+      logger.debug(`Error posting snapshot to ${URL}`)
       return false
     })
   }
