@@ -7,7 +7,7 @@ export default {
   input: "src/percy-agent-client/index.ts",
   output: {
     name: "PercyAgent",
-    file: pkg.main,
+    file: pkg.browser,
     format: "umd"
   },
   plugins: [

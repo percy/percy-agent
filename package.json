@@ -16,9 +16,6 @@
       "delay": 1000
     }
   },
-  "browser": {
-    "winston": false
-  },
   "bugs": "https://github.com/percy/percy-agent/issues",
   "dependencies": {
     "@oclif/command": "^1",
@@ -106,7 +103,8 @@
     "agent"
   ],
   "license": "MIT",
-  "main": "dist/public/percy-agent.js",
+  "main": "dist/index.js",
+  "browser": "dist/public/percy-agent.js",
   "oclif": {
     "commands": "./dist/commands",
     "bin": "percy",
