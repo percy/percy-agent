@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/percy/percy-agent/compare/v0.2.0...v0.2.1) (2019-04-03)
+
+
+### Bug Fixes
+
+* Revert & remove `browser` from `package.json` ([#123](https://github.com/percy/percy-agent/issues/123)) ([994f2ad](https://github.com/percy/percy-agent/commit/994f2ad))
+
 # [0.2.0](https://github.com/percy/percy-agent/compare/v0.1.18...v0.2.0) (2019-04-03)
 
 
