@@ -1,8 +1,8 @@
 import * as chai from 'chai'
-import * as nock from 'nock'
 import {describe} from 'mocha'
+import * as nock from 'nock'
 import HealthCheck from '../../src/commands/health-check'
-import {captureStdOut, captureStdErr} from '../helpers/stdout'
+import {captureStdErr, captureStdOut} from '../helpers/stdout'
 
 const expect = chai.expect
 
@@ -17,7 +17,7 @@ describe('Health check', () => {
     })
 
     it('messages that agent is ready', async () => {
-      const stdout = await captureStdOut(async () => await HealthCheck.run([]))
+      const stdout = await captureStdOut(async () => HealthCheck.run([]))
 
       expect(stdout).to.contain('[percy] percy is ready.')
     })
@@ -33,7 +33,7 @@ describe('Health check', () => {
     })
 
     it('messages that agent is not ready', async () => {
-      const errorStdout = await captureStdErr(async () => await HealthCheck.run([]))
+      const errorStdout = await captureStdErr(async () => HealthCheck.run([]))
 
       expect(errorStdout).to
         .contain('[percy] Failed to establish a connection with http://localhost:5338/percy/healthcheck')
@@ -42,7 +42,7 @@ describe('Health check', () => {
     it('properly passes the port', async () => {
       const port = '5899'
       const errorStdout = await captureStdErr(async () =>
-        await HealthCheck.run(['--port', port])
+        HealthCheck.run(['--port', port]),
       )
 
       expect(errorStdout).to
