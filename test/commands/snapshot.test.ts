@@ -1,9 +1,9 @@
 import * as chai from 'chai'
-import {describe} from 'mocha'
 import * as sinon from 'sinon'
 import Snapshot from '../../src/commands/snapshot'
 import AgentService from '../../src/services/agent-service'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
+import {describe} from 'mocha'
 import {captureStdOut} from '../helpers/stdout'
 
 import {expect, test} from '@oclif/test'
@@ -28,7 +28,7 @@ describe('snapshot', () => {
 
     function StaticSnapshotServiceStub(): StaticSnapshotService {
       const staticSnapshotService = StaticSnapshotService.prototype as StaticSnapshotService
-      sandbox.stub(staticSnapshotService, 'start')
+      sandbox.stub(staticSnapshotService, 'snapshot')
 
       const snapshot = new Snapshot([], '') as Snapshot
       sandbox.stub(snapshot, 'staticSnapshotService').returns(staticSnapshotService)
@@ -55,7 +55,7 @@ describe('snapshot', () => {
       })
 
       chai.expect(agentServiceStub.start).to.be.calledWith(expectedAgentOptions)
-      chai.expect(staticSnapshotServiceStub.start).to.be.calledWith(expectedSnapshotOptions)
+      chai.expect(staticSnapshotServiceStub.snapshot).to.be.calledWith(expectedSnapshotOptions)
       chai.expect(stdout).to.match(/\[percy\] percy has started./)
     })
 
@@ -94,7 +94,7 @@ describe('snapshot', () => {
       })
 
       chai.expect(stdout).to.match(/\[percy\] percy has started./)
-      chai.expect(staticSnapshotServiceStub.start).to.be.calledWith(expectedSnapshotOptions)
+      chai.expect(staticSnapshotServiceStub.snapshot).to.be.calledWith(expectedSnapshotOptions)
       chai.expect(agentServiceStub.start).to.be.calledWith(expectedAgentOptions)
     })
   })

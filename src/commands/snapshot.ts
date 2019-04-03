@@ -80,8 +80,7 @@ export default class Snapshot extends PercyCommand {
     this.logStart()
 
     // need to start the snapshot service
-    // NEED A DIFFERENT PORT HERE
-    const staticSnapshotService = this.staticSnapshotService.start({
+    const staticSnapshotService = this.staticSnapshotService.snapshot({
       port: portPlusOne,
       staticAssetDirectory,
       widths,

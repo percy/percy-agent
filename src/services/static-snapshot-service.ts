@@ -6,7 +6,7 @@ export default class StaticSnapshotService {
     // logger.info('calling constructor...')
   }
 
-  async start(options: StaticSnapshotOptions) {
+  async snapshot(options: StaticSnapshotOptions) {
     // logger.info('starting static snapshot service...')
   }
 
