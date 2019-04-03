@@ -30,23 +30,12 @@ jobs:
     <<: *test
     docker:
       - image: circleci/node:8-browsers
-  # release:
-  #   <<: *test
-  #   steps:
-  #     - add_ssh_keys
-  #     - checkout
-  #     - restore_cache: *restore_cache
-  #     - run: yarn global add @oclif/semantic-release@2 semantic-release@15
-  #     - run: yarn --frozen-lockfile
-  #     - run: |
-  #         export PATH=/usr/local/share/.config/yarn/global/node_modules/.bin:$PATH
-  #         semantic-release -e @oclif/semantic-release
-  #     - save_cache:
-  #         key: v1-yarn-{{checksum ".circleci/config.yml"}}-{{checksum "yarn.lock"}}
-  #         paths:
-  #           - ~/cli/node_modules
-  #           - /usr/local/share/.cache/yarn
-  #           - /usr/local/share/.config/yarn
+  release:
+    <<: *test
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npx semantic-release
 
 workflows:
   version: 2
@@ -54,10 +43,7 @@ workflows:
     jobs:
       - node-10
       - node-8
-      # - release:
-      #     context: org-global
-      #     filters:
-      #       branches: {only: master}
-      #     requires:
-      #       - node-10
-      #       - node-8
+      - release:
+          requires:
+            - node-10
+            - node-8
