@@ -2,13 +2,14 @@ import Axios from 'axios'
 import * as retryAxios from 'retry-axios'
 import logger from './logger'
 
-async function healthCheck(port: number) {
+async function healthCheck(port: number, retryOptions?: object) {
   const healthcheckUrl = `http://localhost:${port}/percy/healthcheck`
 
   const retryConfig = {
     retry: 5, // with exponential back off
     retryDelay: 500,
     shouldRetry: () => true,
+    ...retryOptions,
   }
 
   const interceptorId = retryAxios.attach()
