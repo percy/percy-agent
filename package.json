@@ -22,6 +22,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-not-found": "^1.2",
+    "@semantic-release/git": "^7.0.8",
     "@types/express": "^4.16.0",
     "@types/js-yaml": "^3.11.2",
     "@types/puppeteer": "^1.6.0",
@@ -128,9 +129,12 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      ["@semantic-release/changelog", {
-        "changelogFile": "CHANGELOG.md"
-      }],
+      [
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "CHANGELOG.md"
+        }
+      ],
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
