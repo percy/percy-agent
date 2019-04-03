@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.1.18 darwin-x64 node-v8.10.0
+@percy/agent/0.2.0 linux-x64 node-v10.15.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -51,8 +51,6 @@ EXAMPLES
   $ percy exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.1.18/dist/commands/exec.ts)_
-
 ## `percy finalize`
 
 finalize a build
@@ -68,8 +66,6 @@ EXAMPLE
   $ percy finalize --all
   [percy] Finalized parallel build.
 ```
-
-_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.1.18/dist/commands/finalize.ts)_
 
 ## `percy help [COMMAND]`
 
