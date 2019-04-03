@@ -39,7 +39,7 @@ $ git push origin <topic-branch-name>
 6. [Open a Pull Request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request) with a clear title and description.
 
 **Tips**:
-- For ambitious tasks, open a Pull Request as soon as possible with the `[WIP]` prefix in the title, in order to get feedback and help from the community.
+- For ambitious tasks, open a [draft Pull Request](https://github.blog/2019-02-14-introducing-draft-pull-requests/), in order to get feedback and help from the community.
 - [Allow @percy/agent maintainers to make changes to your Pull Request branch](https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork). This way, we can rebase it and make some minor changes if necessary. All changes we make will be done in new commit and we'll ask for your approval before merging them.
 
 ## Coding rules
@@ -138,6 +138,8 @@ $ npm run test-client
 And the integration tests can be run with:
 
 ```bash
-$ npm run test-integration
+$ PERCY_TOKEN=xxx npm run test-integration
 ```
+
+You can find `PERCY_TOKEN` on your Percy project settings.
 
