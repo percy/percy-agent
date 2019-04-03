@@ -51,8 +51,6 @@ To ensure consistency and quality throughout the source code, all code modificat
 - A [test](#tests) for every possible case introduced by your code change
 - **100%** test coverage
 - [Valid commit message(s)](#commit-message-guidelines)
-- Documentation for new features
-- Updated documentation for modified features
 
 ### Commit message guidelines
 
@@ -83,17 +81,17 @@ The type must be one of the following:
 #### Examples
 
 ```commit
-`fix: stop graphite breaking when too much pressure applied`
+fix: stop graphite breaking when too much pressure applied
 ```
 
 ```commit
-`feat: add 'graphiteWidth' option`
+feat: add 'graphiteWidth' option
 
 Fix #42
 ```
 
 ```commit
-perf: remove graphiteWidth option`
+perf: remove graphiteWidth option
 
 BREAKING CHANGE: The graphiteWidth option has been removed.
 
@@ -110,7 +108,7 @@ The default graphite width of 10mm is always used for performance reasons.
 # Clone your fork of the repo into the current directory
 $ git clone https://github.com/percy/percy-agent
 # Navigate to the newly cloned directory
-$ cd <repo-name>
+$ cd percy-agent
 # Assign the original repo to a remote called "upstream"
 $ git remote add upstream https://github.com/percy/percy-agent
 # Install the dependencies
