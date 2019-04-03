@@ -98,7 +98,6 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "browser": "dist/public/percy-agent.js",
   "oclif": {
     "commands": "./dist/commands",
     "bin": "percy",
