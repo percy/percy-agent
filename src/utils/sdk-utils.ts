@@ -1,7 +1,6 @@
 import Axios from 'axios'
 import * as path from 'path'
 import Constants from '../services/constants'
-import {logError} from './logger'
 
 export function agentJsFilename() {
   try {
@@ -34,7 +33,7 @@ export async function postSnapshot(body: any) {
     } as any).then(() => {
       return true
     }).catch((error) => {
-      logError(error)
+      console.error(error)
       return false
     })
   }
