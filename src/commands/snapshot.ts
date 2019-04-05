@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import Constants from '../services/constants'
+import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
 import PercyCommand from './percy-command'
 
@@ -53,8 +54,6 @@ export default class Snapshot extends PercyCommand {
     }),
   }
 
-  staticSnapshotService: StaticSnapshotService = new StaticSnapshotService()
-
   async run() {
     await super.run()
 
@@ -79,22 +78,24 @@ export default class Snapshot extends PercyCommand {
     await this.agentService.start({port, networkIdleTimeout})
     this.logStart()
 
-    // need to start the snapshot service
-    const staticSnapshotService = this.staticSnapshotService.snapshot({
+    const options: StaticSnapshotOptions = {
       port: portPlusOne,
       staticAssetDirectory,
       widths,
       baseUrl,
       snapshotCaptureRegex,
       snapshotIgnoreRegex,
-    })
+    }
 
-    // then wait for the snapshot service to complete
-    // staticSnapshotService.on('exit', async (code: any) => {
-    //   if (this.percyWillRun()) {
-    //     // and then stop the agent
-    //     await this.agentService.stop()
-    //   }
-    // })
+    const staticSnapshotService = new StaticSnapshotService(options)
+
+    staticSnapshotService.start()
+
+    // take the snapshots
+    await staticSnapshotService.snapshotAll()
+
+    // stop the static snapshot and agent services
+    await staticSnapshotService.stop()
+    await this.agentService.stop()
   }
 }
