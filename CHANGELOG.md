@@ -1,3 +1,10 @@
+## [0.2.2](https://github.com/percy/percy-agent/compare/v0.2.1...v0.2.2) (2019-04-08)
+
+
+### Bug Fixes
+
+* do not include node-based sdk-utils in default export for package. ([#125](https://github.com/percy/percy-agent/issues/125)) ([4a61b78](https://github.com/percy/percy-agent/commit/4a61b78))
+
 ## [0.2.1](https://github.com/percy/percy-agent/compare/v0.2.0...v0.2.1) (2019-04-03)
 
 
