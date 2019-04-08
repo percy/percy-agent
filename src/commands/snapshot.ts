@@ -60,12 +60,12 @@ export default class Snapshot extends PercyCommand {
     const {args} = this.parse(Snapshot)
     const {flags} = this.parse(Snapshot)
 
-    const staticAssetDirectory = args.staticAssets as string
+    const rawStaticAssetDirectory = args.staticAssets as string
     const port = flags.port as number
     const portPlusOne = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const rawWidths = flags.widths as string
-    const baseUrl = flags.baseUrl as string
+    const rawBaseUrl = flags.baseUrl as string
     const snapshotIgnoreRegex = flags['snapshot-ignore-regex'] as string
     const snapshotCaptureRegex = flags['snapshot-capture-regex'] as string
 
@@ -73,6 +73,8 @@ export default class Snapshot extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const widths = rawWidths.split(',').map(Number)
+    const baseUrl = this.cleanTrailingSlash(rawBaseUrl)
+    const staticAssetDirectory = this.cleanTrailingSlash(rawStaticAssetDirectory)
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
@@ -97,5 +99,12 @@ export default class Snapshot extends PercyCommand {
     // stop the static snapshot and agent services
     await staticSnapshotService.stop()
     await this.agentService.stop()
+  }
+
+  private cleanTrailingSlash(input: string) {
+    if (input.substr(-1) === '/' || input.substr(-1) === '\\') {
+      return input.substr(0, input.length - 1);
+    }
+    return input
   }
 }
