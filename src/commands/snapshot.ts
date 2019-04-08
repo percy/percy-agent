@@ -99,4 +99,11 @@ export default class Snapshot extends PercyCommand {
     await staticSnapshotService.stop()
     await this.agentService.stop()
   }
+
+  private cleanTrailingSlash(input: string) {
+    if (input.substr(-1) === '/' || input.substr(-1) === '\\') {
+      return input.substr(0, input.length - 1);
+    }
+    return input
+  }
 }
