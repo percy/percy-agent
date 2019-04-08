@@ -102,7 +102,7 @@ export default class Snapshot extends PercyCommand {
 
   private cleanTrailingSlash(input: string) {
     if (input.substr(-1) === '/' || input.substr(-1) === '\\') {
-      return input.substr(0, input.length - 1);
+      return input.substr(0, input.length - 1)
     }
     return input
   }
