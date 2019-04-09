@@ -60,7 +60,7 @@ export default class Snapshot extends PercyCommand {
     const {args} = this.parse(Snapshot)
     const {flags} = this.parse(Snapshot)
 
-    const rawStaticAssetDirectory = args.staticAssets as string
+    const staticAssetDirectory = args.staticAssets as string
     const port = flags.port as number
     const portPlusOne = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
@@ -74,7 +74,7 @@ export default class Snapshot extends PercyCommand {
 
     const widths = rawWidths.split(',').map(Number)
     const baseUrl = this.cleanTrailingSlash(rawBaseUrl)
-    const staticAssetDirectory = this.cleanTrailingSlash(rawStaticAssetDirectory)
+    // const staticAssetDirectory = this.cleanTrailingSlash(rawStaticAssetDirectory)
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
@@ -102,9 +102,19 @@ export default class Snapshot extends PercyCommand {
   }
 
   private cleanTrailingSlash(input: string) {
-    if (input.substr(-1) === '/' || input.substr(-1) === '\\') {
-      return input.substr(0, input.length - 1)
+    // remove slash from first and last position in a given string
+    let output = input
+
+    // check the end
+    if (output.substr(-1) === '/' || output.substr(-1) === '\\') {
+      output = output.substr(0, output.length - 1)
     }
-    return input
+
+    // check the beginning
+    if (output.substr(0, 1) === '/' || output.substr(0, 1) === '\\') {
+      output = output.substr(1, output.length)
+    }
+
+    return output
   }
 }
