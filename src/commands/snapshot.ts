@@ -101,9 +101,19 @@ export default class Snapshot extends PercyCommand {
   }
 
   private cleanTrailingSlash(input: string) {
-    if (input.substr(-1) === '/' || input.substr(-1) === '\\') {
-      return input.substr(0, input.length - 1)
+    // remove slash from first and last position in a given string
+    let output = input
+
+    // check the end
+    if (output.substr(-1) === '/' || output.substr(-1) === '\\') {
+      output = output.substr(0, output.length - 1)
     }
-    return input
+
+    // check the beginning
+    if (output.substr(0, 1) === '/' || output.substr(0, 1) === '\\') {
+      output = output.substr(1, output.length)
+    }
+
+    return output
   }
 }

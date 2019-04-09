@@ -1,10 +1,13 @@
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
+import * as fs from 'fs'
 import {Server} from 'http'
+import * as path from 'path'
 import * as puppeteer from 'puppeteer'
+import * as walk from 'walk'
 import logger from '../utils/logger'
-import { agentJsFilename } from '../utils/sdk-utils'
+import {agentJsFilename} from '../utils/sdk-utils'
 import {StaticSnapshotOptions} from './static-snapshot-options'
 
 // Use this instead of importing PercyAgent - we only want the browserified version
@@ -39,8 +42,56 @@ export default class StaticSnapshotService {
 
     const page = await browser.newPage()
 
-    // need to make a list of pages to visit based on the html files
-    // in the static asset dir
+    const pageUrls = [] as any
+    const baseUrl = `http://localhost:${this.options.port}`
+
+    const walkOptions = {
+      listeners: {
+        file: (root: any, fileStats: any, next: any) => {
+          // make sure the file is part of the capture group, and not part of the ignore group
+          const isCapturableFile = fileStats.name.match(this.options.snapshotCaptureRegex)[0]
+          const isIgnorableFile = fileStats.name.match(this.options.snapshotIgnoreRegex)[0]
+          const shouldVisitFile = isCapturableFile && !isIgnorableFile
+
+          if (shouldVisitFile) {
+            // for each file need to build a URL for the browser to visit
+            pageUrls.push(baseUrl + root.replace(this.options.staticAssetDirectory, '') + '/' + fileStats.name)
+          }
+        },
+      },
+    }
+
+    await walk.walkSync(this.options.staticAssetDirectory, walkOptions)
+    console.log(pageUrls)
+
+    // await pageUrls.forEach(async (url: any) => {
+    //   await page.goto(url)
+
+    //   const percyAgentClientFilename = agentJsFilename()
+
+    //   await page.addScriptTag({
+    //     path: percyAgentClientFilename,
+    //   })
+
+    //   const domSnapshot = await page.evaluate((name) => {
+    //     const percyAgentClient = new PercyAgent()
+    //     return percyAgentClient.snapshot(name)
+    //   }, url)
+    // })
+
+    for (const url of pageUrls) {
+      await page.goto(url)
+      const percyAgentClientFilename = agentJsFilename()
+
+      await page.addScriptTag({
+        path: percyAgentClientFilename,
+      })
+
+      await page.evaluate((name) => {
+        const percyAgentClient = new PercyAgent()
+        return percyAgentClient.snapshot(name)
+      }, url)
+    }
 
     // then, for each file:
     // use file name as snapshot name
@@ -49,19 +100,22 @@ export default class StaticSnapshotService {
     // do snapshot
 
     // just testing one page for now
-    const url = `http://localhost:${this.options.port}/`
+    // const url = `http://localhost:${this.options.port}/`
+    // const url = pageUrls[5]
 
-    await page.goto(url)
-    const percyAgentClientFilename = agentJsFilename()
+    // await page.goto(url)
+    // const percyAgentClientFilename = agentJsFilename()
 
-    await page.addScriptTag({
-      path: percyAgentClientFilename,
-    })
+    // await page.addScriptTag({
+    //   path: percyAgentClientFilename,
+    // })
 
-    const domSnapshot = await page.evaluate((name) => {
-      const percyAgentClient = new PercyAgent()
-      return percyAgentClient.snapshot(name)
-    }, url)
+    // const domSnapshot = await page.evaluate((name) => {
+    //   const percyAgentClient = new PercyAgent()
+    //   return percyAgentClient.snapshot(name)
+    // }, url)
+
+    browser.close()
   }
 
   async snapshotAll() {
