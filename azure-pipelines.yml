@@ -25,14 +25,19 @@ steps:
   displayName: 'Install Packages'
   inputs:
     command: install
-    
+
+- script: npm test
+  displayName: 'Run test script'
+  failOnStderr: true
+  continueOnError: true
+  timeoutInMinutes: 3
 
 # install mocha-junit-reporter
-- task: Npm@0
-  displayName: 'Install mocha-junit-reporter'
-  inputs:
-    command: custom
-    customCommand: install -g mocha-junit-reporter && npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
+# - task: Npm@0
+#   displayName: 'Install mocha-junit-reporter'
+#   inputs:
+#     command: custom
+#     customCommand: install -g mocha-junit-reporter && npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
 
 # will need to install the reporter on the project
 # - task: Npm@0
@@ -45,8 +50,8 @@ steps:
 #   inputs:
 #     command: test
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml'
-    testRunTitle: 'Test results for JavaScript'
+# - task: PublishTestResults@2
+#   inputs:
+#     testResultsFormat: 'JUnit'
+#     testResultsFiles: '**/TEST-*.xml'
+#     testRunTitle: 'Test results for JavaScript'
