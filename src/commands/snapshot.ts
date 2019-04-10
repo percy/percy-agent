@@ -30,6 +30,7 @@ export default class Snapshot extends PercyCommand {
     'ignore-folders': flags.string({
       char: 'i',
       description: 'Comma-seperated string of folders to ignore. Ex: Tmp,_secrets,node_modules',
+      default: '',
     }),
     'widths': flags.string({
       char: 'w',
@@ -74,7 +75,7 @@ export default class Snapshot extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const widths = rawWidths.split(',').map(Number)
-    const ignoreFolders = rawIgnoreFolders.split(',')
+    const ignoreFolders = rawIgnoreFolders ? rawIgnoreFolders.split(',') : undefined
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
