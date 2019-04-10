@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import Constants from '../services/constants'
+import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
 import PercyCommand from './percy-command'
 
@@ -17,6 +18,7 @@ export default class Snapshot extends PercyCommand {
     '$ percy snapshot _mySite/',
     '$ percy snapshot _mySite/ --baseUrl "blog/"',
     '$ percy snapshot _mySite/ --widths "320,780,1280"',
+    '$ percy snapshot _mySite/ --ignore-folders "Tmp,_secrets,node_modules"',
   ]
 
   static flags = {
@@ -25,9 +27,9 @@ export default class Snapshot extends PercyCommand {
       description: 'Regular expression for matching the files to snapshot. Defaults to: "\.(html|htm)$"',
       default: '\.(html|htm)$',
     }),
-    'snapshot-ignore-regex': flags.string({
+    'ignore-folders': flags.string({
       char: 'i',
-      description: 'Regular expression for matching the files to NOT snapshot.',
+      description: 'Comma-seperated string of folders to ignore. Ex: Tmp,_secrets,node_modules',
     }),
     'widths': flags.string({
       char: 'w',
@@ -53,8 +55,6 @@ export default class Snapshot extends PercyCommand {
     }),
   }
 
-  staticSnapshotService: StaticSnapshotService = new StaticSnapshotService()
-
   async run() {
     await super.run()
 
@@ -67,34 +67,38 @@ export default class Snapshot extends PercyCommand {
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const rawWidths = flags.widths as string
     const baseUrl = flags.baseUrl as string
-    const snapshotIgnoreRegex = flags['snapshot-ignore-regex'] as string
+    const rawIgnoreFolders = flags['ignore-folders'] as string
     const snapshotCaptureRegex = flags['snapshot-capture-regex'] as string
 
-    // Exit snapshot command if percy will not run
+    // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
     const widths = rawWidths.split(',').map(Number)
+    const ignoreFolders = rawIgnoreFolders.split(',')
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
     this.logStart()
 
-    // need to start the snapshot service
-    const staticSnapshotService = this.staticSnapshotService.snapshot({
+    const options: StaticSnapshotOptions = {
       port: portPlusOne,
       staticAssetDirectory,
       widths,
       baseUrl,
       snapshotCaptureRegex,
-      snapshotIgnoreRegex,
-    })
+      ignoreFolders,
+    }
 
-    // then wait for the snapshot service to complete
-    // staticSnapshotService.on('exit', async (code: any) => {
-    //   if (this.percyWillRun()) {
-    //     // and then stop the agent
-    //     await this.agentService.stop()
-    //   }
-    // })
+    const staticSnapshotService = new StaticSnapshotService(options)
+
+    // start the snapshot service
+    staticSnapshotService.start()
+
+     // take the snapshots
+    await staticSnapshotService.snapshotAll()
+
+     // stop the static snapshot and agent services
+    await staticSnapshotService.stop()
+    await this.agentService.stop()
   }
 }

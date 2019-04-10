@@ -4,5 +4,5 @@ export interface StaticSnapshotOptions {
     widths: number[],
     baseUrl: string,
     snapshotCaptureRegex: string,
-    snapshotIgnoreRegex?: string | undefined,
+    ignoreFolders?: string[] | undefined,
   }

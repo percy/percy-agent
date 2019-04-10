@@ -2,12 +2,16 @@ import logger from '../utils/logger'
 import {StaticSnapshotOptions} from './static-snapshot-options'
 
 export default class StaticSnapshotService {
-  constructor() {
+  constructor(options: StaticSnapshotOptions) {
     // logger.info('calling constructor...')
   }
 
-  async snapshot(options: StaticSnapshotOptions) {
+  async start() {
     // logger.info('starting static snapshot service...')
+  }
+
+  async snapshotAll() {
+    // logger.info('taking snapshots of the static site...')
   }
 
   async stop() {
