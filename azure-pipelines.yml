@@ -15,9 +15,6 @@ strategy:
 pool:
   vmImage: $(imageName)
 
-variables:
-  PERCY_TOKEN: abc
-
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
@@ -31,11 +28,11 @@ steps:
 
 - script: npm run test-integration
   displayName: 'Run integration test script'
-  continueOnError: false
-  timeoutInMinutes: 2
+  timeoutInMinutes: 1
 
 - task: PublishTestResults@2
   displayName: 'Publish test results to Azure'
+  condition: always()
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/test-*.xml'
