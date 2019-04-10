@@ -17,11 +17,34 @@ pool:
 
 steps:
 - task: NodeTool@0
+  displayName: 'Install Node.js'
   inputs:
     versionSpec: '10.x'
-  displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run test
-  displayName: 'npm install and test'
+- task: Npm@1
+  displayName: 'Install Packages'
+  inputs:
+    command: install
+
+# install mocha-junit-reporter
+- task: Npm@0
+  displayName: 'Install mocha-junit-reporter'
+  inputs:
+    command: install -g mocha-junit-reporter
+
+# will need to install the reporter on the project
+- task: Npm@0
+  displayName: 'WIP Test runner'
+  inputs:
+    command: npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
+
+# - task: Npm@0
+#   displayName: 'Run Tests'
+#   inputs:
+#     command: test
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'Test results for JavaScript'
