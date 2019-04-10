@@ -25,18 +25,20 @@ steps:
   displayName: 'Install Packages'
   inputs:
     command: install
+    
 
 # install mocha-junit-reporter
 - task: Npm@0
   displayName: 'Install mocha-junit-reporter'
   inputs:
-    command: install -g mocha-junit-reporter
+    command: custom
+    customCommand: install -g mocha-junit-reporter && npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
 
 # will need to install the reporter on the project
-- task: Npm@0
-  displayName: 'WIP Test runner'
-  inputs:
-    command: npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
+# - task: Npm@0
+#   displayName: 'WIP Test runner'
+#   inputs:
+#     command: npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter
 
 # - task: Npm@0
 #   displayName: 'Run Tests'
