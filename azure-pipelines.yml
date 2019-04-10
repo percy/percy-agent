@@ -38,4 +38,4 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/test-*.xml'
-    testRunTitle: 'Test results for JavaScript'
+    testRunTitle: $(imageName)
