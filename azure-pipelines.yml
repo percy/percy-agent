@@ -29,12 +29,13 @@ steps:
   inputs:
     command: install
 
-- script: npm run test-azure
-  displayName: 'Run Azure specific test script'
-  continueOnError: true
+- script: npm run test-integration
+  displayName: 'Run integration test script'
+  continueOnError: false
   timeoutInMinutes: 2
 
 - task: PublishTestResults@2
+  displayName: 'Publish test results to Azure'
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/test-*.xml'
