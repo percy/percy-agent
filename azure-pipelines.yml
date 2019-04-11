@@ -33,9 +33,9 @@ steps:
   displayName: 'Build'
 
 - script: |
-    npm run test --reporter mocha-junit-reporter
+    npm run test
   displayName: 'Test'
 
 - script: |
-    npm run test-integration --reporter mocha-junit-reporter
+    npm run test-integration
   displayName: 'Test Integration'
