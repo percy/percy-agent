@@ -25,12 +25,17 @@ steps:
     versionSpec: '10.x'
 
 - script: |
-    echo step 0
     npm install
-    echo step 1
+  displayName: 'install'
+
+  - script: |
     npm run build-client
-    echo step 2
+  displayName: 'build'
+
+  - script: |
     npm run test --reporter mocha-junit-reporter
-    echo step 3
-    npm run test-integration
-  displayName: 'install, build and test'
+  displayName: 'test'
+
+    - script: |
+    npm run test-integration --reporter mocha-junit-reporter
+  displayName: 'test-integration'
