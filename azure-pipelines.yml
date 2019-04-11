@@ -30,14 +30,6 @@ steps:
   displayName: 'Run the integration tests'
   timeoutInMinutes: 1
 
-# - script: npm run build-client
-#   displayName: 'Build the percy-agent client'
-#   timeoutInMinutes: 1
-
-# - script: npm run test-integration-no-client
-#   displayName: 'Run the integration tests without a build step'
-#   timeoutInMinutes: 1
-
 - task: PublishTestResults@2
   displayName: 'Publish test results to Azure'
   condition: always()
