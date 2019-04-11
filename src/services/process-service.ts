@@ -35,7 +35,7 @@ export default class ProcessService {
       const pid = this.getPid()
       fs.unlinkSync(ProcessService.PID_PATH)
 
-      process.kill(pid, 'SIGHUP')
+      process.kill(pid, 'SIGINT')
     }
   }
 

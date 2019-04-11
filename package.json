@@ -127,7 +127,7 @@
     "prepublishOnly": "npm run build && oclif-dev manifest && oclif-dev readme",
     "preversion": "npm run clean",
     "pretest": "npm run build-client",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter",
+    "test": "mocha --forbid-only test/**/*.test.ts --exclude test/{percy-agent-client,integration}/**/*.test.ts",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
     "test-integration": "node ./bin/run exec -- mocha test/integration/**/*.test.ts --reporter mocha-junit-reporter",
     "version": "oclif-dev readme && git add README.md",
