@@ -24,19 +24,9 @@ steps:
   inputs:
     versionSpec: '10.x'
 
-- task: Npm@1
-  displayName: 'Install Packages'
-  inputs:
-    command: install
-  
-- script: npm run test-integration
-  displayName: 'Run the integration tests'
-  timeoutInMinutes: 1
-
-- task: PublishTestResults@2
-  displayName: 'Publish test results to Azure'
-  condition: always()
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/test-*.xml'
-    testRunTitle: $(imageName)
+- script: |
+    npm ci
+    npm run build-client
+    npm run test-integration
+  displayName: 'npm ci, npm run build-client, and npm run test-integration'
+  timeoutInMinutes: 5

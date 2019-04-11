@@ -129,8 +129,7 @@
     "test": "npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\"",
     "test-azure": "npm run build-client && mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --reporter mocha-junit-reporter",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
-    "test-integration": "npm run build-client && node ./bin/run exec -- mocha test/integration/**/*.test.ts --reporter mocha-junit-reporter",
-    "test-integration-no-client": "node ./bin/run exec -- mocha test/integration/**/*.test.ts --reporter mocha-junit-reporter",
+    "test-integration": "node ./bin/run exec -- mocha test/integration/**/*.test.ts",
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
