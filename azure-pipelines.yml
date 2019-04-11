@@ -30,4 +30,3 @@ steps:
     npm run test
     npm run test-integration
   displayName: 'install, build and test'
-  timeoutInMinutes: 10
