@@ -11,6 +11,6 @@ describe('agentJsFilename', () => {
   it('returns an absolute filename', () => {
     const filename = agentJsFilename()
     // Allows for Linux /foo and Windows C:\ paths
-    expect(filename.match(/^(\/|[A-Za-z]:\\)/)).to.eq(true)
+    expect(filename).to.match(/^(\/|[A-Za-z]:\\)/)
   })
 })
