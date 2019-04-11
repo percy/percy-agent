@@ -28,14 +28,14 @@ steps:
     npm install
   displayName: 'install'
 
-  - script: |
+- script: |
     npm run build-client
   displayName: 'build'
 
-  - script: |
+- script: |
     npm run test --reporter mocha-junit-reporter
   displayName: 'test'
 
-    - script: |
+- script: |
     npm run test-integration --reporter mocha-junit-reporter
   displayName: 'test-integration'
