@@ -15,6 +15,9 @@ strategy:
 pool:
   vmImage: $(imageName)
 
+variables:
+  LOG_LEVEL: debug
+
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
