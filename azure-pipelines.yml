@@ -17,6 +17,7 @@ pool:
 
 variables:
   PERCY_ENABLE: 0
+  LOG_LEVEL: 'debug'
 
 steps:
 - task: NodeTool@0
