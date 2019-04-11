@@ -25,7 +25,7 @@ steps:
     versionSpec: '10.x'
 
 - script: |
-    npm ci
+    npm install
     npm run build-client
     npm run test --reporter mocha-junit-reporter
     npm run test-integration
