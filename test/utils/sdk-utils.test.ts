@@ -10,6 +10,9 @@ describe('agentJsFilename', () => {
 
   it('returns an absolute filename', () => {
     const filename = agentJsFilename()
+    console.log('--------------')
+    console.log(filename)
+    console.log('--------------')
     expect(filename.startsWith('/')).to.eq(true)
   })
 })
