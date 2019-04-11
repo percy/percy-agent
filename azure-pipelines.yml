@@ -15,10 +15,6 @@ strategy:
 pool:
   vmImage: $(imageName)
 
-variables:
-  PERCY_ENABLE: 1
-  LOG_LEVEL: 'debug'
-
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
