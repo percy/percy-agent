@@ -16,7 +16,7 @@ pool:
   vmImage: $(imageName)
 
 variables:
-  PERCY_ENABLE: 0
+  PERCY_ENABLE: 1
   LOG_LEVEL: 'debug'
 
 steps:
