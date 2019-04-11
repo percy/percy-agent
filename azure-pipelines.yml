@@ -27,6 +27,6 @@ steps:
 - script: |
     npm ci
     npm run build-client
-    npm run test
+    npm run test --reporter mocha-junit-reporter
     npm run test-integration
   displayName: 'install, build and test'
