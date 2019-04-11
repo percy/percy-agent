@@ -20,22 +20,22 @@ variables:
 
 steps:
 - task: NodeTool@0
-  displayName: 'Install Node.js'
+  displayName: 'Install node'
   inputs:
     versionSpec: '10.x'
 
 - script: |
-    npm install
-  displayName: 'install'
+    npm ci
+  displayName: 'Install packages'
 
 - script: |
     npm run build-client
-  displayName: 'build'
+  displayName: 'Build'
 
 - script: |
     npm run test --reporter mocha-junit-reporter
-  displayName: 'test'
+  displayName: 'Test'
 
 - script: |
     npm run test-integration --reporter mocha-junit-reporter
-  displayName: 'test-integration'
+  displayName: 'Test Integration'
