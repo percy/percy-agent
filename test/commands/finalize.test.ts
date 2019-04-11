@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import {sanitizeOutput} from '../helpers/stdout'
 
 describe('finalize', () => {
   test
@@ -29,7 +30,7 @@ describe('finalize', () => {
       .stub(process, 'env', {PERCY_PARALLEL_NONCE: 'foo', PERCY_TOKEN: 'abc'})
       .stdout()
       .command(['finalize', '--all'])
-      .do((output) => expect(output.stdout).to.equal(
+      .do((output) => expect(sanitizeOutput(output.stdout)).to.equal(
         '[percy] Finalized parallel build.\n' +
         '[percy] Visual diffs are now processing: http://mockurl\n',
       ))
