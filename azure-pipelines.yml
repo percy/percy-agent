@@ -15,6 +15,9 @@ strategy:
 pool:
   vmImage: $(imageName)
 
+variables:
+  PERCY_ENABLE: 0
+
 steps:
 - task: NodeTool@0
   displayName: 'Install Node.js'
@@ -26,8 +29,12 @@ steps:
   inputs:
     command: install
 
-- script: npm run test-integration
-  displayName: 'Run integration test script'
+- script: npm run build-client
+  displayName: 'Build the percy-agent client'
+  timeoutInMinutes: 1
+
+- script: npm run test-integration-no-client
+  displayName: 'Run the integration tests without a build step'
   timeoutInMinutes: 1
 
 - task: PublishTestResults@2
