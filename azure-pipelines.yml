@@ -25,6 +25,7 @@ steps:
     versionSpec: '10.x'
 
 - script: |
+    echo step 0
     npm install
     echo step 1
     npm run build-client
