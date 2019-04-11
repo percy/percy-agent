@@ -27,6 +27,7 @@ steps:
 - script: |
     npm ci
     npm run build-client
+    npm run test
     npm run test-integration
-  displayName: 'npm ci, npm run build-client, and npm run test-integration'
-  timeoutInMinutes: 5
+  displayName: 'install, build and test'
+  timeoutInMinutes: 10
