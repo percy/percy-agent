@@ -43,7 +43,6 @@
     "@babel/preset-env": "^7.4.2",
     "@babel/preset-typescript": "^7.3.3",
     "@oclif/dev-cli": "^1",
-    "@oclif/errors": "^1",
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@percy/tslint": "^1.0.0",
