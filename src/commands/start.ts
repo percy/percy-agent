@@ -21,7 +21,7 @@ export default class Start extends PercyCommand {
     }),
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: 50,
+      default: Constants.NETWORK_IDLE_TIMEOUT,
       description: 'asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({

@@ -46,7 +46,7 @@ export default class Snapshot extends PercyCommand {
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: 50,
+      default: Constants.NETWORK_IDLE_TIMEOUT,
       description: 'asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
