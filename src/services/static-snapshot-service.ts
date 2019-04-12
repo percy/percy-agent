@@ -26,58 +26,24 @@ export default class StaticSnapshotService {
     this.app.use(options.baseUrl, express.static(options.staticAssetDirectory))
   }
 
-  start() {
+  async start() {
+    logger.info('starting static snapshot service...')
     // start the app on the specified port
-    this.server = this.app.listen(this.options.port)
+    this.server = await this.app.listen(this.options.port)
   }
 
+  // does this work on windows????
   async snapshotAll() {
-    logger.info('starting static snapshot service...')
+    logger.info('taking snapshot of static site...')
 
     const browser = await puppeteer.launch({
       args: ['--no-sandbox'],
       handleSIGINT : false,
-      headless: false,
     })
 
     const page = await browser.newPage()
 
-    const pageUrls = [] as any
-    const baseUrl = `http://localhost:${this.options.port}`
-
-    const walkOptions = {
-      listeners: {
-        file: (root: any, fileStats: any, next: any) => {
-          // make sure the file is part of the capture group, and not part of the ignore group
-          const isCapturableFile = fileStats.name.match(this.options.snapshotCaptureRegex)[0]
-          const isIgnorableFile = fileStats.name.match(this.options.snapshotIgnoreRegex)[0]
-          const shouldVisitFile = isCapturableFile && !isIgnorableFile
-
-          if (shouldVisitFile) {
-            // for each file need to build a URL for the browser to visit
-            pageUrls.push(baseUrl + root.replace(this.options.staticAssetDirectory, '') + '/' + fileStats.name)
-          }
-        },
-      },
-    }
-
-    await walk.walkSync(this.options.staticAssetDirectory, walkOptions)
-    console.log(pageUrls)
-
-    // await pageUrls.forEach(async (url: any) => {
-    //   await page.goto(url)
-
-    //   const percyAgentClientFilename = agentJsFilename()
-
-    //   await page.addScriptTag({
-    //     path: percyAgentClientFilename,
-    //   })
-
-    //   const domSnapshot = await page.evaluate((name) => {
-    //     const percyAgentClient = new PercyAgent()
-    //     return percyAgentClient.snapshot(name)
-    //   }, url)
-    // })
+    const pageUrls = await this._buildPageUrls()
 
     for (const url of pageUrls) {
       await page.goto(url)
@@ -93,28 +59,6 @@ export default class StaticSnapshotService {
       }, url)
     }
 
-    // then, for each file:
-    // use file name as snapshot name
-    // visit the page
-    // inject percy-agent js
-    // do snapshot
-
-    // just testing one page for now
-    // const url = `http://localhost:${this.options.port}/`
-    // const url = pageUrls[5]
-
-    // await page.goto(url)
-    // const percyAgentClientFilename = agentJsFilename()
-
-    // await page.addScriptTag({
-    //   path: percyAgentClientFilename,
-    // })
-
-    // const domSnapshot = await page.evaluate((name) => {
-    //   const percyAgentClient = new PercyAgent()
-    //   return percyAgentClient.snapshot(name)
-    // }, url)
-
     browser.close()
   }
 
@@ -126,5 +70,36 @@ export default class StaticSnapshotService {
     logger.info('stopping static snapshot service...')
 
     if (this.server) { await this.server.close() }
+  }
+
+  // provide a simple way to test that the constructor recieved the expected arguments
+  _getOptions() {
+    return this.options
+  }
+
+  async _buildPageUrls() {
+    const baseUrl = `http://localhost:${this.options.port}`
+    const pageUrls = [] as any
+
+    const walkOptions = {
+      listeners: {
+        file: (root: any, fileStats: any, next: any) => {
+          // make sure the file is part of the capture group, and not part of the ignore group
+          const isCapturableFile = fileStats.name.match(this.options.snapshotCaptureRegex)[0]
+          const isIgnorableFile = fileStats.name.match(this.options.snapshotIgnoreRegex)[0]
+          const shouldVisitFile = isCapturableFile && !isIgnorableFile
+
+          if (shouldVisitFile) {
+            // for each file need to build a URL for the browser to visit
+            // does this need to change for windows????
+            pageUrls.push(baseUrl + root.replace(this.options.staticAssetDirectory, '') + '/' + fileStats.name)
+          }
+        },
+      },
+    }
+
+    await walk.walkSync(this.options.staticAssetDirectory, walkOptions)
+
+    return pageUrls
   }
 }
