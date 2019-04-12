@@ -5,12 +5,12 @@ import StaticSnapshotService from '../services/static-snapshot-service'
 import PercyCommand from './percy-command'
 
 export default class Snapshot extends PercyCommand {
-  static description = 'Snapshot a directory of static site assets'
+  static description = 'Snapshot a directory of webpages'
   static hidden = true
 
   static args = [{
-    name: 'staticAssets',
-    description: 'The path to the compiled static asset directory.',
+    name: 'snapshotDirectory',
+    description: 'A path to the directory you would like to snapshot',
     required: true,
   }]
 
@@ -24,7 +24,7 @@ export default class Snapshot extends PercyCommand {
   static flags = {
     'snapshot-capture-regex': flags.string({
       char: 'c',
-      description: 'Regular expression for matching the files to snapshot. Defaults to: "\.(html|htm)$"',
+      description: 'Regular expression for matching the files to snapshot.',
       default: '\.(html|htm)$',
     }),
     'ignore-folders': flags.string({
@@ -34,7 +34,7 @@ export default class Snapshot extends PercyCommand {
     }),
     'widths': flags.string({
       char: 'w',
-      description: 'Comma-separated string of rendering widths for snapshots. Ex: 320,1280',
+      description: 'Comma-separated string of rendering widths for snapshots.',
       default: '1280',
     }),
     'baseUrl': flags.string({
@@ -59,8 +59,7 @@ export default class Snapshot extends PercyCommand {
   async run() {
     await super.run()
 
-    const {args} = this.parse(Snapshot)
-    const {flags} = this.parse(Snapshot)
+    const {args, flags} = this.parse(Snapshot)
 
     const staticAssetDirectory = args.staticAssets as string
     const port = flags.port as number
@@ -93,7 +92,7 @@ export default class Snapshot extends PercyCommand {
     const staticSnapshotService = new StaticSnapshotService(options)
 
     // start the snapshot service
-    staticSnapshotService.start()
+    await staticSnapshotService.start()
 
      // take the snapshots
     await staticSnapshotService.snapshotAll()
