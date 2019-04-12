@@ -29,7 +29,6 @@ describe('Integration test', () => {
       args: [
         '--disable-gpu',
         '--no-sandbox',
-        '--single-process',
         '--disable-dev-profile',
       ],
     })
