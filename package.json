@@ -129,7 +129,7 @@
     "pretest": "npm run build-client",
     "test": "mocha --forbid-only test/**/*.test.ts --exclude test/{percy-agent-client,integration}/**/*.test.ts",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
-    "test-integration": "node ./bin/run exec -- mocha test/integration/**/*.test.ts",
+    "test-integration": "node ./bin/run exec -- npx mocha test/integration/**/*.test.ts",
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
