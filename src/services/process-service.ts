@@ -1,5 +1,6 @@
 import * as childProcess from 'child_process'
 import * as fs from 'fs'
+import * as os from 'os'
 
 export default class ProcessService {
   static PID_PATH = './.percy.pid'
@@ -35,7 +36,11 @@ export default class ProcessService {
       const pid = this.getPid()
       fs.unlinkSync(ProcessService.PID_PATH)
 
-      process.kill(pid, 'SIGINT')
+      if (os.platform() === 'win32') {
+        childProcess.exec('taskkill /pid ' + pid + ' /T /F')
+      } else {
+        process.kill(pid, 'SIGHUP')
+      }
     }
   }
 
