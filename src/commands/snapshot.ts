@@ -26,7 +26,7 @@ export default class Snapshot extends PercyCommand {
       description: 'Regular expression for matching the files to snapshot.',
       default: '\.(html|htm)$',
     }),
-    'ignore-folders': flags.string({
+    'ignore-files': flags.string({
       char: 'i',
       description: 'Comma-seperated string of folders to ignore. Ex: Tmp,_secrets,node_modules',
       default: '',
@@ -60,13 +60,11 @@ export default class Snapshot extends PercyCommand {
     const portPlusOne = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const baseUrl = flags.baseUrl as string
-    const rawIgnoreFolders = flags['ignore-folders'] as string
+    const ignoreFilesRegex = flags['ignore-files'] as string
     const snapshotFilesRegex = flags['snapshot-files'] as string
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
-
-    const ignoreFolders = rawIgnoreFolders ? rawIgnoreFolders.split(',') : undefined
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
@@ -77,7 +75,7 @@ export default class Snapshot extends PercyCommand {
       staticAssetDirectory,
       baseUrl,
       snapshotFilesRegex,
-      ignoreFolders,
+      ignoreFilesRegex,
     }
 
     const staticSnapshotService = new StaticSnapshotService(options)
