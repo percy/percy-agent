@@ -17,7 +17,6 @@ export default class Snapshot extends PercyCommand {
   static examples = [
     '$ percy snapshot _mySite/',
     '$ percy snapshot _mySite/ --baseUrl "blog/"',
-    '$ percy snapshot _mySite/ --widths "320,780,1280"',
     '$ percy snapshot _mySite/ --ignore-folders "Tmp,_secrets,node_modules"',
   ]
 
@@ -31,11 +30,6 @@ export default class Snapshot extends PercyCommand {
       char: 'i',
       description: 'Comma-seperated string of folders to ignore. Ex: Tmp,_secrets,node_modules',
       default: '',
-    }),
-    'widths': flags.string({
-      char: 'w',
-      description: 'Comma-separated string of rendering widths for snapshots.',
-      default: '1280',
     }),
     'baseUrl': flags.string({
       char: 'b',
@@ -65,7 +59,6 @@ export default class Snapshot extends PercyCommand {
     const port = flags.port as number
     const portPlusOne = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
-    const rawWidths = flags.widths as string
     const baseUrl = flags.baseUrl as string
     const rawIgnoreFolders = flags['ignore-folders'] as string
     const snapshotCaptureRegex = flags['snapshot-capture-regex'] as string
@@ -73,7 +66,6 @@ export default class Snapshot extends PercyCommand {
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    const widths = rawWidths.split(',').map(Number)
     const ignoreFolders = rawIgnoreFolders ? rawIgnoreFolders.split(',') : undefined
 
     // start the agent service
@@ -83,7 +75,6 @@ export default class Snapshot extends PercyCommand {
     const options: StaticSnapshotOptions = {
       port: portPlusOne,
       staticAssetDirectory,
-      widths,
       baseUrl,
       snapshotCaptureRegex,
       ignoreFolders,
