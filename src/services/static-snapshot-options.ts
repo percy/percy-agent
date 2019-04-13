@@ -2,6 +2,6 @@ export interface StaticSnapshotOptions {
     staticAssetDirectory: string,
     port: number,
     baseUrl: string,
-    snapshotCaptureRegex: string,
+    snapshotFilesRegex: string,
     ignoreFolders?: string[] | undefined,
   }

@@ -21,7 +21,7 @@ export default class Snapshot extends PercyCommand {
   ]
 
   static flags = {
-    'snapshot-capture-regex': flags.string({
+    'snapshot-files': flags.string({
       char: 'c',
       description: 'Regular expression for matching the files to snapshot.',
       default: '\.(html|htm)$',
@@ -61,7 +61,7 @@ export default class Snapshot extends PercyCommand {
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const baseUrl = flags.baseUrl as string
     const rawIgnoreFolders = flags['ignore-folders'] as string
-    const snapshotCaptureRegex = flags['snapshot-capture-regex'] as string
+    const snapshotFilesRegex = flags['snapshot-files'] as string
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
@@ -76,7 +76,7 @@ export default class Snapshot extends PercyCommand {
       port: portPlusOne,
       staticAssetDirectory,
       baseUrl,
-      snapshotCaptureRegex,
+      snapshotFilesRegex,
       ignoreFolders,
     }
 
