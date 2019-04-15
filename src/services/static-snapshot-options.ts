@@ -1,5 +1,5 @@
 export interface StaticSnapshotOptions {
-    staticAssetDirectory: string,
+    snapshotDirectory: string,
     port: number,
     baseUrl: string,
     snapshotFilesRegex: string,

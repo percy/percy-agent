@@ -16,7 +16,7 @@ export default class Snapshot extends PercyCommand {
 
   static examples = [
     '$ percy snapshot _site/',
-    '$ percy snapshot _site/ --baseUrl "blog/"',
+    '$ percy snapshot _site/ --base-url "blog/"',
     '$ percy snapshot _site/ --ignore-files "\.(blog|docs)$"',
   ]
 
@@ -28,7 +28,7 @@ export default class Snapshot extends PercyCommand {
     }),
     'ignore-files': flags.string({
       char: 'i',
-      description: 'Comma-seperated string of folders to ignore. Ex: Tmp,_secrets,node_modules',
+      description: 'Regular expression for matching the files to ignore.',
       default: '',
     }),
     'base-url': flags.string({
@@ -55,7 +55,7 @@ export default class Snapshot extends PercyCommand {
 
     const {args, flags} = this.parse(Snapshot)
 
-    const staticAssetDirectory = args.staticAssets as string
+    const snapshotDirectory = args.snapshotDirectory as string
     const port = flags.port as number
     const staticServerPort = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
@@ -72,7 +72,7 @@ export default class Snapshot extends PercyCommand {
 
     const options: StaticSnapshotOptions = {
       port: staticServerPort,
-      staticAssetDirectory,
+      snapshotDirectory,
       baseUrl,
       snapshotFilesRegex,
       ignoreFilesRegex,
