@@ -33,7 +33,7 @@
     "js-yaml": "^3.13.1",
     "percy-client": "^3.0.3",
     "puppeteer": "^1.13.0",
-    "winston": "^2.0.0",
+    "winston": "^3.2.1",
     "retry-axios": "^0.5.0"
   },
   "devDependencies": {
