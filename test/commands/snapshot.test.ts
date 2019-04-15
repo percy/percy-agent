@@ -50,50 +50,7 @@ describe('snapshot', () => {
       chai.expect(stdout).to.match(/\[percy\] percy has started./)
     })
 
-    // todo: how to test that the flags are being passed to the service correctly?
     xit('starts the snapshot service on the correct port')
-    xit('passes the correct args to the snapshotAll command')
-
-    // old way of testing flags
-    // it('passes the correct args to the static snapshot service', async () => {
-    //   const port = 5338
-
-    //   const expectedAgentOptions = {networkIdleTimeout: 50, port}
-    //   const expectedSnapshotOptions = {
-    //     port: port + 1,
-    //     staticAssetDirectory: './dummy-test-dir',
-    //     widths: [1280],
-    //     baseUrl: '/',
-    //     snapshotCaptureRegex: 'custom-capture',
-    //     snapshotIgnoreRegex: 'custom-ignore',
-    //   }
-
-    //   const snapshotCommandOptions = [
-    //     '-p',
-    //     port.toString(),
-    //     '-w',
-    //     expectedSnapshotOptions.widths.toString(),
-    //     '-b',
-    //     expectedSnapshotOptions.baseUrl,
-    //     '-c',
-    //     expectedSnapshotOptions.snapshotCaptureRegex,
-    //     '-i',
-    //     expectedSnapshotOptions.snapshotIgnoreRegex,
-    //     expectedSnapshotOptions.staticAssetDirectory,
-    //   ]
-
-    //   const agentServiceStub = AgentServiceStub()
-    //   const staticSnapshotServiceStub = StaticSnapshotServiceStub()
-
-    //   const stdout = await captureStdOut(async () => {
-    //     await Snapshot.run(snapshotCommandOptions)
-    //   })
-
-    //   chai.expect(stdout).to.match(/\[percy\] percy has started./)
-
-    //   chai.expect(staticSnapshotServiceStub.snapshot).to.be.calledWith(expectedSnapshotOptions)
-    //   chai.expect(agentServiceStub.start).to.be.calledWith(expectedAgentOptions)
-    // })
   })
 
   describe('snapshot command', () => {
