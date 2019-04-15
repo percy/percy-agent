@@ -1,3 +1,10 @@
+## [0.2.3](https://github.com/percy/percy-agent/compare/v0.2.2...v0.2.3) (2019-04-15)
+
+
+### Bug Fixes
+
+* Remove @oclif/errors as a devDependency. Closes [#154](https://github.com/percy/percy-agent/issues/154) ([#155](https://github.com/percy/percy-agent/issues/155)) ([2f99c5b](https://github.com/percy/percy-agent/commit/2f99c5b))
+
 ## [0.2.2](https://github.com/percy/percy-agent/compare/v0.2.1...v0.2.2) (2019-04-08)
 
 
