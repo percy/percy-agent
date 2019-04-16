@@ -2,6 +2,7 @@ import {flags} from '@oclif/command'
 import Constants from '../services/constants'
 import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
+import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
 export default class Snapshot extends PercyCommand {
@@ -16,7 +17,7 @@ export default class Snapshot extends PercyCommand {
 
   static examples = [
     '$ percy snapshot _site/',
-    '$ percy snapshot _site/ --base-url "blog/"',
+    '$ percy snapshot _site/ --base-url "/blog/"',
     '$ percy snapshot _site/ --ignore-files "\.(blog|docs)$"',
   ]
 
@@ -33,8 +34,8 @@ export default class Snapshot extends PercyCommand {
     }),
     'base-url': flags.string({
       char: 'b',
-      description: 'The path that the site will be deployed to on a production server. \
-      Use this if your site will be hosted at a non-root url.',
+      description: 'If your static files will be hosted in a subdirectory, instead \n' +
+      'of the webserver\'s root path, set that subdirectory with this flag.',
       default: '/',
     }),
     // from exec command. needed to start the agent service.
@@ -55,6 +56,8 @@ export default class Snapshot extends PercyCommand {
 
     const {args, flags} = this.parse(Snapshot)
 
+    const isWindows = process.platform === 'win32'
+
     const snapshotDirectory = args.snapshotDirectory as string
     const port = flags.port as number
     const staticServerPort = port + 1
@@ -65,6 +68,13 @@ export default class Snapshot extends PercyCommand {
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
+
+    // check that base url starts with a slash and  exit if it is missing
+    if (isWindows) {
+      this.checkForWrappingSlashes(baseUrl, '\\')
+    } else {
+      this.checkForWrappingSlashes(baseUrl, '/')
+    }
 
     // start the agent service
     await this.agentService.start({port, networkIdleTimeout})
@@ -89,5 +99,12 @@ export default class Snapshot extends PercyCommand {
      // stop the static snapshot and agent services
     await staticSnapshotService.stop()
     await this.agentService.stop()
+  }
+
+  private checkForWrappingSlashes(url: string, slash: string) {
+    if (url[0] !== slash || url[url.length - 1] !== slash) {
+      logger.warn('The base-url flag must begin and end with a slash.')
+      this.exit(1)
+    }
   }
 }
