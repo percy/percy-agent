@@ -49,11 +49,6 @@ describe('StaticSnapshotService', () => {
     })
   })
 
-  // describe('#snapshotAll', () => {
-    // placeholder because I'm not sure how to test this without stubbing the Agent service
-    // and that seems like overkill?
-  // })
-
   describe('#_buildPageUrls', () => {
     it('creates the expected number of snapshot urls', async () => {
       const pages = await subject._buildPageUrls()

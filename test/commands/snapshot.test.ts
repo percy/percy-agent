@@ -49,8 +49,6 @@ describe('snapshot', () => {
       chai.expect(staticSnapshotServiceStub.snapshotAll).to.have.callCount(1)
       chai.expect(stdout).to.match(/\[percy\] percy has started./)
     })
-
-    xit('starts the snapshot service on the correct port')
   })
 
   describe('snapshot command', () => {

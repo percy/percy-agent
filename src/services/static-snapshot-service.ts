@@ -1,9 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
-import * as fs from 'fs'
 import {Server} from 'http'
-import * as path from 'path'
 import * as puppeteer from 'puppeteer'
 import * as walk from 'walk'
 import logger from '../utils/logger'
@@ -19,7 +17,6 @@ export default class StaticSnapshotService {
   private server: Server | null = null
 
   constructor(options: StaticSnapshotOptions) {
-    // logger.info('calling constructor...')
     this.app = express()
     this.options = options
 
@@ -36,7 +33,6 @@ export default class StaticSnapshotService {
     this.server = await this.app.listen(this.options.port)
   }
 
-  // does this work on windows????
   async snapshotAll() {
     logger.info('taking snapshot of static site...')
 
@@ -91,7 +87,6 @@ export default class StaticSnapshotService {
 
           if (shouldVisitFile) {
             // for each file need to build a URL for the browser to visit
-            // does this need to change for windows????
             pageUrls.push(baseUrl + root.replace(this.options.snapshotDirectory, '') + '/' + fileStats.name)
           }
         },
