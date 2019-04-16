@@ -17,7 +17,7 @@ export default class Snapshot extends PercyCommand {
 
   static examples = [
     '$ percy snapshot _site/',
-    '$ percy snapshot _site/ --base-url "/blog/"',
+    '$ percy snapshot _site/ --base-url "/blog"',
     '$ percy snapshot _site/ --ignore-files "\.(blog|docs)$"',
   ]
 
@@ -69,11 +69,10 @@ export default class Snapshot extends PercyCommand {
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // check that base url starts with a slash and  exit if it is missing
-    if (isWindows) {
-      this.checkForWrappingSlashes(baseUrl, '\\')
-    } else {
-      this.checkForWrappingSlashes(baseUrl, '/')
+    // check that base url starts with a slash and exit if it is missing
+    if (baseUrl[0] !== '/') {
+      logger.warn('The base-url flag must begin with a slash.')
+      this.exit(1)
     }
 
     // start the agent service
@@ -99,12 +98,5 @@ export default class Snapshot extends PercyCommand {
      // stop the static snapshot and agent services
     await staticSnapshotService.stop()
     await this.agentService.stop()
-  }
-
-  private checkForWrappingSlashes(url: string, slash: string) {
-    if (url[0] !== slash || url[url.length - 1] !== slash) {
-      logger.warn('The base-url flag must begin and end with a slash.')
-      this.exit(1)
-    }
   }
 }
