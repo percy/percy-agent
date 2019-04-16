@@ -14,6 +14,10 @@ import {StaticSnapshotOptions} from './static-snapshot-options'
 declare var PercyAgent: any
 
 export default class StaticSnapshotService {
+  private readonly app: express.Application
+  private readonly options: StaticSnapshotOptions
+  private server: Server | null = null
+
   constructor(options: StaticSnapshotOptions) {
     // logger.info('calling constructor...')
     this.app = express()
@@ -23,7 +27,7 @@ export default class StaticSnapshotService {
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
 
-    this.app.use(options.baseUrl, express.static(options.staticAssetDirectory))
+    this.app.use(options.baseUrl, express.static(options.snapshotDirectory))
   }
 
   async start() {
@@ -62,10 +66,6 @@ export default class StaticSnapshotService {
     browser.close()
   }
 
-  async snapshotAll() {
-    // logger.info('taking snapshots of the static site...')
-  }
-
   async stop() {
     logger.info('stopping static snapshot service...')
 
@@ -85,20 +85,20 @@ export default class StaticSnapshotService {
       listeners: {
         file: (root: any, fileStats: any, next: any) => {
           // make sure the file is part of the capture group, and not part of the ignore group
-          const isCapturableFile = fileStats.name.match(this.options.snapshotCaptureRegex)[0]
-          const isIgnorableFile = fileStats.name.match(this.options.snapshotIgnoreRegex)[0]
+          const isCapturableFile = fileStats.name.match(this.options.snapshotFilesRegex)[0]
+          const isIgnorableFile = fileStats.name.match(this.options.ignoreFilesRegex)[0]
           const shouldVisitFile = isCapturableFile && !isIgnorableFile
 
           if (shouldVisitFile) {
             // for each file need to build a URL for the browser to visit
             // does this need to change for windows????
-            pageUrls.push(baseUrl + root.replace(this.options.staticAssetDirectory, '') + '/' + fileStats.name)
+            pageUrls.push(baseUrl + root.replace(this.options.snapshotDirectory, '') + '/' + fileStats.name)
           }
         },
       },
     }
 
-    await walk.walkSync(this.options.staticAssetDirectory, walkOptions)
+    await walk.walkSync(this.options.snapshotDirectory, walkOptions)
 
     return pageUrls
   }

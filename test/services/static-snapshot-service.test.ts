@@ -13,9 +13,8 @@ describe('StaticSnapshotService', () => {
 
   const options: StaticSnapshotOptions = {
     port,
-    staticAssetDirectory: './test/fixtures/_dummyTestingApp/',
-    widths: [720, 1080],
-    snapshotCaptureRegex: '\.(html|htm)$',
+    snapshotDirectory: './test/fixtures/_dummyTestingApp/',
+    snapshotFilesRegex: '\.(html|htm)$',
     baseUrl: '/',
   }
 
