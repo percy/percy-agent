@@ -6,7 +6,7 @@ import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
 export default class Snapshot extends PercyCommand {
-  static description = 'Snapshot a directory of webpages'
+  static description = 'Snapshot a directory containing a pre-built static website'
   static hidden = true
 
   static args = [{
@@ -42,12 +42,12 @@ export default class Snapshot extends PercyCommand {
     'network-idle-timeout': flags.integer({
       char: 't',
       default: Constants.NETWORK_IDLE_TIMEOUT,
-      description: 'asset discovery network idle timeout (in milliseconds)',
+      description: 'Asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
       char: 'p',
       default: Constants.PORT,
-      description: 'port',
+      description: 'Port',
     }),
   }
 
