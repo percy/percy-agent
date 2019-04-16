@@ -16,7 +16,7 @@ export default class Exec extends PercyCommand {
   static flags = {
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: 50,
+      default: Constants.NETWORK_IDLE_TIMEOUT,
       description: 'asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
