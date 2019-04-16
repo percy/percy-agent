@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/percy/percy-agent/compare/v0.2.3...v0.3.0) (2019-04-16)
+
+
+### Features
+
+* Add hidden snapshot command for future implementation ([#120](https://github.com/percy/percy-agent/issues/120)) ([98ae4b8](https://github.com/percy/percy-agent/commit/98ae4b8))
+
 ## [0.2.3](https://github.com/percy/percy-agent/compare/v0.2.2...v0.2.3) (2019-04-15)
 
 
