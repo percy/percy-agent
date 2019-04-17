@@ -1,8 +1,8 @@
 import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
-import {cleanSerializedCssOm, serializeCssOm} from './serialize-cssom'
-import {cleanSerializedInputElements, serializeInputElements} from './serialize-input'
+import {serializeCssOm} from './serialize-cssom'
+import {serializeInputElements} from './serialize-input'
 import {SnapshotOptions} from './snapshot-options'
 
 export default class PercyAgent {
@@ -70,13 +70,6 @@ export default class PercyAgent {
     }
 
     const snapshotString = doctype + domClone.outerHTML
-
-    // Remove all the additions we've made to the original DOM.
-    // Ideally we would make a deep clone of the original DOM at the start of this
-    // method, and operate on that, but this turns out to be hard to do while
-    // retaining CSS OM and input element state. Instead, we carefully remove what we added.
-    cleanSerializedCssOm(documentObject)
-    cleanSerializedInputElements(documentObject)
 
     return snapshotString
   }
