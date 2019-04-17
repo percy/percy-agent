@@ -32,16 +32,4 @@ describe('serializeInputElements', () => {
 
     expect(domSnapshot).to.contain('checked')
   })
-
-  it('cleans up after itself', () => {
-    const preSnapshotHTML = htmlWithoutSelector(document, '#mocha')
-
-    subject.snapshot('test snapshot')
-
-    const postSnapshotHTML = htmlWithoutSelector(document, '#mocha')
-
-    expect(postSnapshotHTML).to.eq(preSnapshotHTML)
-    expect(postSnapshotHTML).to.not.contain('data-percy-input-serialized')
-    expect(postSnapshotHTML).to.not.contain('checked')
-  })
 })

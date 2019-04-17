@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>CSSOM testing</title>
+    <style type="text/css"></style>
+    <script>
+     let styleSheet = document.styleSheets[0];
+     styleSheet.insertRule('.box { height: 500px; width: 500px; background-color: green; }')
+    </script>
+  </head>
+  <body>
+    <div class="box"></div>
+  </body>
+</html>

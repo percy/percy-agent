@@ -58,21 +58,5 @@ describe('PercyAgent', () => {
       expect(requestBody.widths).to.eql([320, 1024])
       expect(requestBody.minHeight).to.equal(512)
     })
-
-    it('does not alter the DOM being snapshotted', () => {
-      const originalHTML = htmlWithoutSelector(document, '#mocha')
-
-      subject.snapshot('a snapshot')
-
-      const postSnapshotHTML = htmlWithoutSelector(document, '#mocha')
-      expect(postSnapshotHTML).to.eq(originalHTML)
-      expect(postSnapshotHTML).to.not.contain('data-percy')
-    })
-
-    it('multiple snapshots produce the same result', () => {
-      const firstDOMSnapshot = subject.snapshot('a snapshot')
-      const secondDOMSnapshot = subject.snapshot('a second snapshot')
-      expect(secondDOMSnapshot).to.eq(firstDOMSnapshot)
-    })
   })
 })
