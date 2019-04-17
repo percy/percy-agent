@@ -2,6 +2,7 @@ import {flags} from '@oclif/command'
 import Constants from '../services/constants'
 import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
+import configuration, {StaticSiteSnapshotConfiguration} from '../utils/configuration'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -60,18 +61,26 @@ export default class Snapshot extends PercyCommand {
     const port = flags.port as number
     const staticServerPort = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
-    const baseUrl = flags['base-url'] as string
-    const rawIgnoreGlob = flags['ignore-files'] as string
-    const rawSnapshotGlob = flags['snapshot-files'] as string
 
-    const snapshotGlobs = rawSnapshotGlob.split(',')
+    const baseUrlFlag = flags['base-url'] as string
+    const rawIgnoreGlobFlag = flags['ignore-files'] as string
+    const rawSnapshotGlobFlag = flags['snapshot-files'] as string
 
-    const ignoreGlobs = rawIgnoreGlob ? rawIgnoreGlob.split(',') : []
+    const snapshotGlobs = rawSnapshotGlobFlag.split(',')
+
+    const ignoreGlobs = rawIgnoreGlobFlag ? rawIgnoreGlobFlag.split(',') : []
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // check that the base url passed in starts with a slash and exit if it is missing
+
+    // read configurations from the percy.yml file
+    const staticSiteConfiguration = (configuration().static_site || {}) as StaticSiteSnapshotConfiguration
+    const baseUrl = staticSiteConfiguration['base-url'] || baseUrlFlag
+    const snapshotFilesRegex = staticSiteConfiguration['snapshot-files'] || snapshotGlobs
+    const ignoreFilesRegex = staticSiteConfiguration['ignore-files'] || ignoreGlobs
+
+    // check that base url starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
       logger.warn('The base-url flag must begin with a slash.')
       this.exit(1)
