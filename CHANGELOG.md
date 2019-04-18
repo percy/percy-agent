@@ -1,3 +1,10 @@
+## [0.3.1](https://github.com/percy/percy-agent/compare/v0.3.0...v0.3.1) (2019-04-18)
+
+
+### Bug Fixes
+
+* Revert DOM clean up methods ([#160](https://github.com/percy/percy-agent/issues/160)) ([12ab332](https://github.com/percy/percy-agent/commit/12ab332))
+
 # [0.3.0](https://github.com/percy/percy-agent/compare/v0.2.3...v0.3.0) (2019-04-16)
 
 
