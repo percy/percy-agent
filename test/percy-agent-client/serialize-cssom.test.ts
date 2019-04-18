@@ -18,14 +18,5 @@ describe('serializeCssOm', () => {
       const parsedDoc = (new DOMParser()).parseFromString(domSnapshot, 'text/html')
       expect(parsedDoc.getElementById('jsStyled')!.style.background).to.contain('red')
     })
-
-    it('cleans up after itself', () => {
-      subject.snapshot('test snapshot')
-
-      const postSnapshotHTML = htmlWithoutSelector(document, '#mocha')
-
-      expect(postSnapshotHTML).to.not.contain('data-percy-cssom-serialized')
-      expect(postSnapshotHTML).to.not.contain('Start of Percy serialized CSSOM')
-    })
   })
 })

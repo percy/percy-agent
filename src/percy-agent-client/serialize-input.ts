@@ -32,20 +32,3 @@ export function serializeInputElements(doc: HTMLDocument): HTMLDocument {
 
   return doc
 }
-
-export function cleanSerializedInputElements(doc: HTMLDocument) {
-  doc.querySelectorAll(`[${DATA_ATTRIBUTE_CHECKED}]`).forEach((el: Element) => {
-    el.removeAttribute('checked')
-    el.removeAttribute(DATA_ATTRIBUTE_CHECKED)
-  })
-  doc.querySelectorAll(`[${DATA_ATTRIBUTE_TEXTAREA_INNERTEXT}]`).forEach((el: Element)  => {
-    const originalInnerText: string = el.getAttribute(DATA_ATTRIBUTE_TEXTAREA_INNERTEXT) || ''
-    const textArea = el as HTMLTextAreaElement
-    textArea.innerText = originalInnerText
-    el.removeAttribute(DATA_ATTRIBUTE_TEXTAREA_INNERTEXT)
-  })
-  doc.querySelectorAll(`[${DATA_ATTRIBUTE_VALUE}]`).forEach((el: Element) => {
-    el.removeAttribute('value')
-    el.removeAttribute(DATA_ATTRIBUTE_VALUE)
-  })
-}

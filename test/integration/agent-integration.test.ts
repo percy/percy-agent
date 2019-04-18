@@ -67,8 +67,8 @@ describe('Integration test', () => {
       const domSnapshot = await snapshot(page, 'Buildkite snapshot')
       expect(domSnapshot).contains('Buildkite')
     })
-  })
 
+  })
   describe('on local test cases', () => {
     const testCaseDir = `${__dirname}/testcases`
     const PORT = 8000
@@ -96,19 +96,9 @@ describe('Integration test', () => {
         await page.goto(`http://localhost:${PORT}/stabilize-dom.html`)
       })
 
-      it('serializes CSSOM', async () => {
-        await page.evaluate(() => {
-          const jsStyledDiv = document.getElementById('jsStyled') as HTMLInputElement
-          jsStyledDiv.style.background = 'mediumorchid'
-        })
-
-        const domSnapshot = await snapshot(page, 'Serialize CSSOM')
-        expect(domSnapshot).to.contain('data-percy-cssom-serialized')
-        expect(domSnapshot).to.contain('background: mediumorchid')
-      })
-
       it('serializes input elements', async () => {
         await page.type('#testInputText', 'test input value')
+        await page.type('#testTextarea', 'test textarea value')
         await page.click('#testCheckbox')
         await page.click('#testRadioButton')
 
@@ -116,13 +106,26 @@ describe('Integration test', () => {
         expect(domSnapshot).to.contain('test input value')
         expect(domSnapshot).to.contain('type="checkbox" checked')
         expect(domSnapshot).to.contain('type="radio" checked')
+        expect(domSnapshot).to.contain('test textarea value')
+      })
+    })
+
+    describe('stablizes CSSOM', () => {
+      before(async () => {
+        await page.goto(`http://localhost:${PORT}/stabilize-cssom.html`)
       })
 
-      it('serializes textarea elements', async () => {
-        await page.type('#testTextarea', 'test textarea value')
+      it('serializes the CSSOM', async () => {
+        const domSnapshot = await snapshot(page, 'Serialize CSSOM')
 
-        const domSnapshot = await snapshot(page, 'Serialize textarea elements')
-        expect(domSnapshot).to.contain('test textarea value')
+        expect(domSnapshot).to.contain('data-percy-cssom-serialized')
+        expect(domSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
+
+        // we want to ensure mutiple snapshots are successful
+        const secondDomSnapshot = await snapshot(page, 'Serialize CSSOM twice')
+        expect(secondDomSnapshot).to.contain('data-percy-cssom-serialized')
+        expect(secondDomSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
+
       })
     })
   })
