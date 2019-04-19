@@ -18,30 +18,38 @@ pool:
 variables:
   LOG_LEVEL: debug
 
-steps:
-- task: NodeTool@0
-  displayName: 'Install node'
-  inputs:
-    versionSpec: '10.x'
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: NodeTool@0
+      displayName: 'Install node'
+      inputs:
+        versionSpec: '10.x'
 
-- script: |
-    npm ci
-  displayName: 'Install packages'
+    - script: |
+        npm ci
+      displayName: 'Install packages'
 
-- script: |
-    npm run build-client
-  displayName: 'Build'
+    - script: |
+        npm run build-client
+      displayName: 'Build'
 
-- script: |
-    npm run test
-  displayName: 'Test'
+- stage: Test
+  jobs:
+  - job: TestJob
+    steps:
+    - script: |
+        npm run test
+      displayName: 'Test'
 
-- powershell: |
-    npm run test-integration-win
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: 'Test Integration Windows'
+    - powershell: |
+        npm run test-integration-win
+      condition: eq( variables['Agent.OS'], 'Windows_NT' )
+      displayName: 'Test Integration Windows'
 
-- script: |
-    npm run test-integration
-  condition: ne( variables['Agent.OS'], 'Windows_NT' )
-  displayName: 'Test Integration'
+    - script: |
+        npm run test-integration
+      condition: ne( variables['Agent.OS'], 'Windows_NT' )
+      displayName: 'Test Integration'
