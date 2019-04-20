@@ -3,59 +3,52 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-stages:
-- stage: Build
-  pool:
-    vmImage: $(imageName)
-  variables:
-    LOG_LEVEL: debug
-  strategy:
-    matrix:
-      linux:
-        imageName: 'Ubuntu-16.04'
-  jobs:
-  - job: BuildJob
-    steps:
-    - task: NodeTool@0
-      displayName: 'Install node'
-      inputs:
-        versionSpec: '10.x'
+strategy:
+  matrix:
+    linux:
+      imageName: 'Ubuntu-16.04'
+    mac:
+      imageName: 'macOS-10.13'
+    windows:
+      imageName: 'win1803'
 
-    - script: |
-        npm ci
-      displayName: 'Install packages'
+pool:
+  vmImage: $(imageName)
 
-    - script: |
-        npm run build-client
-      displayName: 'Build'
+variables:
+  LOG_LEVEL: debug
 
-- stage: Test
-  dependsOn: ['Build']
-  pool:
-    vmImage: $(imageName)
-  variables:
-    LOG_LEVEL: debug
-  strategy:
-    matrix:
-      linux:
-        imageName: 'Ubuntu-16.04'
-      mac:
-        imageName: 'macOS-10.13'
-      windows:
-        imageName: 'win1803'
-  jobs:
-  - job: TestJob
-    steps:
-    - script: |
-        npm run test
-      displayName: 'Test'
+jobs:
+- job: 'build'
+  displayName: 'Build'
+  steps:
+  - task: NodeTool@0
+    displayName: 'Install node'
+    inputs:
+      versionSpec: '10.x'
 
-    - powershell: |
-        npm run test-integration-win
-      condition: eq( variables['Agent.OS'], 'Windows_NT' )
-      displayName: 'Test Integration Windows'
+  - script: |
+      npm ci
+    displayName: 'Install packages'
 
-    - script: |
-        npm run test-integration
-      condition: ne( variables['Agent.OS'], 'Windows_NT' )
-      displayName: 'Test Integration'
+  - script: |
+      npm run build-client
+    displayName: 'Build'
+
+- job: 'test'
+  displayName: 'Test'
+  dependsOn: 'build'
+  steps:
+  - script: |
+      npm run test
+    displayName: 'Test'
+
+  - powershell: |
+      npm run test-integration-win
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: 'Test Integration Windows'
+
+  - script: |
+      npm run test-integration
+    condition: ne( variables['Agent.OS'], 'Windows_NT' )
+    displayName: 'Test Integration'
