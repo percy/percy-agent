@@ -37,6 +37,8 @@ jobs:
       npm run test-integration-win
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: 'Test Integration Windows'
+    env:
+      PERCY_TOKEN: $(PERCY_TOKEN)
 
   - script: |
       npm run test-integration
@@ -63,3 +65,6 @@ jobs:
   - script: |
       npx semantic-release
     displayName: 'Release'
+    env:
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
+      NPM_TOKEN: $(NPM_TOKEN)
