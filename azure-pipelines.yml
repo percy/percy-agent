@@ -3,23 +3,16 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-strategy:
-  matrix:
-    linux:
-      imageName: 'Ubuntu-16.04'
-    mac:
-      imageName: 'macOS-10.13'
-    windows:
-      imageName: 'win1803'
-
-pool:
-  vmImage: $(imageName)
-
-variables:
-  LOG_LEVEL: debug
-
 stages:
 - stage: Build
+  pool:
+    vmImage: $(imageName)
+  variables:
+    LOG_LEVEL: debug
+  strategy:
+    matrix:
+      linux:
+        imageName: 'Ubuntu-16.04'
   jobs:
   - job: BuildJob
     steps:
@@ -37,6 +30,19 @@ stages:
       displayName: 'Build'
 
 - stage: Test
+  dependsOn: ['Build']
+  pool:
+    vmImage: $(imageName)
+  variables:
+    LOG_LEVEL: debug
+  strategy:
+    matrix:
+      linux:
+        imageName: 'Ubuntu-16.04'
+      mac:
+        imageName: 'macOS-10.13'
+      windows:
+        imageName: 'win1803'
   jobs:
   - job: TestJob
     steps:
