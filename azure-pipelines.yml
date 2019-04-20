@@ -5,7 +5,7 @@
 
 jobs:
 - job: 'test'
-  displayName: 'Build and Test'
+  displayName: 'Build and test'
   strategy:
     matrix:
       linux:
@@ -16,11 +16,9 @@ jobs:
         imageName: 'win1803'
   pool:
     vmImage: $(imageName)
-  variables:
-    LOG_LEVEL: debug
   steps:
   - task: NodeTool@0
-    displayName: 'Install node'
+    displayName: 'Install Node'
     inputs:
       versionSpec: '10.x'
 
@@ -54,11 +52,9 @@ jobs:
         imageName: 'Ubuntu-16.04'
   pool:
     vmImage: $(imageName)
-  variables:
-    LOG_LEVEL: debug
   steps:
   - task: NodeTool@0
-    displayName: 'Install node'
+    displayName: 'Install Node'
     inputs:
       versionSpec: '10.x'
   - script: |
