@@ -3,24 +3,17 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-strategy:
-  matrix:
-    linux:
-      imageName: 'Ubuntu-16.04'
-    mac:
-      imageName: 'macOS-10.13'
-    windows:
-      imageName: 'win1803'
-
-pool:
-  vmImage: $(imageName)
-
-variables:
-  LOG_LEVEL: debug
-
 jobs:
 - job: 'build'
   displayName: 'Build'
+  strategy:
+    matrix:
+      linux:
+        imageName: 'Ubuntu-16.04'
+  pool:
+    vmImage: $(imageName)
+  variables:
+    LOG_LEVEL: debug
   steps:
   - task: NodeTool@0
     displayName: 'Install node'
@@ -38,6 +31,18 @@ jobs:
 - job: 'test'
   displayName: 'Test'
   dependsOn: 'build'
+  strategy:
+    matrix:
+      linux:
+        imageName: 'Ubuntu-16.04'
+      mac:
+        imageName: 'macOS-10.13'
+      windows:
+        imageName: 'win1803'
+  pool:
+    vmImage: $(imageName)
+  variables:
+    LOG_LEVEL: debug
   steps:
   - script: |
       npm run test
