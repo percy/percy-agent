@@ -4,12 +4,16 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 jobs:
-- job: 'build'
-  displayName: 'Build'
+- job: 'test'
+  displayName: 'Build and Test'
   strategy:
     matrix:
       linux:
         imageName: 'Ubuntu-16.04'
+      mac:
+        imageName: 'macOS-10.13'
+      windows:
+        imageName: 'win1803'
   pool:
     vmImage: $(imageName)
   variables:
@@ -27,23 +31,6 @@ jobs:
   - script: |
       npm run build-client
     displayName: 'Build'
-
-- job: 'test'
-  displayName: 'Test'
-  dependsOn: 'build'
-  strategy:
-    matrix:
-      linux:
-        imageName: 'Ubuntu-16.04'
-      mac:
-        imageName: 'macOS-10.13'
-      windows:
-        imageName: 'win1803'
-  pool:
-    vmImage: $(imageName)
-  variables:
-    LOG_LEVEL: debug
-  steps:
   - script: |
       npm run test
     displayName: 'Test'
@@ -57,3 +44,26 @@ jobs:
       npm run test-integration
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
     displayName: 'Test Integration'
+
+- job: 'release'
+  displayName: 'Release'
+  dependsOn: 'test'
+  strategy:
+    matrix:
+      linux:
+        imageName: 'Ubuntu-16.04'
+  pool:
+    vmImage: $(imageName)
+  variables:
+    LOG_LEVEL: debug
+  steps:
+  - task: NodeTool@0
+    displayName: 'Install node'
+    inputs:
+      versionSpec: '10.x'
+  - script: |
+      npm ci
+    displayName: 'Install packages'
+  - script: |
+      npx semantic-release
+    displayName: 'Release'
