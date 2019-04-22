@@ -46,12 +46,16 @@ jobs:
     displayName: 'Test Integration'
 
   - task: PublishTestResults@2
-    displayName: 'Publish test results to Azure'
-    condition: always()
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: '**/test-*.xml'
+      testResultsFiles: '$(System.DefaultWorkingDirectory)/test-results.xml'
       testRunTitle: $(imageName)
+
+  - task: PublishCodeCoverageResults@1
+    inputs: 
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
 
 - job: 'release'
   displayName: 'Release'

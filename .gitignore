@@ -6,3 +6,6 @@
 /tmp/*
 /dist-test
 /.rpt2_cache
+test-results.xml
+coverage/
+.nyc_output/
