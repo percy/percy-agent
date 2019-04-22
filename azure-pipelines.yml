@@ -45,6 +45,14 @@ jobs:
     condition: ne( variables['Agent.OS'], 'Windows_NT' )
     displayName: 'Test Integration'
 
+  - task: PublishTestResults@2
+    displayName: 'Publish test results to Azure'
+    condition: always()
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: $(imageName)
+
 - job: 'release'
   displayName: 'Release'
   dependsOn: 'test'
