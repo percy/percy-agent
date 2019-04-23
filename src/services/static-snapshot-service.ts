@@ -81,8 +81,24 @@ export default class StaticSnapshotService {
       listeners: {
         file: (root: any, fileStats: any, next: any) => {
           // make sure the file is part of the capture group, and not part of the ignore group
-          const isCapturableFile = fileStats.name.match(this.options.snapshotFilesRegex)
-          const isIgnorableFile = fileStats.name.match(this.options.ignoreFilesRegex)
+          const snapshotResult = fileStats.name.match(this.options.snapshotFilesRegex)
+          const ignoreResult = fileStats.name.match(this.options.ignoreFilesRegex)
+
+          let isCapturableFile = false
+          let isIgnorableFile = false
+
+          // the match result can be null or an array. if an array the first result
+          // can still be an empty string which is the same as no match found, but looking
+          // for an index when the result is null will throw an error
+
+          if (snapshotResult) {
+            isCapturableFile = snapshotResult[0] ? true : false
+          }
+
+          if (ignoreResult) {
+            isIgnorableFile = ignoreResult[0] ? true : false
+          }
+
           const shouldVisitFile = isCapturableFile && !isIgnorableFile
 
           if (shouldVisitFile) {
