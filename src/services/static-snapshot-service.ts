@@ -8,7 +8,7 @@ import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
 import {StaticSnapshotOptions} from './static-snapshot-options'
 
-// Use this instead of importing PercyAgent - we only want the browserified version
+// Use this instead of importing PercyAgent - we only want the compiled version
 declare var PercyAgent: any
 
 export default class StaticSnapshotService {
@@ -29,7 +29,6 @@ export default class StaticSnapshotService {
 
   async start() {
     logger.info('starting static snapshot service...')
-    // start the app on the specified port
     this.server = await this.app.listen(this.options.port)
   }
 
@@ -87,10 +86,9 @@ export default class StaticSnapshotService {
           let isCapturableFile = false
           let isIgnorableFile = false
 
-          // the match result can be null or an array. if an array the first result
-          // can still be an empty string which is the same as no match found, but looking
-          // for an index when the result is null will throw an error
-
+          // the match result can be null or an array. if an array the first result can
+          // still be an empty string which is the same as no match found, but looking
+          // for an index when the result is null will throw an error so the ifs are needed
           if (snapshotResult) {
             isCapturableFile = snapshotResult[0] ? true : false
           }
@@ -102,7 +100,6 @@ export default class StaticSnapshotService {
           const shouldVisitFile = isCapturableFile && !isIgnorableFile
 
           if (shouldVisitFile) {
-            // for each file need to build a URL for the browser to visit
             pageUrls.push(baseUrl + root.replace(this.options.snapshotDirectory, '') + '/' + fileStats.name)
           }
         },
