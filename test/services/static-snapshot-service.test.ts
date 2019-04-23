@@ -15,6 +15,7 @@ describe('StaticSnapshotService', () => {
     port,
     snapshotDirectory: './test/fixtures/_dummyTestingApp/',
     snapshotFilesRegex: '\.(html|htm)$',
+    ignoreFilesRegex: '',
     baseUrl: '/',
   }
 

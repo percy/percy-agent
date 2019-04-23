@@ -3,5 +3,5 @@ export interface StaticSnapshotOptions {
     port: number,
     baseUrl: string,
     snapshotFilesRegex: string,
-    ignoreFilesRegex?: string,
+    ignoreFilesRegex: string,
   }
