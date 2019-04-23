@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Static Site Test Case - Index</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="/dummy-base-url/assets/css/app.css">
+  </head>
+  <body>
+    <h1><strong>Total expected snapshots: 8</strong></h1>
+    <h2><img src="/dummy-base-url/assets/images/check.png" class="icon lg"> <strong>This the index of the static site. percy-agent should snapshot this page.</strong></h2>
+    
+    <p>Welcome to Westeros</p>
+    <!-- These links work locally with http-server. The assets won't because they expect a base url option, which http-server does not accept -->
+    <ul>
+      <li>Important Final Season Families - percy-agent should snapshot all of these pages</li>
+      <ul>
+        <li><a href="/dummy-base-url/families/stark/members.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Starks</a></li>
+        <li><a href="/dummy-base-url/families/lannister/members.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Lannisters</a></li>
+        <li><a href="/dummy-base-url/families/targaryen/members.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Targaryens</a></li>
+        <li><a href="/dummy-base-url/families/greyjoy/members.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Greyjoys</a></li>
+      </ul>
+      <li>Deceased Family Members - percy-agent should not snapshot these pages because of the given snapshot-files flag</li>
+      <ul>
+        <li><a href="/dummy-base-url/families/stark/dead-members/list.htm"><img src="/dummy-base-url/assets/images/red-x.png" class="icon"> Starks</a></li>
+        <li><a href="/dummy-base-url/families/lannister/dead-members/list.html"><img src="/dummy-base-url/assets/images/red-x.png" class="icon"> Lannisters</a></li>
+        <li><a href="/dummy-base-url/families/targaryen/dead-members/list.html"><img src="/dummy-base-url/assets/images/red-x.png" class="icon"> Targaryens</a></li>
+        <li><a href="/dummy-base-url/families/greyjoy/dead.html"><img src="/dummy-base-url/assets/images/red-x.png" class="icon"> Greyjoys</a></li>
+      </ul>
+      <li>Castles & Homelands - percy-agent should snapshot all of these pages</li>
+      <ul>
+        <li><a href="/dummy-base-url/families/stark/winterfell.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Winterfell (Stark)</a></li>
+        <li><a href="/dummy-base-url/families/lannister/casterly-rock.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Casterly Rock (Lannister)</a></li>
+        <li><a href="/dummy-base-url/families/greyjoy/pyke.html"><img src="/dummy-base-url/assets/images/check.png" class="icon"> Pyke (Greyjoy)</a></li>
+      </ul>
+      <li>Castles & Homelands - percy-agent should not snapshot these pages because of the given ignore-files flag</li>
+      <ul>
+        <li><a href="/dummy-base-url/families/targaryen/red-keep.html"><img src="/dummy-base-url/assets/images/red-x.png" class="icon"> Red Keep/King's Landing (Targaryen)</a></li>
+      </ul>
+    </ul>
+  </body>
+</html>
