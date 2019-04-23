@@ -74,15 +74,15 @@ export default class StaticSnapshotService {
   }
 
   async _buildPageUrls() {
-    const baseUrl = `http://localhost:${this.options.port}`
+    const baseUrl = `http://localhost:${this.options.port}${this.options.baseUrl}`
     const pageUrls = [] as any
 
     const walkOptions = {
       listeners: {
         file: (root: any, fileStats: any, next: any) => {
           // make sure the file is part of the capture group, and not part of the ignore group
-          const isCapturableFile = fileStats.name.match(this.options.snapshotFilesRegex)[0]
-          const isIgnorableFile = fileStats.name.match(this.options.ignoreFilesRegex)[0]
+          const isCapturableFile = fileStats.name.match(this.options.snapshotFilesRegex)
+          const isIgnorableFile = fileStats.name.match(this.options.ignoreFilesRegex)
           const shouldVisitFile = isCapturableFile && !isIgnorableFile
 
           if (shouldVisitFile) {
