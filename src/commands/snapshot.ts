@@ -36,7 +36,7 @@ export default class Snapshot extends PercyCommand {
       char: 'b',
       description: 'If your static files will be hosted in a subdirectory, instead \n' +
       'of the webserver\'s root path, set that subdirectory with this flag.',
-      default: '/',
+      default: '',
     }),
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
@@ -67,8 +67,8 @@ export default class Snapshot extends PercyCommand {
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // check that base url starts with a slash and exit if it is missing
-    if (baseUrl[0] !== '/') {
+    // check that the base url passed in starts with a slash and exit if it is missing
+    if (baseUrl[0] !== '/' && baseUrl.length > 0) {
       logger.warn('The base-url flag must begin with a slash.')
       this.exit(1)
     }

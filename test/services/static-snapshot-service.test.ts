@@ -8,12 +8,14 @@ import chai from '../support/chai'
 const expect = chai.expect
 
 describe('StaticSnapshotService', () => {
+  const staticSitePort = Constants.PORT + 1
+
   const options: StaticSnapshotOptions = {
-    port: Constants.PORT,
+    port: staticSitePort,
     snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
     snapshotFilesRegex: '\.(html|htm)$',
     ignoreFilesRegex: '',
-    baseUrl: '/',
+    baseUrl: '',
   }
 
   const subject = new StaticSnapshotService(options)
@@ -53,8 +55,13 @@ describe('StaticSnapshotService', () => {
     it('creates the expected number of snapshot urls', async () => {
       const pages = await subject._buildPageUrls()
 
-      // this is the number of html files in test/fixtures/services/static-snapshot-service/_dummy-testing-app
-      expect(pages.length).to.equal(2)
+      // these are the html files in test/fixtures/services/static-snapshot-service/_dummy-testing-app
+      const expectedUrls = [
+        'http://localhost:5339/about-us.html',
+        'http://localhost:5339/index.html',
+      ]
+
+      expect(pages).to.eql(expectedUrls)
     })
   })
 
@@ -68,7 +75,7 @@ describe('StaticSnapshotService', () => {
       await chai.request(localUrl)
         .get('/')
         .catch(async (error) => {
-          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${Constants.PORT}`)
+          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${staticSitePort}`)
         })
     })
 
