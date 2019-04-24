@@ -130,7 +130,7 @@
     "test": "npm run build-client && PERCY_TOKEN=abc mocha --forbid-only \"test/**/*.test.ts\" --exclude \"test/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\"",
     "test-client": "mkdir -p dist-test/ && npm run build-client-test && testem ci --file ./test/percy-agent-client/testem.js",
     "test-integration": "npm run build-client && node ./bin/run exec -- mocha test/integration/**/*.test.ts",
-    "test-snapshot-command": "./bin/run snapshot test/integration/testStaticSite -b /dummy-base-url -i '(red-keep)' -c '\\.(html)$'", 
+    "test-snapshot-command": "./bin/run snapshot test/integration/test-static-site -b /dummy-base-url -i '(red-keep)' -c '\\.(html)$'", 
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },

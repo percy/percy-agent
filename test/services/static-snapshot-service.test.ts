@@ -13,7 +13,7 @@ describe('StaticSnapshotService', () => {
 
   const options: StaticSnapshotOptions = {
     port,
-    snapshotDirectory: './test/fixtures/_dummyTestingApp/',
+    snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
     snapshotFilesRegex: '\.(html|htm)$',
     ignoreFilesRegex: '',
     baseUrl: '/',
@@ -54,7 +54,7 @@ describe('StaticSnapshotService', () => {
     it('creates the expected number of snapshot urls', async () => {
       const pages = await subject._buildPageUrls()
 
-      // this is the number of html files in percy-agent/test/fixtures/_dummyTestingApp
+      // this is the number of html files in test/fixtures/services/static-snapshot-service/_dummy-testing-app
       expect(pages.length).to.equal(2)
     })
   })
