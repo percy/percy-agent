@@ -28,7 +28,7 @@ export default class StaticSnapshotService {
   }
 
   async start() {
-    logger.info(`serving static site at http://localhost:${this.options.port}${this.options.baseUrl}`)
+    logger.info(`serving static site at ${this._buildLocalUrl()}`)
     this.server = await this.app.listen(this.options.port)
   }
 
@@ -69,8 +69,12 @@ export default class StaticSnapshotService {
     if (this.server) { await this.server.close() }
   }
 
+  _buildLocalUrl() {
+    return `http://localhost:${this.options.port}${this.options.baseUrl}`
+  }
+
   async _buildPageUrls() {
-    const baseUrl = `http://localhost:${this.options.port}`
+    const baseUrl = this._buildLocalUrl()
     const pageUrls = [] as any
 
     const walkOptions = {

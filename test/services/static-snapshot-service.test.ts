@@ -8,11 +8,8 @@ import chai from '../support/chai'
 const expect = chai.expect
 
 describe('StaticSnapshotService', () => {
-  const port = Constants.PORT
-  const host = `localhost:${port}`
-
   const options: StaticSnapshotOptions = {
-    port,
+    port: Constants.PORT,
     snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
     snapshotFilesRegex: '\.(html|htm)$',
     ignoreFilesRegex: '',
@@ -20,6 +17,7 @@ describe('StaticSnapshotService', () => {
   }
 
   const subject = new StaticSnapshotService(options)
+  const localUrl = subject._buildLocalUrl()
 
   describe('#constructor', () => {
     it('creates a static snapshot service with the given arguments', () => {
@@ -35,7 +33,7 @@ describe('StaticSnapshotService', () => {
     it('starts serving the static site on supplied port', async () => {
       await captureStdOut(() => subject.start())
 
-      await chai.request(`http://${host}`)
+      await chai.request(localUrl)
         .get('/')
         .end((error, response) => {
           expect(error).to.be.eq(null)
@@ -46,7 +44,8 @@ describe('StaticSnapshotService', () => {
 
     it('logs to stdout that it is starting the static snapshot service', async () => {
       const stdout = await captureStdOut(() => subject.start())
-      expect(stdout).to.eq('[percy] serving static site at http://localhost:5338/\n')
+      console.log(localUrl)
+      expect(stdout).to.eq(`[percy] serving static site at ${localUrl}\n`)
     })
   })
 
@@ -66,10 +65,10 @@ describe('StaticSnapshotService', () => {
         await subject.stop()
       })
 
-      await chai.request(`http://${host}`)
+      await chai.request(localUrl)
         .get('/')
         .catch(async (error) => {
-          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${port}`)
+          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${Constants.PORT}`)
         })
     })
 
