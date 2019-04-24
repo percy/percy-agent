@@ -34,9 +34,9 @@
     "js-yaml": "^3.13.1",
     "percy-client": "^3.0.3",
     "puppeteer": "^1.13.0",
+    "winston": "^2.0.0",
     "retry-axios": "^0.5.0",
-    "walk": "^2.3.14",
-    "winston": "^2.0.0"
+    "walk": "^2.3.14"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",

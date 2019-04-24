@@ -23,7 +23,7 @@ describe('StaticSnapshotService', () => {
 
   describe('#constructor', () => {
     it('creates a static snapshot service with the given arguments', () => {
-      expect(subject._getOptions()).to.include(options)
+      expect(subject.options).to.eq(options)
     })
   })
 
@@ -46,7 +46,7 @@ describe('StaticSnapshotService', () => {
 
     it('logs to stdout that it is starting the static snapshot service', async () => {
       const stdout = await captureStdOut(() => subject.start())
-      expect(stdout).to.match(/\[percy\] starting static snapshot service.../)
+      expect(stdout).to.eq('[percy] serving static site at http://localhost:5338/\n')
     })
   })
 

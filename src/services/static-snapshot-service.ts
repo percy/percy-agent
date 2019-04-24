@@ -12,8 +12,8 @@ import {StaticSnapshotOptions} from './static-snapshot-options'
 declare var PercyAgent: any
 
 export default class StaticSnapshotService {
+  readonly options: StaticSnapshotOptions
   private readonly app: express.Application
-  private readonly options: StaticSnapshotOptions
   private server: Server | null = null
 
   constructor(options: StaticSnapshotOptions) {
@@ -28,7 +28,7 @@ export default class StaticSnapshotService {
   }
 
   async start() {
-    logger.debug(`serving static site at http://localhost:${this.options.port}${this.options.baseUrl}`)
+    logger.info(`serving static site at http://localhost:${this.options.port}${this.options.baseUrl}`)
     this.server = await this.app.listen(this.options.port)
   }
 
@@ -40,6 +40,7 @@ export default class StaticSnapshotService {
       handleSIGINT : false,
     })
 
+    const percyAgentClientFilename = agentJsFilename()
     const page = await browser.newPage()
 
     const pageUrls = await this._buildPageUrls()
@@ -48,7 +49,6 @@ export default class StaticSnapshotService {
       logger.debug(`visiting ${url}`)
 
       await page.goto(url)
-      const percyAgentClientFilename = agentJsFilename()
 
       await page.addScriptTag({
         path: percyAgentClientFilename,
@@ -58,22 +58,15 @@ export default class StaticSnapshotService {
         const percyAgentClient = new PercyAgent()
         return percyAgentClient.snapshot(name)
       }, url)
-
-      logger.info(`snapshot taken for ${url}`)
     }
 
     browser.close()
   }
 
   async stop() {
-    logger.info('stopping static snapshot service')
+    logger.info('stopping static snapshot service...')
 
     if (this.server) { await this.server.close() }
-  }
-
-  // provide a simple way to test that the constructor recieved the expected arguments
-  _getOptions() {
-    return this.options
   }
 
   async _buildPageUrls() {
