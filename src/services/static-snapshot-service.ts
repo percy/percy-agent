@@ -28,12 +28,12 @@ export default class StaticSnapshotService {
   }
 
   async start() {
-    logger.info('starting static snapshot service...')
+    logger.debug(`serving static site at http://localhost:${this.options.port}${this.options.baseUrl}`)
     this.server = await this.app.listen(this.options.port)
   }
 
   async snapshotAll() {
-    logger.info('taking snapshot of static site...')
+    logger.debug('taking snapshots of static site')
 
     const browser = await puppeteer.launch({
       args: ['--no-sandbox'],
@@ -45,6 +45,8 @@ export default class StaticSnapshotService {
     const pageUrls = await this._buildPageUrls()
 
     for (const url of pageUrls) {
+      logger.debug(`visiting ${url}`)
+
       await page.goto(url)
       const percyAgentClientFilename = agentJsFilename()
 
@@ -56,13 +58,15 @@ export default class StaticSnapshotService {
         const percyAgentClient = new PercyAgent()
         return percyAgentClient.snapshot(name)
       }, url)
+
+      logger.info(`snapshot taken for ${url}`)
     }
 
     browser.close()
   }
 
   async stop() {
-    logger.info('stopping static snapshot service...')
+    logger.info('stopping static snapshot service')
 
     if (this.server) { await this.server.close() }
   }
@@ -73,7 +77,7 @@ export default class StaticSnapshotService {
   }
 
   async _buildPageUrls() {
-    const baseUrl = `http://localhost:${this.options.port}${this.options.baseUrl}`
+    const baseUrl = `http://localhost:${this.options.port}`
     const pageUrls = [] as any
 
     const walkOptions = {
