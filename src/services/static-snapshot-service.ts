@@ -1,9 +1,9 @@
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
+import * as globby from 'globby'
 import {Server} from 'http'
 import * as puppeteer from 'puppeteer'
-import * as walk from 'walk'
 import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
 import {StaticSnapshotOptions} from './static-snapshot-options'
@@ -77,37 +77,15 @@ export default class StaticSnapshotService {
     const baseUrl = this._buildLocalUrl()
     const pageUrls = [] as any
 
-    const walkOptions = {
-      listeners: {
-        file: (root: any, fileStats: any, next: any) => {
-          // make sure the file is part of the capture group, and not part of the ignore group
-          const snapshotResult = fileStats.name.match(this.options.snapshotFilesRegex)
-          const ignoreResult = fileStats.name.match(this.options.ignoreFilesRegex)
-
-          let isCapturableFile = false
-          let isIgnorableFile = false
-
-          // the match result can be null or an array. if an array the first result can
-          // still be an empty string which is the same as no match found, but looking
-          // for an index when the result is null will throw an error so the ifs are needed
-          if (snapshotResult) {
-            isCapturableFile = snapshotResult[0] ? true : false
-          }
-
-          if (ignoreResult) {
-            isIgnorableFile = ignoreResult[0] ? true : false
-          }
-
-          const shouldVisitFile = isCapturableFile && !isIgnorableFile
-
-          if (shouldVisitFile) {
-            pageUrls.push(baseUrl + root.replace(this.options.snapshotDirectory, '') + '/' + fileStats.name)
-          }
-        },
-      },
+    const globOptions = {
+      cwd: this.options.snapshotDirectory,
     }
 
-    await walk.walkSync(this.options.snapshotDirectory, walkOptions)
+    const paths = await globby(this.options.snapshotGlob, globOptions)
+
+    for (const path of paths) {
+      pageUrls.push(baseUrl + path)
+    }
 
     return pageUrls
   }
