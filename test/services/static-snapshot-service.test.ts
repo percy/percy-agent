@@ -14,7 +14,7 @@ describe('StaticSnapshotService', () => {
     port: staticSitePort,
     snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
     snapshotGlob: ['**/*.html', '**/*.htm'],
-    ignoreGlob: [''],
+    ignoreGlob: ['**/blog/*'],
     baseUrl: '/',
   }
 
@@ -46,7 +46,6 @@ describe('StaticSnapshotService', () => {
 
     it('logs to stdout that it is starting the static snapshot service', async () => {
       const stdout = await captureStdOut(() => subject.start())
-      console.log(localUrl)
       expect(stdout).to.eq(`[percy] serving static site at ${localUrl}\n`)
     })
   })
@@ -59,10 +58,17 @@ describe('StaticSnapshotService', () => {
       const expectedUrls = [
         'http://localhost:5339/about-us.html',
         'http://localhost:5339/index.html',
-        'http://localhost:5339/blog/index.html',
       ]
 
       expect(pages).to.eql(expectedUrls)
+    })
+
+    it('ignores the correct files', async () => {
+      const pages = await subject._buildPageUrls()
+
+      const notIncludedUrl = 'http://localhost:5339/blog/index.html'
+
+      expect(pages).to.not.include(notIncludedUrl)
     })
   })
 
