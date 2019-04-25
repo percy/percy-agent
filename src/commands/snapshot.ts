@@ -25,7 +25,7 @@ export default class Snapshot extends PercyCommand {
     'snapshot-files': flags.string({
       char: 'c',
       description: 'Regular expression for matching the files to snapshot.',
-      default: '\.(html|htm)$',
+      default: '**/*.html,**/*.htm',
     }),
     'ignore-files': flags.string({
       char: 'i',
@@ -36,7 +36,7 @@ export default class Snapshot extends PercyCommand {
       char: 'b',
       description: 'If your static files will be hosted in a subdirectory, instead \n' +
       'of the webserver\'s root path, set that subdirectory with this flag.',
-      default: '',
+      default: '/',
     }),
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
@@ -61,14 +61,17 @@ export default class Snapshot extends PercyCommand {
     const staticServerPort = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const baseUrl = flags['base-url'] as string
-    const ignoreFilesRegex = flags['ignore-files'] as string
-    const snapshotFilesRegex = flags['snapshot-files'] as string
+    const rawIgnoreGlob = flags['ignore-files'] as string
+    const rawSnapshotGlob = flags['snapshot-files'] as string
+
+    const snapshotGlob = rawSnapshotGlob.split(',')
+    const ignoreGlob = rawIgnoreGlob.split(',')
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
     // check that the base url passed in starts with a slash and exit if it is missing
-    if (baseUrl[0] !== '/' && baseUrl.length > 0) {
+    if (baseUrl[0] !== '/') {
       logger.warn('The base-url flag must begin with a slash.')
       this.exit(1)
     }
@@ -81,8 +84,8 @@ export default class Snapshot extends PercyCommand {
       port: staticServerPort,
       snapshotDirectory,
       baseUrl,
-      snapshotFilesRegex,
-      ignoreFilesRegex,
+      snapshotGlob,
+      ignoreGlob,
     }
 
     const staticSnapshotService = new StaticSnapshotService(options)
