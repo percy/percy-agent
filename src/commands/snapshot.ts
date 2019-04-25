@@ -18,18 +18,18 @@ export default class Snapshot extends PercyCommand {
   static examples = [
     '$ percy snapshot _site/',
     '$ percy snapshot _site/ --base-url "/blog"',
-    '$ percy snapshot _site/ --ignore-files "\.(blog|docs)$"',
+    '$ percy snapshot _site/ --ignore-files "/blog/**,**/blog.*"',
   ]
 
   static flags = {
     'snapshot-files': flags.string({
       char: 'c',
-      description: 'Regular expression for matching the files to snapshot.',
+      description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
       default: '**/*.html,**/*.htm',
     }),
     'ignore-files': flags.string({
       char: 'i',
-      description: 'Regular expression for matching the files to ignore.',
+      description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
       default: '',
     }),
     'base-url': flags.string({
