@@ -2,7 +2,7 @@ import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
 import {PercyAgentClient} from './percy-agent-client'
 import {serializeCssOm} from './serialize-cssom'
-import {serializeInputElements} from './serialize-input'
+import {cleanSerializedInputElements, serializeInputElements} from './serialize-input'
 import {SnapshotOptions} from './snapshot-options'
 
 export default class PercyAgent {
@@ -68,6 +68,8 @@ export default class PercyAgent {
     if (this.domTransformation) {
       domClone = this.domTransformation(domClone)
     }
+
+    cleanSerializedInputElements(documentObject)
 
     const snapshotString = doctype + domClone.outerHTML
 
