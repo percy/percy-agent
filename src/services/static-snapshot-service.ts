@@ -79,6 +79,7 @@ export default class StaticSnapshotService {
 
     const globOptions = {
       cwd: this.options.snapshotDirectory,
+      ignore: this.options.ignoreGlob,
     }
 
     const paths = await globby(this.options.snapshotGlob, globOptions)
