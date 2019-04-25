@@ -13,9 +13,9 @@ describe('StaticSnapshotService', () => {
   const options: StaticSnapshotOptions = {
     port: staticSitePort,
     snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
-    snapshotFilesRegex: '\.(html|htm)$',
-    ignoreFilesRegex: '',
-    baseUrl: '',
+    snapshotGlob: ['**/*.html', '**/*.htm'],
+    ignoreGlob: [''],
+    baseUrl: '/',
   }
 
   const subject = new StaticSnapshotService(options)
@@ -59,6 +59,7 @@ describe('StaticSnapshotService', () => {
       const expectedUrls = [
         'http://localhost:5339/about-us.html',
         'http://localhost:5339/index.html',
+        'http://localhost:5339/blog/index.html',
       ]
 
       expect(pages).to.eql(expectedUrls)
