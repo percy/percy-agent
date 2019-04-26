@@ -64,9 +64,9 @@ export default class StaticSnapshotService {
   }
 
   async stop() {
-    logger.info('stopping static snapshot service...')
-
     if (this.server) { await this.server.close() }
+
+    logger.info(`shutting down static site at ${this._buildLocalUrl()}`)
   }
 
   _buildLocalUrl() {
@@ -79,10 +79,10 @@ export default class StaticSnapshotService {
 
     const globOptions = {
       cwd: this.options.snapshotDirectory,
-      ignore: this.options.ignoreGlob,
+      ignore: this.options.ignoreGlobs,
     }
 
-    const paths = await globby(this.options.snapshotGlob, globOptions)
+    const paths = await globby(this.options.snapshotGlobs, globOptions)
 
     for (const path of paths) {
       pageUrls.push(baseUrl + path)

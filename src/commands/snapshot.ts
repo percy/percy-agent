@@ -18,12 +18,12 @@ export default class Snapshot extends PercyCommand {
   static examples = [
     '$ percy snapshot _site/',
     '$ percy snapshot _site/ --base-url "/blog"',
-    '$ percy snapshot _site/ --ignore-files "/blog/**,**/blog.*"',
+    '$ percy snapshot _site/ --ignore-files "/blog/drafts/**"',
   ]
 
   static flags = {
     'snapshot-files': flags.string({
-      char: 'c',
+      char: 's',
       description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
       default: '**/*.html,**/*.htm',
     }),
@@ -64,8 +64,9 @@ export default class Snapshot extends PercyCommand {
     const rawIgnoreGlob = flags['ignore-files'] as string
     const rawSnapshotGlob = flags['snapshot-files'] as string
 
-    const snapshotGlob = rawSnapshotGlob.split(',')
-    const ignoreGlob = rawIgnoreGlob.split(',')
+    const snapshotGlobs = rawSnapshotGlob.split(',')
+
+    const ignoreGlobs = rawIgnoreGlob ? rawIgnoreGlob.split(',') : []
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
@@ -84,8 +85,8 @@ export default class Snapshot extends PercyCommand {
       port: staticServerPort,
       snapshotDirectory,
       baseUrl,
-      snapshotGlob,
-      ignoreGlob,
+      snapshotGlobs,
+      ignoreGlobs,
     }
 
     const staticSnapshotService = new StaticSnapshotService(options)

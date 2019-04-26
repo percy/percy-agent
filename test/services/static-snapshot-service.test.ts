@@ -13,8 +13,8 @@ describe('StaticSnapshotService', () => {
   const options: StaticSnapshotOptions = {
     port: staticSitePort,
     snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
-    snapshotGlob: ['**/*.html', '**/*.htm'],
-    ignoreGlob: ['**/blog/*'],
+    snapshotGlobs: ['**/*.html', '**/*.htm'],
+    ignoreGlobs: ['**/blog/*'],
     baseUrl: '/',
   }
 
@@ -50,7 +50,7 @@ describe('StaticSnapshotService', () => {
     })
   })
 
-  describe('#_buildPageUrls', () => {
+  describe('#_buildPageUrls with ignore flag set', () => {
     it('creates the expected number of snapshot urls', async () => {
       const pages = await subject._buildPageUrls()
 
@@ -63,12 +63,30 @@ describe('StaticSnapshotService', () => {
       expect(pages).to.eql(expectedUrls)
     })
 
+  })
+
+  describe('#_buildPageUrls without the ignore flag set', () => {
+    const options: StaticSnapshotOptions = {
+      port: staticSitePort,
+      snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
+      snapshotGlobs: ['**/*.html', '**/*.htm'],
+      ignoreGlobs: [],
+      baseUrl: '/',
+    }
+
+    const subject = new StaticSnapshotService(options)
+
     it('ignores the correct files', async () => {
       const pages = await subject._buildPageUrls()
 
-      const notIncludedUrl = 'http://localhost:5339/blog/index.html'
+      // these are the html files in test/fixtures/services/static-snapshot-service/_dummy-testing-app
+      const expectedUrls = [
+        'http://localhost:5339/about-us.html',
+        'http://localhost:5339/index.html',
+        'http://localhost:5339/blog/index.html',
+      ]
 
-      expect(pages).to.not.include(notIncludedUrl)
+      expect(pages).to.eql(expectedUrls)
     })
   })
 
@@ -93,7 +111,7 @@ describe('StaticSnapshotService', () => {
         await subject.stop()
       })
 
-      expect(stdout).to.match(/\[percy\] stopping static snapshot service.../)
+      expect(stdout).to.eq(`[percy] shutting down static site at ${localUrl}\n`)
     })
   })
 })
