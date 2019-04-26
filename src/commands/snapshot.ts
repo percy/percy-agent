@@ -18,18 +18,18 @@ export default class Snapshot extends PercyCommand {
   static examples = [
     '$ percy snapshot _site/',
     '$ percy snapshot _site/ --base-url "/blog"',
-    '$ percy snapshot _site/ --ignore-files "\.(blog|docs)$"',
+    '$ percy snapshot _site/ --ignore-files "/blog/drafts/**"',
   ]
 
   static flags = {
     'snapshot-files': flags.string({
-      char: 'c',
-      description: 'Regular expression for matching the files to snapshot.',
-      default: '\.(html|htm)$',
+      char: 's',
+      description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
+      default: '**/*.html,**/*.htm',
     }),
     'ignore-files': flags.string({
       char: 'i',
-      description: 'Regular expression for matching the files to ignore.',
+      description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
       default: '',
     }),
     'base-url': flags.string({
@@ -56,20 +56,22 @@ export default class Snapshot extends PercyCommand {
 
     const {args, flags} = this.parse(Snapshot)
 
-    const isWindows = process.platform === 'win32'
-
     const snapshotDirectory = args.snapshotDirectory as string
     const port = flags.port as number
     const staticServerPort = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
     const baseUrl = flags['base-url'] as string
-    const ignoreFilesRegex = flags['ignore-files'] as string
-    const snapshotFilesRegex = flags['snapshot-files'] as string
+    const rawIgnoreGlob = flags['ignore-files'] as string
+    const rawSnapshotGlob = flags['snapshot-files'] as string
+
+    const snapshotGlobs = rawSnapshotGlob.split(',')
+
+    const ignoreGlobs = rawIgnoreGlob ? rawIgnoreGlob.split(',') : []
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // check that base url starts with a slash and exit if it is missing
+    // check that the base url passed in starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
       logger.warn('The base-url flag must begin with a slash.')
       this.exit(1)
@@ -83,8 +85,8 @@ export default class Snapshot extends PercyCommand {
       port: staticServerPort,
       snapshotDirectory,
       baseUrl,
-      snapshotFilesRegex,
-      ignoreFilesRegex,
+      snapshotGlobs,
+      ignoreGlobs,
     }
 
     const staticSnapshotService = new StaticSnapshotService(options)
