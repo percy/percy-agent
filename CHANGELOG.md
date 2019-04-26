@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/percy/percy-agent/compare/v0.3.1...v0.4.0) (2019-04-26)
+
+
+### Features
+
+* Ability to snapshot a directory of webpages. Usage: `percy snapshot directory/` ([#137](https://github.com/percy/percy-agent/issues/137)) ([20daabb](https://github.com/percy/percy-agent/commit/20daabb))
+
 ## [0.3.1](https://github.com/percy/percy-agent/compare/v0.3.0...v0.3.1) (2019-04-18)
 
 
