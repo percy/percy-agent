@@ -12,6 +12,8 @@ interface AssetDiscoveryOptions {
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
+  pages: puppeteer.Page[] | null
+  isParallel: boolean
 
   readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
   networkIdleTimeout: number // ms
@@ -26,11 +28,23 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService(buildId)
     this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
+    this.pages = null
+    this.isParallel = process.env.PERCY_PARALLEL_TOTAL === '-1'
   }
 
   async setup() {
+    profile('-> assetDiscoveryService.setup')
+    this.browser =  await this.createBrowser()
+
+    if (!this.isParallel) {
+      this.pages = await this.createPagePool(this.browser, this.MAX_SNAPSHOT_WIDTHS)
+    }
+    profile('-> assetDiscoveryService.setup')
+  }
+
+  async createBrowser() {
     profile('-> assetDiscoveryService.puppeteer.launch')
-    this.browser = await puppeteer.launch({
+    const browser = await puppeteer.launch({
       args: [
         '--no-sandbox',
         '--disable-web-security',
@@ -39,13 +53,40 @@ export default class AssetDiscoveryService extends PercyClientService {
       handleSIGINT : false,
     })
     profile('-> assetDiscoveryService.puppeteer.launch')
+
+    return browser
+  }
+
+  async createPagePool(browser: puppeteer.Browser, size: number) {
+    profile('-> assetDiscoveryService.newPagePool')
+    const pagePromises = new Array(size)
+      .fill(undefined)
+      .map(() => this.createPage(browser))
+    const pages = await Promise.all(pagePromises)
+    profile('-> assetDiscoveryService.newPagePool')
+
+    return pages
+  }
+
+  async createPage(browser: puppeteer.Browser) {
+    profile('-> assetDiscoveryService.browser.newPage')
+    const page = await browser.newPage()
+    await page.setRequestInterception(true)
+    profile('-> assetDiscoveryService.browser.newPage')
+
+    return page
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string, options: SnapshotOptions): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
-    if (!this.browser) {
+    if (this.browser === null) {
       logger.error('Puppeteer failed to open browser.')
+      return []
+    }
+
+    if (!this.isParallel && this.pages === null) {
+      logger.error('Failed to create pool of pages in sequential run.')
       return []
     }
 
@@ -67,9 +108,11 @@ export default class AssetDiscoveryService extends PercyClientService {
     // switching to use puppeteer-cluster instead.
     profile('--> assetDiscoveryService.discoverForWidths', {url: rootResourceUrl})
     const resourcePromises: Array<Promise<any[]>> = []
-    for (const width of widths) {
+    for (let idx = 0; idx < widths.length; idx++) {
+      const page = this.pages !== null ? this.pages[idx] : null
+      const width = widths[idx]
       const promise = this.resourcesForWidth(
-        this.browser, width, domSnapshot, rootResourceUrl, enableJavaScript)
+        this.browser, page,  width, domSnapshot, rootResourceUrl, enableJavaScript)
       resourcePromises.push(promise)
     }
     const resourceArrays: any[][] = await Promise.all(resourcePromises)
@@ -109,15 +152,21 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async teardown() {
+    await this.closePages()
     await this.closeBrowser()
   }
 
-  private async resourcesForWidth(browser: puppeteer.Browser, width: number, domSnapshot: string,
-                                  rootResourceUrl: string, enableJavaScript: boolean): Promise<any[]> {
+  private async resourcesForWidth(
+    browser: puppeteer.Browser,
+    pooledPage: puppeteer.Page | null,
+    width: number,
+    domSnapshot: string,
+    rootResourceUrl: string,
+    enableJavaScript: boolean,
+  ): Promise<any[]> {
     logger.debug(`discovering assets for width: ${width}`)
-
-    const page = await browser.newPage()
-    await page.setRequestInterception(true)
+  
+    const page = pooledPage || await this.createPage(browser)
     await page.setJavaScriptEnabled(enableJavaScript)
     await page.setViewport(Object.assign(page.viewport(), {width}))
 
@@ -177,9 +226,11 @@ export default class AssetDiscoveryService extends PercyClientService {
       const maybeResources: any[] = await Promise.all(maybeResourcePromises)
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
 
-      profile('--> assetDiscoveryService.page.close', {url: rootResourceUrl})
-      await page.close()
-      profile('--> assetDiscoveryService.page.close')
+      if (this.isParallel) {
+        profile('--> assetDiscoveryService.page.close', {url: rootResourceUrl})
+        await page.close()
+        profile('--> assetDiscoveryService.page.close')
+      }
 
       return maybeResources.filter((maybeResource) => maybeResource != null)
     } catch (error) {
@@ -189,8 +240,17 @@ export default class AssetDiscoveryService extends PercyClientService {
     return []
   }
 
+  private async closePages() {
+    if (this.pages === null) { return }
+
+    for (const page of this.pages) {
+      await page.close()
+    }
+    this.pages = null
+  }
+
   private async closeBrowser() {
-    if (!this.browser) { return }
+    if (this.browser === null) { return }
     await this.browser.close()
     this.browser = null
   }
