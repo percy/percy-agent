@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/percy/percy-agent/compare/v0.4.0...v0.4.1) (2019-04-30)
+
+
+### Bug Fixes
+
+* Introduce cross-spawn for cross platform commands ([#175](https://github.com/percy/percy-agent/issues/175)) ([f9bc817](https://github.com/percy/percy-agent/commit/f9bc817)), closes [#174](https://github.com/percy/percy-agent/issues/174)
+
 # [0.4.0](https://github.com/percy/percy-agent/compare/v0.3.1...v0.4.0) (2019-04-26)
 
 
