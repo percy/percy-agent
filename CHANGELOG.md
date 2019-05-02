@@ -1,3 +1,10 @@
+## [0.4.3](https://github.com/percy/percy-agent/compare/v0.4.2...v0.4.3) (2019-05-02)
+
+
+### Bug Fixes
+
+* Revert change to module bundling ([#177](https://github.com/percy/percy-agent/issues/177)) ([0f575f2](https://github.com/percy/percy-agent/commit/0f575f2))
+
 ## [0.4.2](https://github.com/percy/percy-agent/compare/v0.4.1...v0.4.2) (2019-05-02)
 
 
