@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/percy/percy-agent/compare/v0.4.1...v0.4.2) (2019-05-02)
+
+
+### Bug Fixes
+
+* Build `PercyAgent` code that's inject in browser as iife ([#176](https://github.com/percy/percy-agent/issues/176)) ([9f1ac26](https://github.com/percy/percy-agent/commit/9f1ac26))
+
 ## [0.4.1](https://github.com/percy/percy-agent/compare/v0.4.0...v0.4.1) (2019-04-30)
 
 
