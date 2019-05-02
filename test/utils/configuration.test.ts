@@ -9,8 +9,8 @@ describe('Configuration', () => {
     expect(subject.snapshot.widths).to.eql([375, 1280])
     expect(subject.snapshot['min-height']).to.eql(1024)
     expect(subject.static_site['base-url']).to.eql('/blog')
-    expect(subject.static_site['snapshot-files']).to.eql('\\.html$')
-    expect(subject.static_site['ignore-files']).to.eql('\\.htm$')
+    expect(subject.static_site['snapshot-files']).to.eql('**/*.html')
+    expect(subject.static_site['ignore-files']).to.eql('**/*.htm')
   })
 
   it('gracefully handles a missing file', () => {

@@ -4,5 +4,5 @@ snapshot:
   min-height: 1024
 static_site:
   base-url: /blog
-  snapshot-files: \.html$
-  ignore-files: \.htm$
+  snapshot-files: '**/*.html'
+  ignore-files: '**/*.htm'
