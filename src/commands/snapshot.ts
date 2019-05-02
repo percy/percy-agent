@@ -66,19 +66,19 @@ export default class Snapshot extends PercyCommand {
     const rawIgnoreGlobFlag = flags['ignore-files'] as string
     const rawSnapshotGlobFlag = flags['snapshot-files'] as string
 
-    const snapshotGlobs = rawSnapshotGlobFlag.split(',')
-
-    const ignoreGlobs = rawIgnoreGlobFlag ? rawIgnoreGlobFlag.split(',') : []
-
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
-
 
     // read configurations from the percy.yml file
     const staticSiteConfiguration = (configuration().static_site || {}) as StaticSiteSnapshotConfiguration
     const baseUrl = staticSiteConfiguration['base-url'] || baseUrlFlag
-    const snapshotFilesRegex = staticSiteConfiguration['snapshot-files'] || snapshotGlobs
-    const ignoreFilesRegex = staticSiteConfiguration['ignore-files'] || ignoreGlobs
+    const rawSnapshotGlobs = staticSiteConfiguration['snapshot-files'] || rawSnapshotGlobFlag
+    const rawIgnoreGlobs = staticSiteConfiguration['ignore-files'] || rawIgnoreGlobFlag
+
+    const snapshotGlobs = rawSnapshotGlobs.split(',')
+
+    // if it is an empty string then convert it to an empty array instead of an array of an empty string
+    const ignoreGlobs = rawIgnoreGlobs ? rawIgnoreGlobs.split(',') : []
 
     // check that base url starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
