@@ -7,7 +7,7 @@ export default {
   output: {
     name: "PercyAgent",
     file: "dist/public/percy-agent.js",
-    format: "umd"
+    format: "iife"
   },
   plugins: [
     // Allows node_modules resolution
