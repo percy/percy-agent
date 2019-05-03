@@ -1,3 +1,10 @@
+## [0.4.4](https://github.com/percy/percy-agent/compare/v0.4.3...v0.4.4) (2019-05-03)
+
+
+### Bug Fixes
+
+* Expose `PercyAgent` as a global always ([#178](https://github.com/percy/percy-agent/issues/178)) ([698067b](https://github.com/percy/percy-agent/commit/698067b))
+
 ## [0.4.3](https://github.com/percy/percy-agent/compare/v0.4.2...v0.4.3) (2019-05-02)
 
 
