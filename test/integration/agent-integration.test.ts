@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { Server } from 'http'
-// import * as httpServer from 'http-server'
+import * as httpServer from 'http-server'
 import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
 import { agentJsFilename } from '../../src/utils/sdk-utils'
@@ -69,64 +69,65 @@ describe('Integration test', () => {
     })
 
   })
-  // describe.skip('on local test cases', () => {
-  //   const testCaseDir = `${__dirname}/testcases`
-  //   const PORT = 8000
-  //   let server: Server
 
-  //   before(() => {
-  //     server = httpServer.createServer({root: testCaseDir}) as Server
-  //     server.listen(PORT)
-  //   })
+  describe('on local test cases', () => {
+    const testCaseDir = `${__dirname}/testcases`
+    const PORT = 8000
+    let server: Server
 
-  //   after(() => {
-  //     server.close()
-  //   })
+    before(() => {
+      server = httpServer.createServer({root: testCaseDir}) as Server
+      server.listen(PORT)
+    })
 
-  //   it('snapshots all test cases', async () => {
-  //     const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
-  //     for (const fname of testFiles) {
-  //       await page.goto(`http://localhost:${PORT}/${fname}`)
-  //       const domSnapshot = await snapshot(page, `Test case: ${fname}`)
-  //     }
-  //   })
+    after(() => {
+      server.close()
+    })
 
-  //   describe('stabilizes DOM', () => {
-  //     before(async () => {
-  //       await page.goto(`http://localhost:${PORT}/stabilize-dom.html`)
-  //     })
+    it('snapshots all test cases', async () => {
+      const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
+      for (const fname of testFiles) {
+        await page.goto(`http://localhost:${PORT}/${fname}`)
+        const domSnapshot = await snapshot(page, `Test case: ${fname}`)
+      }
+    })
 
-  //     it('serializes input elements', async () => {
-  //       await page.type('#testInputText', 'test input value')
-  //       await page.type('#testTextarea', 'test textarea value')
-  //       await page.click('#testCheckbox')
-  //       await page.click('#testRadioButton')
+    describe('stabilizes DOM', () => {
+      before(async () => {
+        await page.goto(`http://localhost:${PORT}/stabilize-dom.html`)
+      })
 
-  //       const domSnapshot = await snapshot(page, 'Serialize input elements')
-  //       expect(domSnapshot).to.contain('test input value')
-  //       expect(domSnapshot).to.contain('type="checkbox" checked')
-  //       expect(domSnapshot).to.contain('type="radio" checked')
-  //       expect(domSnapshot).to.contain('test textarea value')
-  //     })
-  //   })
+      it('serializes input elements', async () => {
+        await page.type('#testInputText', 'test input value')
+        await page.type('#testTextarea', 'test textarea value')
+        await page.click('#testCheckbox')
+        await page.click('#testRadioButton')
 
-  //   describe('stablizes CSSOM', () => {
-  //     before(async () => {
-  //       await page.goto(`http://localhost:${PORT}/stabilize-cssom.html`)
-  //     })
+        const domSnapshot = await snapshot(page, 'Serialize input elements')
+        expect(domSnapshot).to.contain('test input value')
+        expect(domSnapshot).to.contain('type="checkbox" checked')
+        expect(domSnapshot).to.contain('type="radio" checked')
+        expect(domSnapshot).to.contain('test textarea value')
+      })
+    })
 
-  //     it('serializes the CSSOM', async () => {
-  //       const domSnapshot = await snapshot(page, 'Serialize CSSOM')
+    describe('stablizes CSSOM', () => {
+      before(async () => {
+        await page.goto(`http://localhost:${PORT}/stabilize-cssom.html`)
+      })
 
-  //       expect(domSnapshot).to.contain('data-percy-cssom-serialized')
-  //       expect(domSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
+      it('serializes the CSSOM', async () => {
+        const domSnapshot = await snapshot(page, 'Serialize CSSOM')
 
-  //       // we want to ensure mutiple snapshots are successful
-  //       const secondDomSnapshot = await snapshot(page, 'Serialize CSSOM twice')
-  //       expect(secondDomSnapshot).to.contain('data-percy-cssom-serialized')
-  //       expect(secondDomSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
+        expect(domSnapshot).to.contain('data-percy-cssom-serialized')
+        expect(domSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
 
-  //     })
-  //   })
-  // })
+        // we want to ensure mutiple snapshots are successful
+        const secondDomSnapshot = await snapshot(page, 'Serialize CSSOM twice')
+        expect(secondDomSnapshot).to.contain('data-percy-cssom-serialized')
+        expect(secondDomSnapshot).to.contain('.box { height: 500px; width: 500px; background-color: green; }')
+
+      })
+    })
+  })
 })
