@@ -57,19 +57,18 @@ export default class PercyAgent {
 
   private domSnapshot(documentObject: Document): string {
     const doctype = this.getDoctype(documentObject)
-    const dom = this.stabilizeDOM(documentObject)
-
-    let domClone = dom.cloneNode(true) as HTMLElement
+    const domClone = this.cloneDOM(documentObject)
+    let dom = this.stabilizeDOM(documentObject, domClone)
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
     // lists all yours tests. You'll want to "hoist" the contents of the testing container to be
     // the full page. Using a dom transformation is how you'd acheive that.
     if (this.domTransformation) {
-      domClone = this.domTransformation(domClone)
+      dom = this.domTransformation(dom)
     }
 
-    const snapshotString = doctype + domClone.outerHTML
+    const snapshotString = doctype + dom.outerHTML
 
     return snapshotString
   }
@@ -85,12 +84,30 @@ export default class PercyAgent {
     return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
   }
 
-  private stabilizeDOM(doc: HTMLDocument): HTMLElement {
-    let stabilizedDOM = doc
-    stabilizedDOM = serializeCssOm(stabilizedDOM)
-    stabilizedDOM = serializeInputElements(stabilizedDOM)
+  private cloneDOM(document: HTMLDocument): HTMLDocument {
+    // create the ID
+    // Add it to the elment
+    // TODO: remove any
+    function createUID(el: any) {
+      const ID = '_' + Math.random().toString(36).substr(2, 9)
+
+      el.setAttribute('data-percy-element-id', ID)
+    }
+
+    const formNodes = document.querySelectorAll('input, textarea')
+    const formElements = Array.prototype.slice.call(formNodes)
+    formElements.forEach((elem: HTMLInputElement) => createUID(elem))
+    const clone = document.cloneNode(true) as HTMLDocument
+
+    return clone
+  }
+
+  private stabilizeDOM(originalDocument: HTMLDocument, documentClone: HTMLDocument): HTMLElement {
+    let stabilizedDOMClone
+    stabilizedDOMClone = serializeCssOm(originalDocument, documentClone)
+    stabilizedDOMClone = serializeInputElements(originalDocument, documentClone)
     // more calls to come here
 
-    return stabilizedDOM.documentElement
+    return stabilizedDOMClone.documentElement
   }
 }

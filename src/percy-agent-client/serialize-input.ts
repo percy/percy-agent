@@ -1,34 +1,30 @@
-const DATA_ATTRIBUTE_CHECKED = 'data-percy-input-serialized-checked'
-const DATA_ATTRIBUTE_TEXTAREA_INNERTEXT = 'data-percy-input-serialized-textarea-innertext'
-const DATA_ATTRIBUTE_VALUE = 'data-percy-input-serialized-value'
-
-export function serializeInputElements(doc: HTMLDocument): HTMLDocument {
-  const domClone = doc.documentElement
-  const formNodes = domClone.querySelectorAll('input, textarea')
+export function serializeInputElements(originalDocument: HTMLDocument, documentClone: HTMLDocument): HTMLDocument {
+  const formNodes = originalDocument.querySelectorAll('input, textarea')
   const formElements = Array.prototype.slice.call(formNodes)
 
   formElements.forEach((elem: HTMLInputElement) => {
+    const inputId = elem.attributes['data-percy-element-id'].value
+    const selector = `[data-percy-element-id="${inputId}"]`
+    const cloneEl = documentClone.querySelector(selector) as HTMLInputElement
+
     switch (elem.type) {
     case 'checkbox':
     case 'radio':
       if (elem.checked && !elem.hasAttribute('checked')) {
-        elem.setAttribute('checked', '')
-        elem.setAttribute(DATA_ATTRIBUTE_CHECKED, '')
+        cloneEl!.setAttribute('checked', '')
       }
       break
     case 'textarea':
       // setting text or value does not work but innerText does
       if (elem.innerText !== elem.value) {
-        elem.setAttribute(DATA_ATTRIBUTE_TEXTAREA_INNERTEXT, elem.innerText)
-        elem.innerText = elem.value
+        cloneEl!.innerText = elem.value
       }
     default:
       if (!elem.getAttribute('value')) {
-        elem.setAttribute(DATA_ATTRIBUTE_VALUE, '')
-        elem.setAttribute('value', elem.value)
+        cloneEl!.setAttribute('value', elem.value)
       }
     }
   })
 
-  return doc
+  return documentClone
 }

@@ -4,13 +4,14 @@ const DATA_ATTRIBUTE = 'data-percy-cssom-serialized'
 // into the DOM so Percy can render it safely in our browsers.
 // Design doc:
 // https://docs.google.com/document/d/1Rmm8osD-HwSHRpb8pQ_1wLU09XeaCV5AqMtQihk_BmM/edit
-export function serializeCssOm(document: HTMLDocument) {
+export function serializeCssOm(originalDocument: HTMLDocument, documentClone: HTMLDocument) {
   [].slice.call(document.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
     // Make sure it has a rulesheet, does NOT have a href (no external stylesheets),
     // and isn't already in the DOM.
     const hasHref = styleSheet.href
     const ownerNode = styleSheet.ownerNode as HTMLElement
     const hasStyleInDom = ownerNode.innerText && ownerNode.innerText.length > 0
+    const $style = documentClone.createElement('style')
 
     if (!hasHref && !hasStyleInDom && styleSheet.cssRules) {
       const serializedStyles = [].slice
@@ -19,12 +20,13 @@ export function serializeCssOm(document: HTMLDocument) {
           return prev + cssRule.cssText
         }, '')
 
-      // Append the serialized styles to the styleSheet's ownerNode to minimize
-      // the chances of messing up the cascade order.
-      ownerNode.setAttribute(DATA_ATTRIBUTE, 'true')
-      ownerNode.appendChild(document.createTextNode(serializedStyles))
+      // Append the serialized styles to the cloned document
+      $style.type = 'text/css'
+      $style.setAttribute(DATA_ATTRIBUTE, 'true')
+      $style.innerHTML = serializedStyles
+      documentClone.head.appendChild($style)
     }
   })
 
-  return document
+  return documentClone
 }
