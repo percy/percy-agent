@@ -7,7 +7,7 @@ import PercyCommand from './percy-command'
 
 export default class Snapshot extends PercyCommand {
   static description = 'Snapshot a directory containing a pre-built static website'
-  static hidden = true
+  static hidden = false
 
   static args = [{
     name: 'snapshotDirectory',
