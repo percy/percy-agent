@@ -1,3 +1,10 @@
+## [0.4.5](https://github.com/percy/percy-agent/compare/v0.4.4...v0.4.5) (2019-05-08)
+
+
+### Bug Fixes
+
+* Make `snapshot` command visible ([#186](https://github.com/percy/percy-agent/issues/186)) ([c3e08ab](https://github.com/percy/percy-agent/commit/c3e08ab))
+
 ## [0.4.4](https://github.com/percy/percy-agent/compare/v0.4.3...v0.4.4) (2019-05-03)
 
 
