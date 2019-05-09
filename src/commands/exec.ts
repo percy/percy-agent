@@ -1,5 +1,5 @@
 import {flags} from '@oclif/command'
-import {spawn} from 'child_process'
+import * as spawn from 'cross-spawn'
 import Constants from '../services/constants'
 import PercyCommand from './percy-command'
 

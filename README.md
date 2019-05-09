@@ -19,7 +19,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.3.1 linux-x64 node-v10.15.3
+@percy/agent/0.4.5 linux-x64 node-v10.15.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -31,6 +31,7 @@ USAGE
 * [`percy exec`](#percy-exec)
 * [`percy finalize`](#percy-finalize)
 * [`percy help [COMMAND]`](#percy-help-command)
+* [`percy snapshot SNAPSHOTDIRECTORY`](#percy-snapshot-snapshotdirectory)
 
 ## `percy exec`
 
@@ -81,4 +82,36 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+
+## `percy snapshot SNAPSHOTDIRECTORY`
+
+Snapshot a directory containing a pre-built static website
+
+```
+USAGE
+  $ percy snapshot SNAPSHOTDIRECTORY
+
+ARGUMENTS
+  SNAPSHOTDIRECTORY  A path to the directory you would like to snapshot
+
+OPTIONS
+  -b, --base-url=base-url                          [default: /] If your static files will be hosted in a subdirectory,
+                                                   instead
+                                                   of the webserver's root path, set that subdirectory with this flag.
+
+  -i, --ignore-files=ignore-files                  Glob or comma-seperated string of globs for matching the files and
+                                                   directories to ignore.
+
+  -p, --port=port                                  [default: 5338] Port
+
+  -s, --snapshot-files=snapshot-files              [default: **/*.html,**/*.htm] Glob or comma-seperated string of globs
+                                                   for matching the files and directories to snapshot.
+
+  -t, --network-idle-timeout=network-idle-timeout  [default: 50] Asset discovery network idle timeout (in milliseconds)
+
+EXAMPLES
+  $ percy snapshot _site/
+  $ percy snapshot _site/ --base-url "/blog"
+  $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
+```
 <!-- commandsstop -->

@@ -1,3 +1,45 @@
+## [0.4.5](https://github.com/percy/percy-agent/compare/v0.4.4...v0.4.5) (2019-05-08)
+
+
+### Bug Fixes
+
+* Make `snapshot` command visible ([#186](https://github.com/percy/percy-agent/issues/186)) ([c3e08ab](https://github.com/percy/percy-agent/commit/c3e08ab))
+
+## [0.4.4](https://github.com/percy/percy-agent/compare/v0.4.3...v0.4.4) (2019-05-03)
+
+
+### Bug Fixes
+
+* Expose `PercyAgent` as a global always ([#178](https://github.com/percy/percy-agent/issues/178)) ([698067b](https://github.com/percy/percy-agent/commit/698067b))
+
+## [0.4.3](https://github.com/percy/percy-agent/compare/v0.4.2...v0.4.3) (2019-05-02)
+
+
+### Bug Fixes
+
+* Revert change to module bundling ([#177](https://github.com/percy/percy-agent/issues/177)) ([0f575f2](https://github.com/percy/percy-agent/commit/0f575f2))
+
+## [0.4.2](https://github.com/percy/percy-agent/compare/v0.4.1...v0.4.2) (2019-05-02)
+
+
+### Bug Fixes
+
+* Build `PercyAgent` code that's inject in browser as iife ([#176](https://github.com/percy/percy-agent/issues/176)) ([9f1ac26](https://github.com/percy/percy-agent/commit/9f1ac26))
+
+## [0.4.1](https://github.com/percy/percy-agent/compare/v0.4.0...v0.4.1) (2019-04-30)
+
+
+### Bug Fixes
+
+* Introduce cross-spawn for cross platform commands ([#175](https://github.com/percy/percy-agent/issues/175)) ([f9bc817](https://github.com/percy/percy-agent/commit/f9bc817)), closes [#174](https://github.com/percy/percy-agent/issues/174)
+
+# [0.4.0](https://github.com/percy/percy-agent/compare/v0.3.1...v0.4.0) (2019-04-26)
+
+
+### Features
+
+* Ability to snapshot a directory of webpages. Usage: `percy snapshot directory/` ([#137](https://github.com/percy/percy-agent/issues/137)) ([20daabb](https://github.com/percy/percy-agent/commit/20daabb))
+
 ## [0.3.1](https://github.com/percy/percy-agent/compare/v0.3.0...v0.3.1) (2019-04-18)
 
 

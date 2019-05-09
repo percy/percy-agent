@@ -68,6 +68,7 @@ describe('Integration test', () => {
     })
 
   })
+
   describe('on local test cases', () => {
     const testCaseDir = `${__dirname}/testcases`
     const PORT = 8000

@@ -7,7 +7,9 @@ export default {
   output: {
     name: "PercyAgent",
     file: "dist/public/percy-agent.js",
-    format: "umd"
+    format: "iife",
+    // a must to add `PercyAgent` to the global namespace
+    extend: true
   },
   plugins: [
     // Allows node_modules resolution
