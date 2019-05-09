@@ -1,3 +1,10 @@
+## [0.4.6](https://github.com/percy/percy-agent/compare/v0.4.5...v0.4.6) (2019-05-09)
+
+
+### Bug Fixes
+
+* Lock to `@oclif/command` 1.5.10 to avoid `MaxListenersExceededWarning`. Closes [#187](https://github.com/percy/percy-agent/issues/187) ([#189](https://github.com/percy/percy-agent/issues/189)) ([50a2e76](https://github.com/percy/percy-agent/commit/50a2e76))
+
 ## [0.4.5](https://github.com/percy/percy-agent/compare/v0.4.4...v0.4.5) (2019-05-08)
 
 
