@@ -29,9 +29,14 @@ jobs:
   - script: |
       npm run build-client
     displayName: 'Build'
+
   - script: |
       npm run test
     displayName: 'Test'
+
+  - script: |
+      npm run test-client
+    displayName: 'Test Client'
 
   - script: |
       npm run test-integration
