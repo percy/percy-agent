@@ -33,16 +33,8 @@ jobs:
       npm run test
     displayName: 'Test'
 
-  - powershell: |
-      npm run test-integration-win
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: 'Test Integration Windows'
-    env:
-      PERCY_TOKEN: $(PERCY_TOKEN)
-
   - script: |
       npm run test-integration
-    condition: ne( variables['Agent.OS'], 'Windows_NT' )
     displayName: 'Test Integration'
 
   - task: PublishTestResults@2
