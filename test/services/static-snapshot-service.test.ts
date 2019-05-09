@@ -35,13 +35,10 @@ describe('StaticSnapshotService', () => {
     it('starts serving the static site on supplied port', async () => {
       await captureStdOut(() => subject.start())
 
-      await chai.request(localUrl)
-        .get('/')
-        .end((error, response) => {
-          expect(error).to.be.eq(null)
-          expect(response).to.have.status(200)
-          expect(response).to.have.header('content-type', /text\/html/)
-        })
+      const response = await chai.request(localUrl).get('/index.html')
+
+      expect(response).to.have.status(200)
+      expect(response).to.have.header('content-type', /text\/html/)
     })
 
     it('logs to stdout that it is starting the static snapshot service', async () => {
@@ -97,11 +94,11 @@ describe('StaticSnapshotService', () => {
         await subject.stop()
       })
 
-      await chai.request(localUrl)
-        .get('/')
-        .catch(async (error) => {
-          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${staticSitePort}`)
-        })
+      try {
+        await chai.request(localUrl).get('/')
+      } catch (error) {
+        expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${staticSitePort}`)
+      }
     })
 
     it('logs to stdout that it is stopping the static snapshot service', async () => {
