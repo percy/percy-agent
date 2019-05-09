@@ -4,4 +4,4 @@
 --watch-extensions ts
 --recursive
 --reporter mocha-junit-reporter
---timeout 30000
+--timeout 5000
