@@ -35,7 +35,7 @@ export default class PercyAgent {
 
   snapshot(name: string, options: SnapshotOptions = {}) {
     const documentObject = options.document || document
-    const domSnapshot = this.domSnapshot(documentObject)
+    const domSnapshot = this.domSnapshot(documentObject, options)
 
     if (this.handleAgentCommunication && this.client) {
       this.client.post(Constants.SNAPSHOT_PATH, {
@@ -55,10 +55,10 @@ export default class PercyAgent {
     return domSnapshot
   }
 
-  private domSnapshot(documentObject: Document): string {
+  private domSnapshot(documentObject: Document, options: SnapshotOptions = {}): string {
     const doctype = this.getDoctype(documentObject)
     const domClone = this.cloneDOM(documentObject)
-    let dom = this.stabilizeDOM(documentObject, domClone)
+    let dom = this.stabilizeDOM(documentObject, domClone, options)
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
@@ -84,29 +84,44 @@ export default class PercyAgent {
     return `<!DOCTYPE ${doctype.name}` + publicDeclaration + systemDeclaration + '>'
   }
 
+  /**
+   * Takes the raw DOM from the snapshot, performs necessary tranforms, and
+   * finally returns a deep clone of the DOM.
+   *
+   * This is the place you would modify the origial DOM _before_ the clone has
+   * taken place.
+   *
+   */
   private cloneDOM(document: HTMLDocument): HTMLDocument {
-    // create the ID
-    // Add it to the elment
-    // TODO: remove any
-    function createUID(el: any) {
+    function createUID($el: Element) {
       const ID = '_' + Math.random().toString(36).substr(2, 9)
 
-      el.setAttribute('data-percy-element-id', ID)
+      $el.setAttribute('data-percy-element-id', ID)
     }
 
     const formNodes = document.querySelectorAll('input, textarea')
-    const formElements = Array.prototype.slice.call(formNodes)
-    formElements.forEach((elem: HTMLInputElement) => createUID(elem))
+    const formElements = Array.from(formNodes)
+    // loop through each for element and apply an ID for serialization later
+    formElements.forEach((elem: Element) => createUID(elem))
     const clone = document.cloneNode(true) as HTMLDocument
 
     return clone
   }
 
-  private stabilizeDOM(originalDocument: HTMLDocument, documentClone: HTMLDocument): HTMLElement {
+  /**
+   * Serialize parts of the DOM that aren't preserved in a deep clone. Anything
+   * that is not encoded in the DOM tree needs to be accounted for here (CSSOM,
+   * input values, canvas, etc).
+   *
+   */
+  private stabilizeDOM(originalDocument: HTMLDocument, documentClone: HTMLDocument,
+                       options: SnapshotOptions = {}): HTMLElement {
     let stabilizedDOMClone
-    stabilizedDOMClone = serializeCssOm(originalDocument, documentClone)
     stabilizedDOMClone = serializeInputElements(originalDocument, documentClone)
-    // more calls to come here
+    // We only want to serialize the CSSOM if JS isn't enabled.
+    if (!options.enableJavaScript || !options.enableJavascript) {
+      stabilizedDOMClone = serializeCssOm(originalDocument, documentClone)
+    }
 
     return stabilizedDOMClone.documentElement
   }

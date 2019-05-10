@@ -5,7 +5,7 @@ const DATA_ATTRIBUTE = 'data-percy-cssom-serialized'
 // Design doc:
 // https://docs.google.com/document/d/1Rmm8osD-HwSHRpb8pQ_1wLU09XeaCV5AqMtQihk_BmM/edit
 export function serializeCssOm(originalDocument: HTMLDocument, documentClone: HTMLDocument) {
-  [].slice.call(document.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
+  [].slice.call(originalDocument.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
     // Make sure it has a rulesheet, does NOT have a href (no external stylesheets),
     // and isn't already in the DOM.
     const hasHref = styleSheet.href
