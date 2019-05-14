@@ -36,7 +36,9 @@ jobs:
       - checkout
       - run: npm ci
       - run: npx semantic-release
-
+      - run: sed -i '' 's/@percy\/agent/percy/g' package.json
+      - run: npm ci
+      - run: npx semantic-release
 workflows:
   version: 2
   "@percy/agent":
