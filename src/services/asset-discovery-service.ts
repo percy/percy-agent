@@ -35,7 +35,11 @@ export default class AssetDiscoveryService extends PercyClientService {
   async setup() {
     profile('-> assetDiscoveryService.puppeteer.launch')
     this.browser = await puppeteer.launch({
-      args: ['--no-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-web-security',
+      ],
+      ignoreHTTPSErrors: true,
       handleSIGINT : false,
     })
     profile('-> assetDiscoveryService.puppeteer.launch')
