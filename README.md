@@ -35,7 +35,7 @@ USAGE
 
 ## `percy exec`
 
-Start and stop Percy around a supplied command
+Start and stop Percy around a supplied command.
 
 ```
 USAGE
@@ -52,7 +52,7 @@ EXAMPLES
 
 ## `percy finalize`
 
-finalize a build
+Finalize a build. Commonly used for parallelized builds, especially when the number of parallelized processes is unknown.
 
 ```
 USAGE
@@ -68,7 +68,7 @@ EXAMPLE
 
 ## `percy help [COMMAND]`
 
-display help for percy
+Display help for percy.
 
 ```
 USAGE
@@ -85,7 +85,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `percy snapshot SNAPSHOTDIRECTORY`
 
-Snapshot a directory containing a pre-built static website
+Snapshot a directory containing a pre-built static website.
 
 ```
 USAGE
