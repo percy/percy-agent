@@ -1,3 +1,10 @@
+## [0.4.7](https://github.com/percy/percy-agent/compare/v0.4.6...v0.4.7) (2019-05-14)
+
+
+### Bug Fixes
+
+* Remove unused AppVeyor and Codecov badges. Closes [#197](https://github.com/percy/percy-agent/issues/197) ([#198](https://github.com/percy/percy-agent/issues/198)) ([a6a1e99](https://github.com/percy/percy-agent/commit/a6a1e99))
+
 ## [0.4.6](https://github.com/percy/percy-agent/compare/v0.4.5...v0.4.6) (2019-05-09)
 
 
