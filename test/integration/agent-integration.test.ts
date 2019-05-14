@@ -26,6 +26,7 @@ describe('Integration test', () => {
   before(async () => {
     browser = await puppeteer.launch({
       headless: true,
+      ignoreHTTPSErrors: true,
       args: [
         '--disable-gpu',
         '--no-sandbox',
@@ -54,6 +55,13 @@ describe('Integration test', () => {
       await page.goto('https://example.com')
       const domSnapshot = await snapshot(page, 'Example.com HTTPS snapshot')
       expect(domSnapshot).contains('Example Domain')
+    })
+
+    it('snapshots an invalid HTTPS site', async () => {
+      // maintained by the chrome team
+      await page.goto('https://self-signed.badssl.com/')
+      const domSnapshot = await snapshot(page, 'Invalid HTTPS')
+      expect(domSnapshot).contains('badssl.com')
     })
 
     it('snapshots a complex website with responsive images', async () => {
