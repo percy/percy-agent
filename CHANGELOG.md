@@ -1,3 +1,10 @@
+## [0.4.8](https://github.com/percy/percy-agent/compare/v0.4.7...v0.4.8) (2019-05-14)
+
+
+### Bug Fixes
+
+* Disable HTTPS errors for asset discovery ([#199](https://github.com/percy/percy-agent/issues/199)) ([e19c91e](https://github.com/percy/percy-agent/commit/e19c91e))
+
 ## [0.4.7](https://github.com/percy/percy-agent/compare/v0.4.6...v0.4.7) (2019-05-14)
 
 
