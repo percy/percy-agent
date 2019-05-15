@@ -36,10 +36,7 @@ jobs:
       - checkout
       - run: npm ci
       - run: npx semantic-release
-      - run: |
-          sed -i 's/@percy\/agent/percy/g' package.json
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-          npm publish
+      - run: ./release-percy-package.sh
 workflows:
   version: 2
   "@percy/agent":
@@ -47,10 +44,6 @@ workflows:
       - node-10
       - node-8
       - release:
-          filters:
-            branches:
-              only:
-                - master
           requires:
             - node-10
             - node-8
