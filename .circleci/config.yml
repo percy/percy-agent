@@ -32,6 +32,9 @@ jobs:
       - image: circleci/node:8-browsers
   release:
     <<: *test
+    branches:
+      only:
+        - master
     steps:
       - checkout
       - run: npm ci
