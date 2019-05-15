@@ -36,8 +36,10 @@ jobs:
       - checkout
       - run: npm ci
       - run: npx semantic-release
-      - run: sed -i 's/@percy\/agent/percy/g' package.json
-      - run: npm publish
+      - run: |
+          sed -i 's/@percy\/agent/percy/g' package.json
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          npm publish
 workflows:
   version: 2
   "@percy/agent":
