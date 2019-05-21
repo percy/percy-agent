@@ -4,7 +4,7 @@ import Constants from '../services/constants'
 import PercyCommand from './percy-command'
 
 export default class Exec extends PercyCommand {
-  static description = 'Start and stop Percy around a supplied command'
+  static description = 'Start and stop Percy around a supplied command.'
   static hidden = false
   static strict = false
 
