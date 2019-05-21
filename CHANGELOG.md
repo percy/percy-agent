@@ -1,3 +1,10 @@
+## [0.4.9](https://github.com/percy/percy-agent/compare/v0.4.8...v0.4.9) (2019-05-21)
+
+
+### Bug Fixes
+
+* Improved readme and help text ([#200](https://github.com/percy/percy-agent/issues/200)) ([34c066c](https://github.com/percy/percy-agent/commit/34c066c))
+
 ## [0.4.8](https://github.com/percy/percy-agent/compare/v0.4.7...v0.4.8) (2019-05-14)
 
 

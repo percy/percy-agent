@@ -19,7 +19,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.4.8 linux-x64 node-v10.15.3
+@percy/agent/0.4.9 linux-x64 node-v10.15.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -35,7 +35,7 @@ USAGE
 
 ## `percy exec`
 
-Start and stop Percy around a supplied command
+Start and stop Percy around a supplied command.
 
 ```
 USAGE
@@ -52,7 +52,7 @@ EXAMPLES
 
 ## `percy finalize`
 
-finalize a build
+Finalize a build. Commonly used for parallelized builds, especially when the number of parallelized processes is unknown.
 
 ```
 USAGE
@@ -85,7 +85,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `percy snapshot SNAPSHOTDIRECTORY`
 
-Snapshot a directory containing a pre-built static website
+Snapshot a directory containing a pre-built static website.
 
 ```
 USAGE
