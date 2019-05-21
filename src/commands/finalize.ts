@@ -4,7 +4,9 @@ import BuildService from '../services/build-service'
 import PercyCommand from './percy-command'
 
 export default class Finalize extends PercyCommand {
-  static description = 'finalize a build'
+  static description =
+    'Finalize a build. Commonly used for parallelized builds, especially when ' +
+    'the number of parallelized processes is unknown.'
   static hidden = false
 
   static flags = {
