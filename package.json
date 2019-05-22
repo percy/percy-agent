@@ -108,7 +108,7 @@
   "homepage": "https://github.com/percy/percy-agent",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run"
     }
   },
   "keywords": [
