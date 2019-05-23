@@ -2,7 +2,7 @@ module.exports = config => {
   config.set({
     frameworks: ["mocha"], // sets up the Mocha framework automatically
     reporters: ["mocha"], // reports back to the CLI formatted like Mocha
-    browsers: ["Chrome"], // automatically launches chrome to run our tests
+    browsers: ["Chrome", "Firefox"], // automatically launches chrome & firefox to run our tests
 
     files: [
       // karma-webpack will watch our files
