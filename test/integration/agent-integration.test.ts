@@ -5,6 +5,9 @@ import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
 import { agentJsFilename } from '../../src/utils/sdk-utils'
 import chai from '../support/chai'
+// use require because TS complains otherwise about missing types
+// tslint:disable:no-var-requires
+const Cheerio = require('cheerio')
 
 const expect = chai.expect
 
@@ -96,7 +99,7 @@ describe('Integration test', () => {
       const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
       for (const fname of testFiles) {
         await page.goto(`http://localhost:${PORT}/${fname}`)
-        const domSnapshot = await snapshot(page, `Test case: ${fname}`)
+        await snapshot(page, `Test case: ${fname}`)
       }
     })
 
@@ -112,12 +115,12 @@ describe('Integration test', () => {
         await page.click('#testRadioButton')
 
         const domSnapshot = await snapshot(page, 'Serialize input elements')
+        const $ = Cheerio.load(domSnapshot)
 
-        // TODO
-        // expect(domSnapshot).to.contain('test input value')
-        // expect(domSnapshot).to.contain('type="checkbox" checked')
-        // expect(domSnapshot).to.contain('type="radio" checked')
-        // expect(domSnapshot).to.contain('test textarea value')
+        expect($('#testInputText').attr('value')).to.equal('test input value')
+        expect($('#testTextarea').attr('value')).to.equal('test textarea value')
+        expect($('#testCheckbox').attr('checked')).to.equal('checked')
+        expect($('#testRadioButton').attr('checked')).to.equal('checked')
       })
     })
 
