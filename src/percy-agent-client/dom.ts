@@ -1,3 +1,8 @@
+/**
+ * A single class to encapsulate all DOM operations that need to be preformed to
+ * capture the customers application state.
+ *
+ */
 class DOM {
   originalDOM: any;
   clonedDOM: any;
@@ -6,14 +11,17 @@ class DOM {
   readonly defaultDoctype = "<!DOCTYPE html>";
 
   constructor(dom: any, options: object) {
-    // it would be pretty dope if we validated the DOM before cloning.
-    // thay way we could provide a nice error or warning for future
-    // possible issues they might see in snapshots
     this.originalDOM = dom;
     this.options = options || {};
     this.clonedDOM = this.cloneDOM();
   }
 
+  /**
+   * Returns the final DOM string with all of the necessary transforms
+   * applied. This is the string that is passed to the API and then rendered by
+   * our API.
+   *
+   */
   snapshotString(): string {
     let dom = this.clonedDOM;
     let doctype = this.getDoctype();
@@ -51,8 +59,8 @@ class DOM {
   }
 
   /**
-   * Takes the raw DOM from the snapshot, performs necessary transformations,
-   * and finally returns a deep clone of the DOM.
+   * Takes the raw DOM from the snapshot, performs necessary mutations,
+   * and finally returns a deep clone of the original DOM.
    *
    */
   private cloneDOM(): HTMLDocument {
@@ -68,6 +76,9 @@ class DOM {
    * that is not encoded in the DOM tree needs to be accounted for here (CSSOM,
    * input values, canvas, etc).
    *
+   * This method should always capture these values from the origial DOM and
+   * serialize into the cloned DOM. Never mutate the origial DOM.
+   *
    */
   private stabilizeDOM(clonedDOM: any): HTMLElement {
     let stabilizedDOMClone;
@@ -81,7 +92,16 @@ class DOM {
     return stabilizedDOMClone.documentElement;
   }
 
-  serializeInputElements(clonedDOM: HTMLDocument): HTMLDocument {
+  /**
+   * Capture in-memory form element values and serialize those values to their
+   * respective elements in the cloned DOM.
+   *
+   * Form element values for non-controlled elements won't be captured with a
+   * domClone. To fix this, we explicitly set the `value` attribute on those
+   * form controls to make sure they persist in snapshots.
+   *
+   */
+  private serializeInputElements(clonedDOM: HTMLDocument): HTMLDocument {
     let formNodes = this.originalDOM.querySelectorAll("input, textarea");
     let formElements = Array.from(formNodes);
 
@@ -112,22 +132,30 @@ class DOM {
     return clonedDOM;
   }
 
-  serializeCssOm(documentClone: any) {
+  /**
+   * Capture in-memory styles & serialize those styles into the cloned DOM.
+   *
+   * Without this, applications that use packages like `styled-components` will be
+   * missing styles and appear broken. The CSSOM provides a way to create CSS
+   * that only lives in memory (not an asset or in the DOM).
+   *
+   */
+  private serializeCssOm(documentClone: any) {
     let styleSheets = Array.from(this.originalDOM.styleSheets);
 
-    // Make sure it has a rulesheet, does NOT have a href (no external stylesheets),
-    // and isn't already in the DOM.
-    function isCSSOM(styleSheet: any) {
-      let hasHref = styleSheet.href;
-      let hasCSSRules = styleSheet.cssRules;
-      let ownerNode = styleSheet.ownerNode as HTMLElement;
-      let hasStyleInDom = ownerNode.innerText && ownerNode.innerText.length > 0;
-
-      return !hasHref && !hasStyleInDom && hasCSSRules;
-    }
-
     styleSheets.forEach((styleSheet: any) => {
-      if (isCSSOM(styleSheet)) {
+      // Make sure it has a rulesheet, does NOT have a href (no external stylesheets),
+      // and isn't already in the DOM.
+      function isCSSOM() {
+        let hasHref = styleSheet.href;
+        let ownerNode = styleSheet.ownerNode as HTMLElement;
+        let hasStyleInDom =
+          ownerNode.innerText && ownerNode.innerText.length > 0;
+
+        return !hasHref && !hasStyleInDom && styleSheet.cssRules;
+      }
+
+      if (isCSSOM()) {
         let $style = documentClone.createElement("style");
         let cssRules = Array.from(styleSheet.cssRules);
         let serializedStyles = cssRules.reduce((prev: string, cssRule: any) => {
@@ -146,8 +174,12 @@ class DOM {
     return documentClone;
   }
 
-  // one place to mutate the orignal DOM. This should not be done unless
-  // there's a good reason
+  /**
+   * A single place to mutate the origial DOM. This should be the last resort!
+   * This will change the customers DOM and have a possible impact on the
+   * customers application.
+   *
+   */
   private mutateOriginalDOM() {
     function createUID($el: Element) {
       const ID =
