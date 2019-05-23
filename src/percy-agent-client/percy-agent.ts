@@ -1,8 +1,8 @@
 import Constants from '../services/constants'
 import {ClientOptions} from './client-options'
+import DOM from './dom'
 import {PercyAgentClient} from './percy-agent-client'
 import {SnapshotOptions} from './snapshot-options'
-import DOM from './dom';
 
 export default class PercyAgent {
   clientInfo: string | null
@@ -55,9 +55,9 @@ export default class PercyAgent {
   private domSnapshot(documentObject: Document, options: SnapshotOptions = {}): string {
     const dom = new DOM(documentObject, {
       ...options,
-      domTransformation: this.domTransformation
+      domTransformation: this.domTransformation,
     })
 
-    return dom.snapshotString();
+    return dom.snapshotString()
   }
 }
