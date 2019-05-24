@@ -19,7 +19,7 @@ module.exports = config => {
       showDiff: true
     },
 
-    // our webpack config exports a function
+    // create a webpack config
     webpack: {
       mode: "development",
       module: {
