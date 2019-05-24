@@ -1,3 +1,4 @@
+import * as cheerio from 'cheerio'
 import * as fs from 'fs'
 import { Server } from 'http'
 import * as httpServer from 'http-server'
@@ -5,9 +6,6 @@ import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
 import { agentJsFilename } from '../../src/utils/sdk-utils'
 import chai from '../support/chai'
-// use require because TS complains otherwise about missing types
-// tslint:disable:no-var-requires
-const Cheerio = require('cheerio')
 
 const expect = chai.expect
 
@@ -115,7 +113,7 @@ describe('Integration test', () => {
         await page.click('#testRadioButton')
 
         const domSnapshot = await snapshot(page, 'Serialize input elements')
-        const $ = Cheerio.load(domSnapshot)
+        const $ = cheerio.load(domSnapshot)
 
         expect($('#testInputText').attr('value')).to.equal('test input value')
         expect($('#testTextarea').attr('value')).to.equal('test textarea value')
