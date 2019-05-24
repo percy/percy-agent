@@ -21,7 +21,7 @@ jobs:
       - run: |
           mkdir -p reports
           $NYC yarn test --reporter mocha-junit-reporter
-          $NYC yarn test-client
+          $NYC yarn test-client --singleRun
           $NYC yarn test-integration
           $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
