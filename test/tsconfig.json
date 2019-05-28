@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
+    "strictNullChecks": false,
     "sourceMap": true
   },
   "include": [

@@ -10,7 +10,7 @@ class DOM {
 
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(dom: any, options: object) {
+  constructor(dom: any, options?: object) {
     this.originalDOM = dom
     this.options = options || {}
     this.clonedDOM = this.cloneDOM()
