@@ -5,7 +5,7 @@ export interface DOMOptions {
 
 /**
  * A single class to encapsulate all DOM operations that need to be performed to
- * capture the customers application state.
+ * capture the customer's application state.
  *
  */
 class DOM {
@@ -90,12 +90,11 @@ class DOM {
    *
    */
   private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
-    let stabilizedDOMClone
-    stabilizedDOMClone = this.serializeInputElements(clonedDOM)
+    let stabilizedDOMClone = this.serializeInputElements(clonedDOM)
 
     // We only want to serialize the CSSOM if JS isn't enabled.
     if (!this.options.enableJavaScript) {
-      stabilizedDOMClone = this.serializeCssOm(clonedDOM)
+      stabilizedDOMClone = this.serializeCSSOM(stabilizedDOMClone)
     }
 
     return stabilizedDOMClone.documentElement
@@ -149,7 +148,7 @@ class DOM {
    * that only lives in memory (not an asset or in the DOM).
    *
    */
-  private serializeCssOm(documentClone: HTMLDocument) {
+  private serializeCSSOM(documentClone: HTMLDocument) {
     const styleSheets = Array.from(this.originalDOM.styleSheets)
 
     styleSheets.forEach((styleSheet: any) => {
@@ -202,7 +201,7 @@ class DOM {
 
     const formNodes = this.originalDOM.querySelectorAll('input, textarea')
     const formElements = Array.from(formNodes)
-    // loop through each for element and apply an ID for serialization later
+    // loop through each form element and apply an ID for serialization later
     formElements.forEach((elem: any) => createUID(elem))
   }
 }

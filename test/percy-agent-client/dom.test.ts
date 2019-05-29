@@ -226,5 +226,35 @@ describe('DOM -', () => {
         expect(dom.clonedDOM.querySelector('#name').attributes.value.value).to.equal('Bob Boberson')
       })
     })
+
+    describe('CSSOM with inputs', () => {
+      let $domString: any
+
+      beforeEach(async () => {
+        const example = createExample(`
+          <form>
+            <label for="name">Name</label>
+            <input id="name" type="text" />
+          </form>
+        `)
+        createCSSOM()
+        await type('#name', 'Bob Boberson')
+
+        dom = new DOM(example)
+        $domString = cheerio.load(dom.snapshotString())
+      })
+
+      it('serializes the input value', () => {
+        expect($domString('#name').attr('value')).to.equal('Bob Boberson')
+        expect(dom.clonedDOM.querySelector('#name').attributes.value.value).to.equal('Bob Boberson')
+      })
+
+      it('serializes the CSSOM', () => {
+        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]')
+
+        expect(serializedCSSOM.length).to.equal(1)
+        expect(serializedCSSOM[0].innerText).to.equal('.box { height: 500px; width: 500px; background-color: green; }')
+      })
+    })
   })
 })
