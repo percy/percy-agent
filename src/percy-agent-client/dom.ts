@@ -1,3 +1,8 @@
+export interface DOMOptions {
+  enableJavaScript?: boolean,
+  domTransformation?: (dom: any) => void
+}
+
 /**
  * A single class to encapsulate all DOM operations that need to be preformed to
  * capture the customers application state.
@@ -6,11 +11,11 @@
 class DOM {
   originalDOM: any
   clonedDOM: any
-  options: any
+  options: DOMOptions
 
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(dom: any, options?: object) {
+  constructor(dom: any, options?: DOMOptions) {
     this.originalDOM = dom
     this.options = options || {}
     this.clonedDOM = this.cloneDOM()
