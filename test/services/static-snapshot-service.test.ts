@@ -87,6 +87,31 @@ describe('StaticSnapshotService', () => {
     })
   })
 
+  describe('#_buildPageUrls with snapshot-files flag set', () => {
+    const options: StaticSnapshotOptions = {
+      port: staticSitePort,
+      snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-native-app/',
+      snapshotGlobs: ['**/*.html', '**/*.htm', '**/*.png'],
+      ignoreGlobs: [],
+      baseUrl: '/',
+    }
+
+    const subject = new StaticSnapshotService(options)
+
+    it('returns urls with the correct route', async () => {
+      const pageUrls = await subject._buildPageUrls()
+
+      const expectedUrls = [
+        'http://localhost:5339/index.html',
+        `http://localhost:5339${subject.virtualDir}/billing_screen.png`,
+        `http://localhost:5339${subject.virtualDir}/main_screen.png`,
+        `http://localhost:5339${subject.virtualDir}/organization_screen.png`,
+      ]
+
+      expect(pageUrls).to.eql(expectedUrls)
+    })
+  })
+
   describe('#stop', () => {
     it('stops serving the static site on supplied port', async () => {
       await captureStdOut(async () => {

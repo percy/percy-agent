@@ -3,7 +3,9 @@ import * as cors from 'cors'
 import * as express from 'express'
 import * as globby from 'globby'
 import {Server} from 'http'
+import * as path from 'path'
 import * as puppeteer from 'puppeteer'
+import {URL} from 'url'
 import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
 import {StaticSnapshotOptions} from './static-snapshot-options'
@@ -13,16 +15,29 @@ declare var PercyAgent: any
 
 export default class StaticSnapshotService {
   readonly options: StaticSnapshotOptions
+  readonly virtualDir: string
   private readonly app: express.Application
+  private router: express.Router
   private server: Server | null = null
 
   constructor(options: StaticSnapshotOptions) {
     this.app = express()
     this.options = options
+    this.router = express.Router()
+    this.virtualDir = '/__percy_virtual_dir'
 
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
+
+    this.app.use(this.router)
+
+    // responding with html for request on the virtual directory allows
+    // serving the actual image as a resource when the html has been parsed
+    this.app.use(this.virtualDir, (request: express.Request, response: express.Response) => {
+        const imagePath = path.join(this.options.baseUrl, request.url)
+        response.send(`<img src="${imagePath}"/>`)
+      })
 
     this.app.use(options.baseUrl, express.static(options.snapshotDirectory))
   }
@@ -84,8 +99,11 @@ export default class StaticSnapshotService {
 
     const paths = await globby(this.options.snapshotGlobs, globOptions)
 
-    for (const path of paths) {
-      pageUrls.push(baseUrl + path)
+    for (const filePath of paths) {
+      // non-HTML files should be requested at the virtual directory endpoint
+      const route = filePath.match(/^.*\.(html?)$/) ? '' : this.virtualDir
+      const pageUrl = new URL(path.join(baseUrl, route, filePath)).toString()
+      pageUrls.push(pageUrl)
     }
 
     return pageUrls
