@@ -2,7 +2,6 @@
   "compilerOptions": {
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "suppressImplicitAnyIndexErrors": true,
     "importHelpers": true,
     "module": "commonjs",
     "outDir": "./dist",

@@ -125,17 +125,13 @@ describe('DOM -', () => {
       })
 
       describe('adding new styles after snapshotting', () => {
-        let cssomSheet: any
-
-        beforeEach(() => {
-          cssomSheet = document.styleSheets[0] as any
+        it('does not break the CSSOM', () => {
+          const cssomSheet = document.styleSheets[0] as any
           // delete the old rule
           cssomSheet.deleteRule(0)
           // create a new rule
           cssomSheet.insertRule('.box { height: 200px; width: 200px; background-color: blue; }')
-        })
 
-        it('does not break the CSSOM', () => {
           expect(cssomSheet.rules.length).to.equal(1)
           expect(cssomSheet.rules[0].cssText).to.equal('.box { height: 200px; width: 200px; background-color: blue; }')
         })
