@@ -132,8 +132,9 @@ describe('DOM -', () => {
           // create a new rule
           cssomSheet.insertRule('.box { height: 200px; width: 200px; background-color: blue; }')
 
-          expect(cssomSheet.rules.length).to.equal(1)
-          expect(cssomSheet.rules[0].cssText).to.equal('.box { height: 200px; width: 200px; background-color: blue; }')
+          expect(cssomSheet.cssRules.length).to.equal(1)
+          expect(cssomSheet.cssRules[0].cssText).to
+            .equal('.box { height: 200px; width: 200px; background-color: blue; }')
         })
       })
     })
