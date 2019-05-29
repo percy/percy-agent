@@ -202,7 +202,11 @@ class DOM {
     const formNodes = this.originalDOM.querySelectorAll('input, textarea')
     const formElements = Array.from(formNodes)
     // loop through each form element and apply an ID for serialization later
-    formElements.forEach((elem: any) => createUID(elem))
+    formElements.forEach((elem: any) => {
+      if (!elem.attributes['data-percy-element-id']) {
+        createUID(elem)
+      }
+    })
   }
 }
 
