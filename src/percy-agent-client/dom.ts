@@ -1,6 +1,6 @@
 export interface DOMOptions {
   enableJavaScript?: boolean,
-  domTransformation?: (dom: any) => void
+  domTransformation?: (dom: HTMLDocument) => void
 }
 
 /**
@@ -9,13 +9,13 @@ export interface DOMOptions {
  *
  */
 class DOM {
-  originalDOM: any
-  clonedDOM: any
+  originalDOM: HTMLDocument
+  clonedDOM: HTMLDocument
   options: DOMOptions
 
   readonly defaultDoctype = '<!DOCTYPE html>'
 
-  constructor(dom: any, options?: DOMOptions) {
+  constructor(dom: HTMLDocument, options?: DOMOptions) {
     this.originalDOM = dom
     this.options = options || {}
     this.clonedDOM = this.cloneDOM()
@@ -28,7 +28,8 @@ class DOM {
    *
    */
   snapshotString(): string {
-    let dom = this.clonedDOM
+    // any since the cloned DOMs type can shift
+    let dom = this.clonedDOM as any
     const doctype = this.getDoctype()
 
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
@@ -43,9 +44,7 @@ class DOM {
       }
     }
 
-    const snapshotString = doctype + dom.outerHTML
-
-    return snapshotString
+    return doctype + dom.outerHTML
   }
 
   private getDoctype(): string {
@@ -74,7 +73,8 @@ class DOM {
    */
   private cloneDOM(): HTMLDocument {
     this.mutateOriginalDOM()
-    let clone = this.originalDOM.cloneNode(true)
+    // Any because its type changes when given to `stabilizeDOM`
+    let clone = this.originalDOM.cloneNode(true) as any
     clone = this.stabilizeDOM(clone)
 
     return clone
@@ -89,7 +89,7 @@ class DOM {
    * serialize into the cloned DOM. Never mutate the origial DOM.
    *
    */
-  private stabilizeDOM(clonedDOM: any): HTMLElement {
+  private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
     let stabilizedDOMClone
     stabilizedDOMClone = this.serializeInputElements(clonedDOM)
 
@@ -149,7 +149,7 @@ class DOM {
    * that only lives in memory (not an asset or in the DOM).
    *
    */
-  private serializeCssOm(documentClone: any) {
+  private serializeCssOm(documentClone: HTMLDocument) {
     const styleSheets = Array.from(this.originalDOM.styleSheets)
 
     styleSheets.forEach((styleSheet: any) => {
