@@ -42,8 +42,6 @@ function createCSSOM() {
   cssomStyleSheet.insertRule('.box { height: 500px; width: 500px; background-color: green; }')
 }
 
-// This is just to ignore the empty tests for now
-// tslint:disable
 describe('DOM -', () => {
   let dom: any
 
@@ -51,22 +49,29 @@ describe('DOM -', () => {
     dom = null
   })
 
-  // This is going to be a little hard to test. From the spec:
+  // Ensure the snapshotString method always returns a string with a doctype.
+  // The ideal way to test this is by passing a document without a doctype.
+  // We would need a custom Karma file without a doctype to test that,
+  // since the spec does not allow you to edit an existing documents doctype:
   // "DOM level 2 doesn't support editing the document type declaration."
-  describe('without a doctype', () => {
-    beforeEach(() => {})
+  describe('snapshotString', () => {
+    beforeEach(() => {
+      dom = new DOM(document)
+    })
 
-    it('adds a doctype', () => {})
+    it('always has a doctype', () => {
+      expect(dom.snapshotString()).to.contain('<!DOCTYPE html>')
+    })
   })
 
   describe('passing a DOM transform option', () => {
-    let consoleStub: any;
+    let consoleStub: any
 
     beforeEach(() => {
       consoleStub = sinon.stub(console, 'error')
       dom = new DOM(createExample('<span class="delete-me">Delete me</span>'), {
         domTransformation(dom: any) {
-          let span = dom.querySelector('.delete-me');
+          const span = dom.querySelector('.delete-me')
           span.remove()
 
           return dom
@@ -75,8 +80,8 @@ describe('DOM -', () => {
     })
 
     afterEach(() => {
-      consoleStub.restore();
-    });
+      consoleStub.restore()
+    })
 
     it('transforms the DOM', () => {
       expect(dom.snapshotString()).to.not.contain('Delete me', 'delete-me')
@@ -92,67 +97,66 @@ describe('DOM -', () => {
       expect(dom.snapshotString()).to.not.contain('Delete me', 'delete-me')
       // invoke the transform function again to try and remove a non-existent element
       expect(dom.snapshotString()).to.contain('Hello DOM testing')
-      expect(consoleStub.calledOnce).to.equal(true);
-    });
+      expect(consoleStub.calledOnce).to.equal(true)
+    })
   })
 
   describe('stabilizing', () => {
     describe('CSSOM with JS disabled', () => {
       beforeEach(() => {
-        let exampleDOM = createExample(`<div class="box"></div>`);
+        const exampleDOM = createExample('<div class="box"></div>')
 
-        createCSSOM();
+        createCSSOM()
         dom = new DOM(exampleDOM)
-      });
+      })
 
       it('does not mutate the orignal DOM', () => {
-        let cssomOwnerNode = document.styleSheets[0].ownerNode as any;
+        const cssomOwnerNode = document.styleSheets[0].ownerNode as any
 
         expect(cssomOwnerNode.innerText).to.equal('')
         expect(document.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
       })
 
       it('serializes into the DOM clone', () => {
-        let serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]');
+        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]')
 
-        expect(serializedCSSOM.length).to.equal(1);
-        expect(serializedCSSOM[0].innerText).to.equal(".box { height: 500px; width: 500px; background-color: green; }");
+        expect(serializedCSSOM.length).to.equal(1)
+        expect(serializedCSSOM[0].innerText).to.equal('.box { height: 500px; width: 500px; background-color: green; }')
       })
 
       describe('adding new styles after snapshotting', () => {
         let cssomSheet: any
 
         beforeEach(() => {
-          cssomSheet = document.styleSheets[0] as any;
+          cssomSheet = document.styleSheets[0] as any
           // delete the old rule
           cssomSheet.deleteRule(0)
           // create a new rule
           cssomSheet.insertRule('.box { height: 200px; width: 200px; background-color: blue; }')
-        });
+        })
 
         it('does not break the CSSOM', () => {
           expect(cssomSheet.rules.length).to.equal(1)
           expect(cssomSheet.rules[0].cssText).to.equal('.box { height: 200px; width: 200px; background-color: blue; }')
-        });
-      });
+        })
+      })
     })
 
     describe('CSSOM with JS enabled', () => {
       beforeEach(() => {
-        let exampleDOM = createExample(`<div class="box"></div>`);
+        const exampleDOM = createExample('<div class="box"></div>')
 
-        createCSSOM();
+        createCSSOM()
         dom = new DOM(exampleDOM, { enableJavaScript: true })
-      });
+      })
 
       it('does not serialize the CSSOM when JS is enabled', () => {
-        let cssomOwnerNode = document.styleSheets[0].ownerNode as any;
+        const cssomOwnerNode = document.styleSheets[0].ownerNode as any
 
         expect(cssomOwnerNode.innerText).to.equal('')
         expect(dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
       })
-    });
-
+    })
 
     describe('inputs', () => {
       let $domString: any
