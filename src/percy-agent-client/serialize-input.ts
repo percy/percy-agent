@@ -93,12 +93,12 @@ function cleanPercyValueAttribute(
 
   el.removeAttribute(originalAttributeValue)
 
-  if (attributeName === 'value') {
-    el.value = originalValue !== null ? originalValue as string : ''
+  if (attributeName === 'value' && originalValue !== null) {
+    el.value = originalValue
   }
 
-  if (attributeName === 'checked') {
-    el.checked = originalValue !== null
+  if (attributeName === 'checked' && originalValue !== null) {
+    el.checked = originalValue !== 'false'
   }
 
   if (originalValue !== null) {

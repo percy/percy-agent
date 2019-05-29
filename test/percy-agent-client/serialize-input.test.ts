@@ -1,12 +1,18 @@
 import {expect} from 'chai'
-import * as sinon from 'sinon'
 import PercyAgent from '../../src/percy-agent-client/percy-agent'
-import Constants from '../../src/services/constants'
-import { htmlWithoutSelector } from '../helpers/html-string'
+import fixture from './fixtures/dom.html'
 
 const attr = 'data-percy-input-serialized-value'
 
 describe('serializeInputElements', () => {
+  before(() => {
+    document.body.innerHTML = fixture
+  })
+
+  after(() => {
+    document.body.innerHTML = ''
+  })
+
   const subject: PercyAgent = new PercyAgent({ handleAgentCommunication: false })
 
   describe('serializes text input elements', () => {
@@ -20,12 +26,12 @@ describe('serializeInputElements', () => {
       it('reverts changes', () => {
         const [input, snapshot] = createInputSnapshot('testInput', 'new value')
         expect(snapshot).to.contain('<input id="testInput" value="new value">')
-        testInputIsCleaned(input)
+        testInputIsCleaned(input, 'new value')
       })
 
-      function testInputIsCleaned(input: HTMLInputElement) {
+      function testInputIsCleaned(input: HTMLInputElement, value: string = '') {
         expect(input.hasAttribute('value')).to.equal(false)
-        expect(input.value).to.equal('')
+        expect(input.value).to.equal(value)
       }
     })
 
@@ -55,6 +61,7 @@ describe('serializeInputElements', () => {
 
     function createInputSnapshot(id: string, value?: string): [HTMLInputElement, string] {
       const input = document.getElementById(id) as HTMLInputElement
+
       if (value !== undefined) {
         input.value = value
       }
@@ -75,12 +82,12 @@ describe('serializeInputElements', () => {
       it('reverts changes', () => {
         const [input, snapshot] = createCheckedInputSnapshot('testCheckbox', true)
         expect(snapshot).to.contain('<input id="testCheckbox" type="checkbox" checked="checked">')
-        testInputIsCleaned(input)
+        testInputIsCleaned(input, true)
       })
 
-      function testInputIsCleaned(input: HTMLInputElement) {
+      function testInputIsCleaned(input: HTMLInputElement, value: boolean = false) {
         expect(input.hasAttribute('checked')).to.equal(false)
-        expect(input.checked).to.equal(false)
+        expect(input.checked).to.equal(value)
       }
     })
 
@@ -120,12 +127,12 @@ describe('serializeInputElements', () => {
       it('reverts changes', () => {
         const [input, snapshot] = createCheckedInputSnapshot('testRadio', true)
         expect(snapshot).to.contain('<input id="testRadio" type="radio" checked="checked">')
-        testInputIsCleaned(input)
+        testInputIsCleaned(input, true)
       })
 
-      function testInputIsCleaned(input: HTMLInputElement) {
+      function testInputIsCleaned(input: HTMLInputElement, value: boolean = false) {
         expect(input.hasAttribute('checked')).to.equal(false)
-        expect(input.checked).to.equal(false)
+        expect(input.checked).to.equal(value)
       }
     })
 

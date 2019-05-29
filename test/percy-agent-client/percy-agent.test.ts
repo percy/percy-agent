@@ -2,7 +2,6 @@ import {expect} from 'chai'
 import * as sinon from 'sinon'
 import PercyAgent from '../../src/percy-agent-client/percy-agent'
 import Constants from '../../src/services/constants'
-import { htmlWithoutSelector } from '../helpers/html-string'
 
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []

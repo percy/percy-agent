@@ -11,7 +11,8 @@ module.exports = config => {
 
     preprocessors: {
       // tells Karma that we'll be using Webpack to process this file
-      "./index.js": ["webpack"]
+      "./index.js": ["webpack"],
+      "./fixtures/**/*": ["webpack"],
     },
 
     // Mocha reporter options
@@ -27,6 +28,11 @@ module.exports = config => {
           {
             test: /\.ts?$/,
             use: "babel-loader",
+            exclude: /node_modules/
+          },
+          {
+            test: /\.html?$/,
+            use: "raw-loader",
             exclude: /node_modules/
           }
         ]

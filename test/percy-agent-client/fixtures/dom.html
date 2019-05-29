@@ -1,0 +1,27 @@
+<p>
+  <input id="testInput" />
+  <input id="testCheckbox" type="checkbox"/>
+  <input id="testRadio" type="radio"/>
+</p>
+
+<p>
+  <input id="testInputValue" value="default value"/>
+  <input id="testCheckboxChecked" type="checkbox" checked="checked"/>
+  <input id="testRadioChecked" type="radio" checked/>
+</p>
+
+<p>
+  <textarea id="testTextarea"></textarea>
+  <textarea id="testTextareaValue">default value</textarea>
+</p>
+
+<!-- Test elements for CSSOM serialization. -->
+<div id="jsStyled"></div>
+
+<!-- Owner node of style has no inner text -->
+<svg>
+  <defs>
+    <style>.cls-1 { fill: #8d7bd8 }</style>
+  </defs>
+</svg>
+
