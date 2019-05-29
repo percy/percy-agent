@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import * as cheerio from 'cheerio'
 // @ts-ignore
 import { check, type } from 'interactor.js'
+import * as sinon from 'sinon'
 import DOM from '../../src/percy-agent-client/dom'
 
 // Create valid DOM to pass to the DOM class.
@@ -16,7 +17,7 @@ function createExample(dom: any) {
 
   const finalDOM = `
     <div class="container">
-      <h1>Hello world</h1>
+      <h1>Hello DOM testing</h1>
       ${dom}
     </div>
   `
@@ -27,6 +28,20 @@ function createExample(dom: any) {
 
   return document
 }
+
+// create a stylesheet in the DOM and add rules using the CSSOM
+function createCSSOM() {
+  const style = document.createElement('style')
+  const testingContainer = document.querySelector('.test-container')
+
+  style.type = 'text/css'
+  testingContainer.appendChild(style)
+
+  const cssomStyleSheet = document.styleSheets[0] as any
+
+  cssomStyleSheet.insertRule('.box { height: 500px; width: 500px; background-color: green; }')
+}
+
 // This is just to ignore the empty tests for now
 // tslint:disable
 describe('DOM -', () => {
@@ -45,15 +60,23 @@ describe('DOM -', () => {
   })
 
   describe('passing a DOM transform option', () => {
+    let consoleStub: any;
+
     beforeEach(() => {
-      // TODO, this can only be called once (since we delete from the DOM). Seems bad?
+      consoleStub = sinon.stub(console, 'error')
       dom = new DOM(createExample('<span class="delete-me">Delete me</span>'), {
         domTransformation(dom: any) {
-          dom.querySelector('.delete-me').remove()
+          let span = dom.querySelector('.delete-me');
+          span.remove()
+
           return dom
         },
       })
     })
+
+    afterEach(() => {
+      consoleStub.restore();
+    });
 
     it('transforms the DOM', () => {
       expect(dom.snapshotString()).to.not.contain('Delete me', 'delete-me')
@@ -63,18 +86,73 @@ describe('DOM -', () => {
       // @ts-ignore
       expect(document.querySelector('.delete-me').innerText).to.equal('Delete me')
     })
+
+    // it's possible the user provides code that errors when we execute it
+    it('gracefully catches errors', () => {
+      expect(dom.snapshotString()).to.not.contain('Delete me', 'delete-me')
+      // invoke the transform function again to try and remove a non-existent element
+      expect(dom.snapshotString()).to.contain('Hello DOM testing')
+      expect(consoleStub.calledOnce).to.equal(true);
+    });
   })
 
   describe('stabilizing', () => {
-    describe('CSSOM', () => {
-      it('does not mutate the orignal DOM', () => {})
+    describe('CSSOM with JS disabled', () => {
+      beforeEach(() => {
+        let exampleDOM = createExample(`<div class="box"></div>`);
 
-      it('serializes into the DOM clone', () => {})
+        createCSSOM();
+        dom = new DOM(exampleDOM)
+      });
 
-      it('does not mutate the CSSOM owner node', () => {})
+      it('does not mutate the orignal DOM', () => {
+        let cssomOwnerNode = document.styleSheets[0].ownerNode as any;
 
-      it('does not serialize the CSSOM when JS is enabled', () => {})
+        expect(cssomOwnerNode.innerText).to.equal('')
+        expect(document.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
+      })
+
+      it('serializes into the DOM clone', () => {
+        let serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]');
+
+        expect(serializedCSSOM.length).to.equal(1);
+        expect(serializedCSSOM[0].innerText).to.equal(".box { height: 500px; width: 500px; background-color: green; }");
+      })
+
+      describe('adding new styles after snapshotting', () => {
+        let cssomSheet: any
+
+        beforeEach(() => {
+          cssomSheet = document.styleSheets[0] as any;
+          // delete the old rule
+          cssomSheet.deleteRule(0)
+          // create a new rule
+          cssomSheet.insertRule('.box { height: 200px; width: 200px; background-color: blue; }')
+        });
+
+        it('does not break the CSSOM', () => {
+          expect(cssomSheet.rules.length).to.equal(1)
+          expect(cssomSheet.rules[0].cssText).to.equal('.box { height: 200px; width: 200px; background-color: blue; }')
+        });
+      });
     })
+
+    describe('CSSOM with JS enabled', () => {
+      beforeEach(() => {
+        let exampleDOM = createExample(`<div class="box"></div>`);
+
+        createCSSOM();
+        dom = new DOM(exampleDOM, { enableJavaScript: true })
+      });
+
+      it('does not serialize the CSSOM when JS is enabled', () => {
+        let cssomOwnerNode = document.styleSheets[0].ownerNode as any;
+
+        expect(cssomOwnerNode.innerText).to.equal('')
+        expect(dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
+      })
+    });
+
 
     describe('inputs', () => {
       let $domString: any

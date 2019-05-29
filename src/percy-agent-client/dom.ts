@@ -31,7 +31,11 @@ class DOM {
     // lists all yours tests. You'll want to "hoist" the contents of the testing container to be
     // the full page. Using a dom transformation is how you'd acheive that.
     if (this.options.domTransformation) {
-      dom = this.options.domTransformation(dom)
+      try {
+        dom = this.options.domTransformation(dom)
+      } catch (error) {
+        console.error('Could not transform the dom: ', error)
+      }
     }
 
     const snapshotString = doctype + dom.outerHTML
@@ -85,7 +89,7 @@ class DOM {
     stabilizedDOMClone = this.serializeInputElements(clonedDOM)
 
     // We only want to serialize the CSSOM if JS isn't enabled.
-    if (!this.options.enableJavaScript || !this.options.enableJavascript) {
+    if (!this.options.enableJavaScript) {
       stabilizedDOMClone = this.serializeCssOm(clonedDOM)
     }
 
