@@ -95,6 +95,7 @@ describe('DOM -', () => {
     // it's possible the user provides code that errors when we execute it
     it('gracefully catches errors', () => {
       expect(dom.snapshotString()).to.not.contain('Delete me', 'delete-me')
+      expect(consoleStub.called).to.equal(false)
       // invoke the transform function again to try and remove a non-existent element
       expect(dom.snapshotString()).to.contain('Hello DOM testing')
       expect(consoleStub.calledOnce).to.equal(true)
