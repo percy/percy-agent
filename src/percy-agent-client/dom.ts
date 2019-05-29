@@ -4,7 +4,7 @@ export interface DOMOptions {
 }
 
 /**
- * A single class to encapsulate all DOM operations that need to be preformed to
+ * A single class to encapsulate all DOM operations that need to be performed to
  * capture the customers application state.
  *
  */
@@ -35,7 +35,7 @@ class DOM {
     // Sometimes you'll want to transform the DOM provided into one ready for snapshotting
     // For example, if your test suite runs tests in an element inside a page that
     // lists all yours tests. You'll want to "hoist" the contents of the testing container to be
-    // the full page. Using a dom transformation is how you'd acheive that.
+    // the full page. Using a dom transformation is how you'd achieve that.
     if (this.options.domTransformation) {
       try {
         dom = this.options.domTransformation(dom)
@@ -85,8 +85,8 @@ class DOM {
    * that is not encoded in the DOM tree needs to be accounted for here (CSSOM,
    * input values, canvas, etc).
    *
-   * This method should always capture these values from the origial DOM and
-   * serialize into the cloned DOM. Never mutate the origial DOM.
+   * This method should always capture these values from the original DOM and
+   * serialize into the cloned DOM. Never mutate the original DOM.
    *
    */
   private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
@@ -184,9 +184,9 @@ class DOM {
   }
 
   /**
-   * A single place to mutate the origial DOM. This should be the last resort!
-   * This will change the customers DOM and have a possible impact on the
-   * customers application.
+   * A single place to mutate the original DOM. This should be the last resort!
+   * This will change the customer's DOM and have a possible impact on the
+   * customer's application.
    *
    */
   private mutateOriginalDOM() {
