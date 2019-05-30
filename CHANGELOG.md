@@ -1,3 +1,10 @@
+# [0.5.0](https://github.com/percy/percy-agent/compare/v0.4.9...v0.5.0) (2019-05-30)
+
+
+### Features
+
+* Support parallel snapshots calls ([#168](https://github.com/percy/percy-agent/issues/168)) ([744a399](https://github.com/percy/percy-agent/commit/744a399))
+
 ## [0.4.9](https://github.com/percy/percy-agent/compare/v0.4.8...v0.4.9) (2019-05-21)
 
 
