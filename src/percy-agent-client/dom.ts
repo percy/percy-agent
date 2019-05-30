@@ -86,18 +86,18 @@ class DOM {
    * input values, canvas, etc).
    *
    * This method should always capture these values from the original DOM and
-   * serialize into the cloned DOM. Never mutate the original DOM.
+   * serialize (mutate) into the cloned DOM. Never mutate the original DOM.
    *
    */
   private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
-    let stabilizedDOMClone = this.serializeInputElements(clonedDOM)
+    this.serializeInputElements(clonedDOM)
 
     // We only want to serialize the CSSOM if JS isn't enabled.
     if (!this.options.enableJavaScript) {
-      stabilizedDOMClone = this.serializeCSSOM(stabilizedDOMClone)
+      this.serializeCSSOM(clonedDOM)
     }
 
-    return stabilizedDOMClone.documentElement
+    return clonedDOM.documentElement
   }
 
   /**
@@ -109,7 +109,7 @@ class DOM {
    * form controls to make sure they persist in snapshots.
    *
    */
-  private serializeInputElements(clonedDOM: HTMLDocument): HTMLDocument {
+  private serializeInputElements(clonedDOM: HTMLDocument): void {
     const formNodes = this.originalDOM.querySelectorAll('input, textarea')
     const formElements = Array.from(formNodes) as HTMLFormElement[]
 
@@ -136,8 +136,6 @@ class DOM {
           }
       }
     })
-
-    return clonedDOM
   }
 
   /**
@@ -178,8 +176,6 @@ class DOM {
         documentClone.head.appendChild($style)
       }
     })
-
-    return documentClone
   }
 
   /**
