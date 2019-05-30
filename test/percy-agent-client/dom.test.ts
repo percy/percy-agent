@@ -119,7 +119,7 @@ describe('DOM -', () => {
       })
 
       it('serializes into the DOM clone', () => {
-        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]')
+        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]') as HTMLElement[]
 
         expect(serializedCSSOM.length).to.equal(1)
         expect(serializedCSSOM[0].innerText).to.equal('.box { height: 500px; width: 500px; background-color: green; }')
@@ -223,7 +223,7 @@ describe('DOM -', () => {
         const originalDOMInput = document.querySelector('#name') as HTMLElement
 
         expect(originalDOMInput.getAttribute('value')).to.equal(null)
-        expect(dom.clonedDOM.querySelector('#name').attributes.value.value).to.equal('Bob Boberson')
+        expect(dom.clonedDOM.querySelector('#name').getAttribute('value')).to.equal('Bob Boberson')
       })
     })
 
@@ -250,7 +250,7 @@ describe('DOM -', () => {
       })
 
       it('serializes the CSSOM', () => {
-        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]')
+        const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]') as HTMLElement[]
 
         expect(serializedCSSOM.length).to.equal(1)
         expect(serializedCSSOM[0].innerText).to.equal('.box { height: 500px; width: 500px; background-color: green; }')
