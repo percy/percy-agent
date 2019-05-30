@@ -114,7 +114,7 @@ class DOM {
     const formElements = Array.from(formNodes)
 
     formElements.forEach((elem: any) => {
-      const inputId = elem.attributes['data-percy-element-id'].value
+      const inputId = elem.getAttribute('data-percy-element-id')
       const selector = `[data-percy-element-id="${inputId}"]`
       const cloneEl = clonedDOM.querySelector(selector) as HTMLInputElement
 
@@ -149,9 +149,9 @@ class DOM {
    *
    */
   private serializeCSSOM(documentClone: HTMLDocument) {
-    const styleSheets = Array.from(this.originalDOM.styleSheets)
+    const styleSheets = Array.from(this.originalDOM.styleSheets) as CSSStyleSheet[]
 
-    styleSheets.forEach((styleSheet: any) => {
+    styleSheets.forEach((styleSheet) => {
       // Make sure it has a rulesheet, does NOT have a href (no external stylesheets),
       // and isn't already in the DOM.
       function isCSSOM() {
@@ -165,8 +165,8 @@ class DOM {
 
       if (isCSSOM()) {
         const $style = documentClone.createElement('style')
-        const cssRules = Array.from(styleSheet.cssRules)
-        const serializedStyles = cssRules.reduce((prev: string, cssRule: any) => {
+        const cssRules = Array.from(styleSheet.cssRules) as CSSRule[]
+        const serializedStyles = cssRules.reduce((prev: string, cssRule) => {
           return prev + cssRule.cssText
         }, '')
 
@@ -200,9 +200,9 @@ class DOM {
     }
 
     const formNodes = this.originalDOM.querySelectorAll('input, textarea')
-    const formElements = Array.from(formNodes)
+    const formElements = Array.from(formNodes) as HTMLFormElement[]
     // loop through each form element and apply an ID for serialization later
-    formElements.forEach((elem: any) => {
+    formElements.forEach((elem) => {
       if (!elem.attributes['data-percy-element-id']) {
         createUID(elem)
       }

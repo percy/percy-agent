@@ -213,8 +213,8 @@ describe('DOM -', () => {
       it('adds matching guids to the orignal DOM and cloned DOM', () => {
         const originalElementIds = document.querySelectorAll('[data-percy-element-id]')
         const cloneElementIds = dom.clonedDOM.querySelectorAll('[data-percy-element-id]')
-        const originalValue = originalElementIds[0].attributes['data-percy-element-id'].value
-        const cloneValue = cloneElementIds[0].attributes['data-percy-element-id'].value
+        const originalValue = originalElementIds[0].getAttribute('data-percy-element-id')
+        const cloneValue = cloneElementIds[0].getAttribute('data-percy-element-id')
 
         expect(originalValue).to.equal(cloneValue)
       })
