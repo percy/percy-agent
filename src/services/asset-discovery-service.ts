@@ -1,3 +1,4 @@
+import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, {logError, profile} from '../utils/logger'
@@ -9,17 +10,19 @@ interface AssetDiscoveryOptions {
   networkIdleTimeout?: number
 }
 
+const DEFAULT_PAGE_POOL_SIZE = process.env.PERCY_POOL_SIZE
+
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
-  pages: puppeteer.Page[] | null
+  pagePool: pool.Pool<puppeteer.Page> | null
 
   readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
   networkIdleTimeout: number // ms
 
-  // How many 'pages' (i.e. tabs) we'll keep around.
-  // We will only be able to process at most these many snapshot widths.
-  readonly PAGE_POOL_SIZE: number = 10
+  readonly MAX_SNAPSHOT_WIDTHS: number = 10
+  readonly PAGE_POOL_SIZE_MIN: number = 2
+  readonly PAGE_POOL_SIZE_MAX: number = DEFAULT_PAGE_POOL_SIZE ? parseInt(DEFAULT_PAGE_POOL_SIZE) : 10
 
   // Default widths to use for asset discovery. Must match Percy service defaults.
   readonly DEFAULT_WIDTHS: number[] = [1280, 375]
@@ -29,12 +32,21 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService(buildId)
     this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
-    this.pages = null
+    this.pagePool = null
   }
 
   async setup() {
+    profile('-> assetDiscoveryService.setup')
+    const browser = this.browser = await this.createBrowser()
+    this.pagePool = await this.createPagePool(() => {
+      return this.createPage(browser)
+    }, this.PAGE_POOL_SIZE_MIN, this.PAGE_POOL_SIZE_MAX)
+    profile('-> assetDiscoveryService.setup')
+  }
+
+  async createBrowser() {
     profile('-> assetDiscoveryService.puppeteer.launch')
-    this.browser = await puppeteer.launch({
+    const browser = await puppeteer.launch({
       args: [
         '--no-sandbox',
         '--disable-web-security',
@@ -44,28 +56,48 @@ export default class AssetDiscoveryService extends PercyClientService {
     })
     profile('-> assetDiscoveryService.puppeteer.launch')
 
-    profile('-> assetDiscoveryService.browser.newPagePool')
-    const pagePromises: Array<Promise<puppeteer.Page>> = []
-    for (let i = 0; i < this.PAGE_POOL_SIZE; i++) {
-      const promise = this.browser.newPage().then((page) => {
-        return page.setRequestInterception(true).then(() => page)
-      })
-      pagePromises.push(promise)
-    }
-    this.pages = await Promise.all(pagePromises)
-    profile('-> assetDiscoveryService.browser.newPagePool')
+    return browser
+  }
+
+  async createPagePool(exec: () => PromiseLike<puppeteer.Page>, min: number, max: number) {
+    profile('-> assetDiscoveryService.createPagePool')
+    const result = pool.createPool<puppeteer.Page>({
+      create() {
+        return exec()
+      },
+      destroy(page) {
+        return page.close()
+      },
+    }, { min, max })
+    profile('-> assetDiscoveryService.createPagePool')
+
+    return result
+  }
+
+  async createPage(browser: puppeteer.Browser) {
+    profile('-> assetDiscoveryService.browser.newPage')
+    const page = await browser.newPage()
+    await page.setRequestInterception(true)
+    profile('-> assetDiscoveryService.browser.newPage')
+
+    return page
   }
 
   async discoverResources(rootResourceUrl: string, domSnapshot: string, options: SnapshotOptions): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
-    if (!this.browser || !this.pages || !this.pages.length) {
-      logger.error('Puppeteer failed to open with a page pool.')
+    if (this.browser === null) {
+      logger.error('Puppeteer failed to open browser.')
       return []
     }
 
-    if (options.widths && options.widths.length > this.pages.length) {
-      logger.error(`Too many widths requested. Max allowed is ${this.PAGE_POOL_SIZE}. Requested: ${options.widths}`)
+    if (!this.pagePool) {
+      logger.error('Failed to create pool of pages.')
+      return []
+    }
+
+    if (options.widths && options.widths.length > this.MAX_SNAPSHOT_WIDTHS) {
+      logger.error(`Too many widths requested. Max is ${this.MAX_SNAPSHOT_WIDTHS}. Requested: ${options.widths}`)
       return []
     }
 
@@ -82,9 +114,8 @@ export default class AssetDiscoveryService extends PercyClientService {
     // switching to use puppeteer-cluster instead.
     profile('--> assetDiscoveryService.discoverForWidths', {url: rootResourceUrl})
     const resourcePromises: Array<Promise<any[]>> = []
-    for (let idx = 0; idx < widths.length; idx++) {
-      const promise = this.resourcesForWidth(
-        this.pages[idx], widths[idx], domSnapshot, rootResourceUrl, enableJavaScript)
+    for (const width of widths) {
+      const promise = this.resourcesForWidth(this.pagePool, width, domSnapshot, rootResourceUrl, enableJavaScript)
       resourcePromises.push(promise)
     }
     const resourceArrays: any[][] = await Promise.all(resourcePromises)
@@ -124,33 +155,45 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async teardown() {
-    await this.closePages()
+    await this.cleanPagePool()
     await this.closeBrowser()
   }
 
-  private async resourcesForWidth(page: puppeteer.Page, width: number, domSnapshot: string,
-                                  rootResourceUrl: string, enableJavaScript: boolean): Promise<any[]> {
+  private async resourcesForWidth(
+    pool: pool.Pool<puppeteer.Page>,
+    width: number,
+    domSnapshot: string,
+    rootResourceUrl: string,
+    enableJavaScript: boolean,
+  ): Promise<any[]> {
     logger.debug(`discovering assets for width: ${width}`)
 
+    profile('--> assetDiscoveryService.pool.acquire', {url: rootResourceUrl})
+    const page = await pool.acquire()
+    profile('--> assetDiscoveryService.pool.acquire')
     await page.setJavaScriptEnabled(enableJavaScript)
     await page.setViewport(Object.assign(page.viewport(), {width}))
 
     page.on('request', async (request) => {
-      if (!this.shouldRequestResolve(request)) {
-        await request.abort()
-        return
-      }
+      try {
+        if (!this.shouldRequestResolve(request)) {
+          await request.abort()
+          return
+        }
 
-      if (request.url() === rootResourceUrl) {
-        await request.respond({
-          body: domSnapshot,
-          contentType: 'text/html',
-          status: 200,
-        })
-        return
-      }
+        if (request.url() === rootResourceUrl) {
+          await request.respond({
+            body: domSnapshot,
+            contentType: 'text/html',
+            status: 200,
+          })
+          return
+        }
 
-      await request.continue()
+        await request.continue()
+      } catch (error) {
+        logError(error)
+      }
     })
 
     const maybeResourcePromises: Array<Promise<any>> = []
@@ -174,31 +217,44 @@ export default class AssetDiscoveryService extends PercyClientService {
       logger.debug(`Failed to load ${request.url()} : ${request.failure()!.errorText}}`)
     })
 
-    profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
-    await page.goto(rootResourceUrl)
-    profile('--> assetDiscoveryService.page.goto')
+    try {
+      profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
+      await page.goto(rootResourceUrl)
+      profile('--> assetDiscoveryService.page.goto')
 
-    profile('--> assetDiscoveryService.waitForNetworkIdle')
-    await waitForNetworkIdle(page, this.networkIdleTimeout).catch(logError)
-    profile('--> assetDiscoveryService.waitForNetworkIdle')
+      profile('--> assetDiscoveryService.waitForNetworkIdle')
+      await waitForNetworkIdle(page, this.networkIdleTimeout)
+      profile('--> assetDiscoveryService.waitForNetworkIdle')
 
-    page.removeAllListeners()
+      profile('--> assetDiscoveryServer.waitForResourceProcessing')
+      const maybeResources: any[] = await Promise.all(maybeResourcePromises)
+      profile('--> assetDiscoveryServer.waitForResourceProcessing')
 
-    profile('--> assetDiscoveryServer.waitForResourceProcessing')
-    const maybeResources: any[] = await Promise.all(maybeResourcePromises)
-    profile('--> assetDiscoveryServer.waitForResourceProcessing')
-    return maybeResources.filter((maybeResource) => maybeResource != null)
+      profile('--> assetDiscoveryService.pool.release', {url: rootResourceUrl})
+      await page.removeAllListeners('request')
+      await page.removeAllListeners('requestfinished')
+      await page.removeAllListeners('requestfailed')
+      await pool.release(page)
+      profile('--> assetDiscoveryService.pool.release')
+
+      return maybeResources.filter((maybeResource) => maybeResource != null)
+    } catch (error) {
+      logError(error)
+    }
+
+    return []
+  }
+
+  private async cleanPagePool() {
+    if (this.pagePool === null) { return }
+    await this.pagePool.drain()
+    await this.pagePool.clear()
+    this.pagePool = null
   }
 
   private async closeBrowser() {
-    if (!this.browser) { return }
+    if (this.browser === null) { return }
     await this.browser.close()
     this.browser = null
-  }
-
-  private async closePages() {
-    if (!this.pages) { return }
-    await Promise.all(this.pages.map((page) => page.close()))
-    this.pages = null
   }
 }
