@@ -1,8 +1,6 @@
 {
   "extends": "../tsconfig",
   "compilerOptions": {
-    "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
     "sourceMap": true
   },
   "include": [

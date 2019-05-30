@@ -6,7 +6,7 @@ import * as sinon from 'sinon'
 import DOM from '../../src/percy-agent-client/dom'
 
 // Create valid DOM to pass to the DOM class.
-function createExample(dom: any) {
+function createExample(dom: string) {
   let testContainer = document.querySelector('.test-container')
 
   if (testContainer) {
@@ -32,12 +32,12 @@ function createExample(dom: any) {
 // create a stylesheet in the DOM and add rules using the CSSOM
 function createCSSOM() {
   const style = document.createElement('style')
-  const testingContainer = document.querySelector('.test-container')
+  const testingContainer = document.querySelector('.test-container') as HTMLElement
 
   style.type = 'text/css'
   testingContainer.appendChild(style)
 
-  const cssomStyleSheet = document.styleSheets[0] as any
+  const cssomStyleSheet = document.styleSheets[0] as CSSStyleSheet
 
   cssomStyleSheet.insertRule('.box { height: 500px; width: 500px; background-color: green; }')
 }
@@ -65,13 +65,13 @@ describe('DOM -', () => {
   })
 
   describe('passing a DOM transform option', () => {
-    let consoleStub: any
+    let consoleStub: sinon.SinonStub
 
     beforeEach(() => {
       consoleStub = sinon.stub(console, 'error')
       dom = new DOM(createExample('<span class="delete-me">Delete me</span>'), {
-        domTransformation(dom: any) {
-          const span = dom.querySelector('.delete-me')
+        domTransformation(dom) {
+          const span = dom.querySelector('.delete-me') as HTMLElement
           span.remove()
 
           return dom
@@ -112,7 +112,7 @@ describe('DOM -', () => {
       })
 
       it('does not mutate the orignal DOM', () => {
-        const cssomOwnerNode = document.styleSheets[0].ownerNode as any
+        const cssomOwnerNode = document.styleSheets[0].ownerNode as HTMLElement
 
         expect(cssomOwnerNode.innerText).to.equal('')
         expect(document.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
@@ -127,7 +127,7 @@ describe('DOM -', () => {
 
       describe('adding new styles after snapshotting', () => {
         it('does not break the CSSOM', () => {
-          const cssomSheet = document.styleSheets[0] as any
+          const cssomSheet = document.styleSheets[0] as CSSStyleSheet
           // delete the old rule
           cssomSheet.deleteRule(0)
           // create a new rule
@@ -149,7 +149,7 @@ describe('DOM -', () => {
       })
 
       it('does not serialize the CSSOM when JS is enabled', () => {
-        const cssomOwnerNode = document.styleSheets[0].ownerNode as any
+        const cssomOwnerNode = document.styleSheets[0].ownerNode as HTMLElement
 
         expect(cssomOwnerNode.innerText).to.equal('')
         expect(dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]').length).to.equal(0)
@@ -157,7 +157,7 @@ describe('DOM -', () => {
     })
 
     describe('inputs', () => {
-      let $domString: any
+      let $domString: CheerioStatic
 
       beforeEach(async () => {
         const example = createExample(`
@@ -220,15 +220,15 @@ describe('DOM -', () => {
       })
 
       it('does not mutate values in origial DOM', () => {
-        const originalDOMInput: any = document.querySelector('#name')
+        const originalDOMInput = document.querySelector('#name') as HTMLElement
 
-        expect(originalDOMInput.attributes.value).to.equal(undefined)
+        expect(originalDOMInput.getAttribute('value')).to.equal(null)
         expect(dom.clonedDOM.querySelector('#name').attributes.value.value).to.equal('Bob Boberson')
       })
     })
 
     describe('CSSOM with inputs', () => {
-      let $domString: any
+      let $domString: CheerioStatic
 
       beforeEach(async () => {
         const example = createExample(`

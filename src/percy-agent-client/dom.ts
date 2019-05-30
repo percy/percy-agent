@@ -111,9 +111,9 @@ class DOM {
    */
   private serializeInputElements(clonedDOM: HTMLDocument): HTMLDocument {
     const formNodes = this.originalDOM.querySelectorAll('input, textarea')
-    const formElements = Array.from(formNodes)
+    const formElements = Array.from(formNodes) as HTMLFormElement[]
 
-    formElements.forEach((elem: any) => {
+    formElements.forEach((elem) => {
       const inputId = elem.getAttribute('data-percy-element-id')
       const selector = `[data-percy-element-id="${inputId}"]`
       const cloneEl = clonedDOM.querySelector(selector) as HTMLInputElement
@@ -203,7 +203,7 @@ class DOM {
     const formElements = Array.from(formNodes) as HTMLFormElement[]
     // loop through each form element and apply an ID for serialization later
     formElements.forEach((elem) => {
-      if (!elem.attributes['data-percy-element-id']) {
+      if (!elem.getAttribute('data-percy-element-id')) {
         createUID(elem)
       }
     })
