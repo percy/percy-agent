@@ -10,15 +10,19 @@ interface AssetDiscoveryOptions {
   networkIdleTimeout?: number
 }
 
+const DEFAULT_PAGE_POOL_SIZE = process.env.PERCY_POOL_SIZE
+
 export default class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
-  pool: pool.Pool<puppeteer.Page> | null
+  pagePool: pool.Pool<puppeteer.Page> | null
 
   readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
   networkIdleTimeout: number // ms
 
   readonly MAX_SNAPSHOT_WIDTHS: number = 10
+  readonly PAGE_POOL_SIZE_MIN: number = 2
+  readonly PAGE_POOL_SIZE_MAX: number = DEFAULT_PAGE_POOL_SIZE ? parseInt(DEFAULT_PAGE_POOL_SIZE) : 10
 
   // Default widths to use for asset discovery. Must match Percy service defaults.
   readonly DEFAULT_WIDTHS: number[] = [1280, 375]
@@ -28,15 +32,15 @@ export default class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService(buildId)
     this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
     this.browser = null
-    this.pool = null
+    this.pagePool = null
   }
 
   async setup() {
     profile('-> assetDiscoveryService.setup')
     const browser = this.browser = await this.createBrowser()
-    this.pool = await this.createPagePool(() => {
+    this.pagePool = await this.createPagePool(() => {
       return this.createPage(browser)
-    }, this.DEFAULT_WIDTHS.length, this.MAX_SNAPSHOT_WIDTHS)
+    }, this.PAGE_POOL_SIZE_MIN, this.PAGE_POOL_SIZE_MAX)
     profile('-> assetDiscoveryService.setup')
   }
 
@@ -87,7 +91,7 @@ export default class AssetDiscoveryService extends PercyClientService {
       return []
     }
 
-    if (!this.pool) {
+    if (!this.pagePool) {
       logger.error('Failed to create pool of pages.')
       return []
     }
@@ -111,7 +115,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     profile('--> assetDiscoveryService.discoverForWidths', {url: rootResourceUrl})
     const resourcePromises: Array<Promise<any[]>> = []
     for (const width of widths) {
-      const promise = this.resourcesForWidth(this.pool, width, domSnapshot, rootResourceUrl, enableJavaScript)
+      const promise = this.resourcesForWidth(this.pagePool, width, domSnapshot, rootResourceUrl, enableJavaScript)
       resourcePromises.push(promise)
     }
     const resourceArrays: any[][] = await Promise.all(resourcePromises)
@@ -151,7 +155,7 @@ export default class AssetDiscoveryService extends PercyClientService {
   }
 
   async teardown() {
-    await this.cleanPool()
+    await this.cleanPagePool()
     await this.closeBrowser()
   }
 
@@ -241,11 +245,11 @@ export default class AssetDiscoveryService extends PercyClientService {
     return []
   }
 
-  private async cleanPool() {
-    if (this.pool === null) { return }
-    await this.pool.drain()
-    await this.pool.clear()
-    this.pool = null
+  private async cleanPagePool() {
+    if (this.pagePool === null) { return }
+    await this.pagePool.drain()
+    await this.pagePool.clear()
+    this.pagePool = null
   }
 
   private async closeBrowser() {
