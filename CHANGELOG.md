@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/percy/percy-agent/compare/v0.5.0...v0.5.1) (2019-05-31)
+
+
+### Bug Fixes
+
+* Serialize in-memory attributes into deep DOM clone ([#208](https://github.com/percy/percy-agent/issues/208)) ([56d76bd](https://github.com/percy/percy-agent/commit/56d76bd))
+
 # [0.5.0](https://github.com/percy/percy-agent/compare/v0.4.9...v0.5.0) (2019-05-30)
 
 
