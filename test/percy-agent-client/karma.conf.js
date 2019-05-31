@@ -1,8 +1,10 @@
 module.exports = config => {
+  const isCI = !!process.env.CI;
+
   config.set({
     frameworks: ["mocha"], // sets up the Mocha framework automatically
     reporters: ["mocha"], // reports back to the CLI formatted like Mocha
-    browsers: ["Chrome", "Firefox"], // automatically launches chrome & firefox to run our tests
+    browsers: ["Chrome"], // automatically launches chrome & firefox to run our tests
 
     files: [
       // karma-webpack will watch our files
@@ -42,4 +44,10 @@ module.exports = config => {
     // for more Karma config options, check out the documentation
     // http://karma-runner.github.io/2.0/config/configuration-file.html
   });
+
+  if (isCI) {
+    config.set({
+      browsers: ["Chrome", "Firefox"]
+    });
+  }
 };
