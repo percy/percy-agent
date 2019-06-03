@@ -1,3 +1,10 @@
+## [0.5.2](https://github.com/percy/percy-agent/compare/v0.5.1...v0.5.2) (2019-06-03)
+
+
+### Bug Fixes
+
+* [Security] Upgrade axios ([#217](https://github.com/percy/percy-agent/issues/217)) ([ee635c7](https://github.com/percy/percy-agent/commit/ee635c7))
+
 ## [0.5.1](https://github.com/percy/percy-agent/compare/v0.5.0...v0.5.1) (2019-05-31)
 
 
