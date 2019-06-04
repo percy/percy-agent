@@ -68,7 +68,7 @@ describe('DOM -', () => {
     let consoleStub: sinon.SinonStub
 
     beforeEach(() => {
-      consoleStub = sinon.stub(console, 'error')
+      consoleStub = sinon.stub(console, 'error' as any)
       dom = new DOM(createExample('<span class="delete-me">Delete me</span>'), {
         domTransformation(dom) {
           const span = dom.querySelector('.delete-me') as HTMLElement
