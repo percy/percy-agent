@@ -121,19 +121,16 @@ class DOM {
       switch (elem.type) {
         case 'checkbox':
         case 'radio':
-          if (elem.checked && !elem.hasAttribute('checked')) {
+          if (elem.checked) {
             cloneEl!.setAttribute('checked', '')
           }
           break
         case 'textarea':
           // setting text or value does not work but innerText does
-          if (elem.innerText !== elem.value) {
-            cloneEl!.innerText = elem.value
-          }
+          cloneEl!.innerText = elem.value
+          break
         default:
-          if (!elem.getAttribute('value')) {
-            cloneEl!.setAttribute('value', elem.value)
-          }
+          cloneEl!.setAttribute('value', elem.value)
       }
     })
   }

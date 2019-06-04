@@ -183,7 +183,8 @@ describe('DOM -', () => {
         `)
 
         await type('#name', 'Bob Boberson')
-        await type('#valueAttr', 'Replacement Value!')
+        // Range is to select the text and replace the current input value
+        await type('#valueAttr', 'Replacement Value!', { range: [0, 500]})
         await type('#feedback', 'This is my feedback... And it is not very helpful')
         await check('#radio')
         await check('#mailing')
@@ -196,12 +197,16 @@ describe('DOM -', () => {
         expect($domString('#mailing').attr('checked')).to.equal('checked')
       })
 
+      it('leaves unchecked checkboxes alone', () => {
+        expect($domString('#nevercheckedradio').attr('checked')).to.equal(undefined)
+      })
+
       it('serializes checked radio buttons', () => {
         expect($domString('#radio').attr('checked')).to.equal('checked')
       })
 
       it('serializes textareas', () => {
-        expect($domString('#feedback').attr('value')).to.equal(
+        expect($domString('#feedback').text()).to.equal(
           'This is my feedback... And it is not very helpful',
         )
       })
