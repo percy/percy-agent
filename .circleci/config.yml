@@ -12,16 +12,15 @@ jobs:
       - checkout
       - restore_cache: &restore_cache
           keys:
-            - v1-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "package-lock.json"}}
-            - v1-yarn-{{checksum ".circleci/config.yml"}}
-      - run: .circleci/greenkeeper
-      - run: yarn add -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
+            - v2-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "package-lock.json"}}
+      - run: npm ci
+      - run: npm install -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
       - run: ./bin/run --version
       - run: ./bin/run --help
       - run: |
           mkdir -p reports
           $NYC yarn test --reporter mocha-junit-reporter
-          $NYC yarn test-client
+          $NYC yarn test-client --singleRun
           $NYC yarn test-integration
           $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
@@ -36,9 +35,7 @@ jobs:
       - checkout
       - run: npm ci
       - run: npx semantic-release
-      - run: sed -i 's/@percy\/agent/percy/g' package.json
-      - run: npm ci
-      - run: npx semantic-release
+      - run: ./release-percy.sh
 workflows:
   version: 2
   "@percy/agent":
@@ -46,6 +43,10 @@ workflows:
       - node-10
       - node-8
       - release:
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - node-10
             - node-8

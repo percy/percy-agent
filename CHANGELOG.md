@@ -1,3 +1,45 @@
+## [0.5.2](https://github.com/percy/percy-agent/compare/v0.5.1...v0.5.2) (2019-06-03)
+
+
+### Bug Fixes
+
+* [Security] Upgrade axios ([#217](https://github.com/percy/percy-agent/issues/217)) ([ee635c7](https://github.com/percy/percy-agent/commit/ee635c7))
+
+## [0.5.1](https://github.com/percy/percy-agent/compare/v0.5.0...v0.5.1) (2019-05-31)
+
+
+### Bug Fixes
+
+* Serialize in-memory attributes into deep DOM clone ([#208](https://github.com/percy/percy-agent/issues/208)) ([56d76bd](https://github.com/percy/percy-agent/commit/56d76bd))
+
+# [0.5.0](https://github.com/percy/percy-agent/compare/v0.4.9...v0.5.0) (2019-05-30)
+
+
+### Features
+
+* Support parallel snapshots calls ([#168](https://github.com/percy/percy-agent/issues/168)) ([744a399](https://github.com/percy/percy-agent/commit/744a399))
+
+## [0.4.9](https://github.com/percy/percy-agent/compare/v0.4.8...v0.4.9) (2019-05-21)
+
+
+### Bug Fixes
+
+* Improved readme and help text ([#200](https://github.com/percy/percy-agent/issues/200)) ([34c066c](https://github.com/percy/percy-agent/commit/34c066c))
+
+## [0.4.8](https://github.com/percy/percy-agent/compare/v0.4.7...v0.4.8) (2019-05-14)
+
+
+### Bug Fixes
+
+* Disable HTTPS errors for asset discovery ([#199](https://github.com/percy/percy-agent/issues/199)) ([e19c91e](https://github.com/percy/percy-agent/commit/e19c91e))
+
+## [0.4.7](https://github.com/percy/percy-agent/compare/v0.4.6...v0.4.7) (2019-05-14)
+
+
+### Bug Fixes
+
+* Remove unused AppVeyor and Codecov badges. Closes [#197](https://github.com/percy/percy-agent/issues/197) ([#198](https://github.com/percy/percy-agent/issues/198)) ([a6a1e99](https://github.com/percy/percy-agent/commit/a6a1e99))
+
 ## [0.4.6](https://github.com/percy/percy-agent/compare/v0.4.5...v0.4.6) (2019-05-09)
 
 

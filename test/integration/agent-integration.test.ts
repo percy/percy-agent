@@ -1,3 +1,4 @@
+import * as cheerio from 'cheerio'
 import * as fs from 'fs'
 import { Server } from 'http'
 import * as httpServer from 'http-server'
@@ -26,6 +27,7 @@ describe('Integration test', () => {
   before(async () => {
     browser = await puppeteer.launch({
       headless: true,
+      ignoreHTTPSErrors: true,
       args: [
         '--disable-gpu',
         '--no-sandbox',
@@ -54,6 +56,13 @@ describe('Integration test', () => {
       await page.goto('https://example.com')
       const domSnapshot = await snapshot(page, 'Example.com HTTPS snapshot')
       expect(domSnapshot).contains('Example Domain')
+    })
+
+    it('snapshots an invalid HTTPS site', async () => {
+      // maintained by the chrome team
+      await page.goto('https://self-signed.badssl.com/')
+      const domSnapshot = await snapshot(page, 'Invalid HTTPS')
+      expect(domSnapshot).contains('badssl.com')
     })
 
     it('snapshots a complex website with responsive images', async () => {
@@ -88,7 +97,7 @@ describe('Integration test', () => {
       const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
       for (const fname of testFiles) {
         await page.goto(`http://localhost:${PORT}/${fname}`)
-        const domSnapshot = await snapshot(page, `Test case: ${fname}`)
+        await snapshot(page, `Test case: ${fname}`)
       }
     })
 
@@ -104,10 +113,12 @@ describe('Integration test', () => {
         await page.click('#testRadioButton')
 
         const domSnapshot = await snapshot(page, 'Serialize input elements')
-        expect(domSnapshot).to.contain('test input value')
-        expect(domSnapshot).to.contain('type="checkbox" checked')
-        expect(domSnapshot).to.contain('type="radio" checked')
-        expect(domSnapshot).to.contain('test textarea value')
+        const $ = cheerio.load(domSnapshot)
+
+        expect($('#testInputText').attr('value')).to.equal('test input value')
+        expect($('#testTextarea').attr('value')).to.equal('test textarea value')
+        expect($('#testCheckbox').attr('checked')).to.equal('checked')
+        expect($('#testRadioButton').attr('checked')).to.equal('checked')
       })
     })
 

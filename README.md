@@ -5,8 +5,6 @@ A low-level Node process for interacting with Percy.
 
 [![Version](https://img.shields.io/npm/v/@percy/agent.svg)](https://npmjs.org/package/@percy/agent)
 [![CircleCI](https://circleci.com/gh/percy/percy-agent/tree/master.svg?style=shield)](https://circleci.com/gh/percy/percy-agent/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/percy/percy-agent?branch=master&svg=true)](https://ci.appveyor.com/project/percy/percy-agent/branch/master)
-[![Codecov](https://codecov.io/gh/percy/percy-agent/branch/master/graph/badge.svg)](https://codecov.io/gh/percy/percy-agent)
 [![Downloads/week](https://img.shields.io/npm/dw/@percy/agent.svg)](https://npmjs.org/package/@percy/agent)
 [![License](https://img.shields.io/npm/l/@percy/agent.svg)](https://github.com/percy/percy-agent/blob/master/package.json)
 
@@ -21,7 +19,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.4.6 linux-x64 node-v10.15.3
+@percy/agent/0.5.2 linux-x64 node-v10.16.0
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -37,7 +35,7 @@ USAGE
 
 ## `percy exec`
 
-Start and stop Percy around a supplied command
+Start and stop Percy around a supplied command.
 
 ```
 USAGE
@@ -54,7 +52,7 @@ EXAMPLES
 
 ## `percy finalize`
 
-finalize a build
+Finalize a build. Commonly used for parallelized builds, especially when the number of parallelized processes is unknown.
 
 ```
 USAGE
@@ -83,11 +81,11 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
 
 ## `percy snapshot SNAPSHOTDIRECTORY`
 
-Snapshot a directory containing a pre-built static website
+Snapshot a directory containing a pre-built static website.
 
 ```
 USAGE

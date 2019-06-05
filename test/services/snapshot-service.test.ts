@@ -12,6 +12,7 @@ describe('SnapshotService', () => {
 
   beforeEach(async () => {
     nock('https://percy.io')
+      .persist()
       .post(/\/api\/v1\/snapshots\/\d+\/finalize/)
       .reply(200, {})
   })
@@ -21,6 +22,7 @@ describe('SnapshotService', () => {
   describe('#create', () => {
     beforeEach(async () => {
       nock('https://percy.io')
+        .persist()
         .post(/\/api\/v1\/builds\/\d+\/snapshots/)
         .reply(200, {data: {id: snapshotId}})
     })
@@ -36,6 +38,21 @@ describe('SnapshotService', () => {
 
       expect(snapshotResponse.body).to.deep.equal({data: {id: snapshotId}})
       expect(snapshotResponse.statusCode).to.eq(200)
+    })
+
+    it('creates multiple snapshots', async () => {
+      let snaps: PromiseLike<any[]> = Promise.resolve([])
+
+      await captureStdOut(async () => {
+        const names = Array.from({ length: 100 }, (_, index) => `snapshot ${index}`)
+        snaps = Promise.all(names.map((name) => subject.create(name, [])))
+      })
+
+      const res = await snaps
+      res.forEach((snap) => {
+        expect(snap.body).to.deep.equal({data: {id: snapshotId}})
+        expect(snap.statusCode).to.eq(200)
+      })
     })
   })
 
