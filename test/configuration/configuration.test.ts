@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import configuration from '../../src/utils/configuration'
+import configuration from '../../src/configuration/configuration'
 
 describe('Configuration', () => {
   it('parses valid configuration', () => {

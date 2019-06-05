@@ -1,22 +1,13 @@
 import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
-
-export interface SnapshotConfiguration {
-  widths?: [number],
-  'min-height'?: number,
-}
-
-export interface StaticSiteSnapshotConfiguration {
-  'base-url'?: string,
-  'snapshot-files'?: string,
-  'ignore-files'?: string,
-}
+import { SnapshotConfiguration } from './snapshot-configuration'
+import { StaticSnapshotsConfiguration } from './static-snapshots-configuration'
 
 export interface Configuration {
   version: number,
   snapshot: SnapshotConfiguration
-  'static-snapshots': StaticSiteSnapshotConfiguration
+  'static-snapshots': StaticSnapshotsConfiguration
 }
 
 const configuration = (relativePath = '.percy.yml'): Configuration => {

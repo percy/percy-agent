@@ -1,8 +1,9 @@
 import {flags} from '@oclif/command'
+import configuration from '../configuration/configuration'
+import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
 import Constants from '../services/constants'
 import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
-import configuration, {StaticSiteSnapshotConfiguration} from '../utils/configuration'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -70,7 +71,7 @@ export default class Snapshot extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     // read configurations from the percy.yml file
-    const staticSiteConfiguration = (configuration()['static-snapshots'] || {}) as StaticSiteSnapshotConfiguration
+    const staticSiteConfiguration = (configuration()['static-snapshots'] || {}) as StaticSnapshotsConfiguration
     const baseUrl = staticSiteConfiguration['base-url'] || baseUrlFlag
     const rawSnapshotGlobs = staticSiteConfiguration['snapshot-files'] || rawSnapshotGlobFlag
     const rawIgnoreGlobs = staticSiteConfiguration['ignore-files'] || rawIgnoreGlobFlag
