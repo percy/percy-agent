@@ -70,7 +70,7 @@ export default class Snapshot extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     // read configurations from the percy.yml file
-    const staticSiteConfiguration = (configuration().static_site || {}) as StaticSiteSnapshotConfiguration
+    const staticSiteConfiguration = (configuration()['static-site'] || {}) as StaticSiteSnapshotConfiguration
     const baseUrl = staticSiteConfiguration['base-url'] || baseUrlFlag
     const rawSnapshotGlobs = staticSiteConfiguration['snapshot-files'] || rawSnapshotGlobFlag
     const rawIgnoreGlobs = staticSiteConfiguration['ignore-files'] || rawIgnoreGlobFlag

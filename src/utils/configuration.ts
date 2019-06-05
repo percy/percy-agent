@@ -16,7 +16,7 @@ export interface StaticSiteSnapshotConfiguration {
 export interface Configuration {
   version: number,
   snapshot: SnapshotConfiguration
-  static_site: StaticSiteSnapshotConfiguration
+  'static-site': StaticSiteSnapshotConfiguration
 }
 
 const configuration = (relativePath = '.percy.yml'): Configuration => {
@@ -29,13 +29,12 @@ const configuration = (relativePath = '.percy.yml'): Configuration => {
     // in a chain. snapshot specific options -> agent configuration -> default values
 
     const defaultConfiguration: Configuration = {
-      version: 1.0,
-      snapshot: {},
-      static_site: {},
+      'version': 1.0,
+      'snapshot': {},
+      'static-site': {},
     }
 
     return defaultConfiguration
-
   }
 }
 
