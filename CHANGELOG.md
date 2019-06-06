@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/percy/percy-agent/compare/v0.5.3...v0.6.0) (2019-06-06)
+
+
+### Features
+
+* Support static snapshots in `.percy.yml` configuration file ([#159](https://github.com/percy/percy-agent/issues/159)) ([d9e5efe](https://github.com/percy/percy-agent/commit/d9e5efe))
+
 ## [0.5.3](https://github.com/percy/percy-agent/compare/v0.5.2...v0.5.3) (2019-06-06)
 
 

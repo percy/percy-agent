@@ -19,7 +19,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.5.3 linux-x64 node-v10.16.0
+@percy/agent/0.6.0 linux-x64 node-v10.16.0
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -111,7 +111,7 @@ OPTIONS
 
 EXAMPLES
   $ percy snapshot _site/
-  $ percy snapshot _site/ --base-url "/blog"
+  $ percy snapshot _site/ --base-url "/blog/"
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
 ```
 <!-- commandsstop -->
