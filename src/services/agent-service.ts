@@ -69,6 +69,12 @@ export default class AgentService {
   private async handleSnapshot(request: express.Request, response: express.Response) {
     profile('agentService.handleSnapshot')
 
+    // truncate domSnapshot becuase it can be very noisy in the logs
+    if (request.body.domSnapshot.length > Constants.MAX_LOG_LENGTH) {
+      request.body.domSnapshot = request.body.domSnapshot.substring(0, Constants.MAX_LOG_LENGTH)
+      request.body.domSnapshot += `[truncated at ${Constants.MAX_LOG_LENGTH}]`
+    }
+
     logger.debug('handling snapshot:')
     logger.debug(`-> headers: ${JSON.stringify(request.headers)}`)
     logger.debug(`-> body: ${JSON.stringify(request.body)}`)
