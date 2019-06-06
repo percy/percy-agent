@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/percy/percy-agent/compare/v0.6.0...v0.7.0) (2019-06-06)
+
+
+### Features
+
+* Improved large resource handling ([#243](https://github.com/percy/percy-agent/issues/243)) ([4681425](https://github.com/percy/percy-agent/commit/4681425))
+
 # [0.6.0](https://github.com/percy/percy-agent/compare/v0.5.3...v0.6.0) (2019-06-06)
 
 
