@@ -3,6 +3,6 @@ snapshot:
   widths: [375, 1280]
   min-height: 1024
 static-snapshots:
-  base-url: /blog
+  base-url: /blog/
   snapshot-files: '**/*.html'
   ignore-files: '**/*.htm'

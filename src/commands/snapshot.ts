@@ -19,7 +19,7 @@ export default class Snapshot extends PercyCommand {
 
   static examples = [
     '$ percy snapshot _site/',
-    '$ percy snapshot _site/ --base-url "/blog"',
+    '$ percy snapshot _site/ --base-url "/blog/"',
     '$ percy snapshot _site/ --ignore-files "/blog/drafts/**"',
   ]
 

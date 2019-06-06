@@ -8,7 +8,7 @@ describe('Configuration', () => {
     expect(subject.version).to.eql(1)
     expect(subject.snapshot.widths).to.eql([375, 1280])
     expect(subject.snapshot['min-height']).to.eql(1024)
-    expect(subject['static-snapshots']['base-url']).to.eql('/blog')
+    expect(subject['static-snapshots']['base-url']).to.eql('/blog/')
     expect(subject['static-snapshots']['snapshot-files']).to.eql('**/*.html')
     expect(subject['static-snapshots']['ignore-files']).to.eql('**/*.htm')
   })
