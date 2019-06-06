@@ -56,16 +56,16 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    const responseBodySize = (await response.buffer()).length
+    const localCopy = await this.makeLocalCopy(response)
+
+    const responseBodySize = fs.statSync(localCopy).size
     if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
       // Skip large resources
       logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
       return
     }
 
-    const localCopy = await this.makeLocalCopy(response)
     const contentType = response.headers()['content-type']
-
     const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType)
     this.responsesProcessed.set(url, resource)
 
