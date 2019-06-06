@@ -1,4 +1,6 @@
 import {flags} from '@oclif/command'
+import configuration from '../configuration/configuration'
+import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
 import Constants from '../services/constants'
 import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
@@ -17,7 +19,7 @@ export default class Snapshot extends PercyCommand {
 
   static examples = [
     '$ percy snapshot _site/',
-    '$ percy snapshot _site/ --base-url "/blog"',
+    '$ percy snapshot _site/ --base-url "/blog/"',
     '$ percy snapshot _site/ --ignore-files "/blog/drafts/**"',
   ]
 
@@ -60,18 +62,26 @@ export default class Snapshot extends PercyCommand {
     const port = flags.port as number
     const staticServerPort = port + 1
     const networkIdleTimeout = flags['network-idle-timeout'] as number
-    const baseUrl = flags['base-url'] as string
-    const rawIgnoreGlob = flags['ignore-files'] as string
-    const rawSnapshotGlob = flags['snapshot-files'] as string
 
-    const snapshotGlobs = rawSnapshotGlob.split(',')
-
-    const ignoreGlobs = rawIgnoreGlob ? rawIgnoreGlob.split(',') : []
+    const baseUrlFlag = flags['base-url'] as string
+    const rawIgnoreGlobFlag = flags['ignore-files'] as string
+    const rawSnapshotGlobFlag = flags['snapshot-files'] as string
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // check that the base url passed in starts with a slash and exit if it is missing
+    // read configurations from the percy.yml file
+    const conf = (configuration()['static-snapshots'] || {}) as StaticSnapshotsConfiguration
+    const baseUrl = conf['base-url'] || baseUrlFlag
+    const rawSnapshotFiles = conf['snapshot-files'] || rawSnapshotGlobFlag
+    const rawIgnoreFiles = conf['ignore-files'] || rawIgnoreGlobFlag
+
+    const snapshotGlobs = rawSnapshotFiles.split(',')
+
+    // if it is an empty string then convert it to an empty array instead of an array of an empty string
+    const ignoreGlobs = rawIgnoreFiles ? rawIgnoreFiles.split(',') : []
+
+    // check that base url starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
       logger.warn('The base-url flag must begin with a slash.')
       this.exit(1)
