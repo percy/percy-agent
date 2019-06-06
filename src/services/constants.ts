@@ -1,6 +1,8 @@
 export default class Constants {
   static readonly PORT: number = 5338
   static readonly NETWORK_IDLE_TIMEOUT: number = 50 // in milliseconds
+  static readonly PAGE_POOL_SIZE_MIN: number = 2
+  static readonly PAGE_POOL_SIZE_MAX: number = 10
 
   // Agent Service paths
   static readonly SNAPSHOT_PATH = '/percy/snapshot'
