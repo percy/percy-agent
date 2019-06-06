@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as puppeteer from 'puppeteer'
 import {URL} from 'url'
 import logger from '../utils/logger'
+import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
@@ -56,8 +57,15 @@ export default class ResponseService extends PercyClientService {
     }
 
     const localCopy = await this.makeLocalCopy(response)
-    const contentType = response.headers()['content-type']
 
+    const responseBodySize = fs.statSync(localCopy).size
+    if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
+      // Skip large resources
+      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
+      return
+    }
+
+    const contentType = response.headers()['content-type']
     const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType)
     this.responsesProcessed.set(url, resource)
 
@@ -65,7 +73,7 @@ export default class ResponseService extends PercyClientService {
   }
 
   async makeLocalCopy(response: puppeteer.Response): Promise<string> {
-    logger.debug(`making local copy of response: ${response.url()}`)
+    logger.debug(`Making local copy of response: ${response.url()}`)
 
     const buffer = await response.buffer()
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
@@ -74,7 +82,7 @@ export default class ResponseService extends PercyClientService {
     if (!fs.existsSync(filename)) {
       fs.writeFileSync(filename, buffer)
     } else {
-      logger.debug(`Skipping file copy (already copied): ${response.url()}`)
+      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
     }
 
     return filename
