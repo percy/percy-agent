@@ -82,9 +82,16 @@ export default class AgentService {
       minHeight: request.body.minHeight || snapshotConfiguration['min-height'],
     }
 
+    const domSnapshot = request.body.domSnapshot
+
+    if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
+      logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
+      return response.json({success: true})
+    }
+
     const resources = await this.snapshotService.buildResources(
       request.body.url,
-      request.body.domSnapshot,
+      domSnapshot,
       snapshotOptions,
     )
 
