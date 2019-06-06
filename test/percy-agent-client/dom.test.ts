@@ -165,6 +165,9 @@ describe('DOM -', () => {
             <label for="name">Name</label>
             <input id="name" type="text" />
 
+            <label for="valueAttr">Already has value</label>
+            <input id="valueAttr" type="text" value="Already present" />
+
             <input id="mailing" type="checkbox" />
             <label for="mailing">Subscribe?</label>
 
@@ -180,6 +183,8 @@ describe('DOM -', () => {
         `)
 
         await type('#name', 'Bob Boberson')
+        // Range is to select the text and replace the current input value
+        await type('#valueAttr', 'Replacement Value!', { range: [0, 500]})
         await type('#feedback', 'This is my feedback... And it is not very helpful')
         await check('#radio')
         await check('#mailing')
@@ -192,12 +197,16 @@ describe('DOM -', () => {
         expect($domString('#mailing').attr('checked')).to.equal('checked')
       })
 
+      it('leaves unchecked checkboxes alone', () => {
+        expect($domString('#nevercheckedradio').attr('checked')).to.equal(undefined)
+      })
+
       it('serializes checked radio buttons', () => {
         expect($domString('#radio').attr('checked')).to.equal('checked')
       })
 
       it('serializes textareas', () => {
-        expect($domString('#feedback').attr('value')).to.equal(
+        expect($domString('#feedback').text()).to.equal(
           'This is my feedback... And it is not very helpful',
         )
       })
@@ -206,8 +215,12 @@ describe('DOM -', () => {
         expect($domString('#name').attr('value')).to.equal('Bob Boberson')
       })
 
+      it('serializes inputs with already present value attributes', () => {
+        expect($domString('#valueAttr').attr('value')).to.equal('Replacement Value!')
+      })
+
       it('adds a guid data-attribute to the original DOM', () => {
-        expect(document.querySelectorAll('[data-percy-element-id]').length).to.equal(5)
+        expect(document.querySelectorAll('[data-percy-element-id]').length).to.equal(6)
       })
 
       it('adds matching guids to the orignal DOM and cloned DOM', () => {

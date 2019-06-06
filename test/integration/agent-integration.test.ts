@@ -116,7 +116,7 @@ describe('Integration test', () => {
         const $ = cheerio.load(domSnapshot)
 
         expect($('#testInputText').attr('value')).to.equal('test input value')
-        expect($('#testTextarea').attr('value')).to.equal('test textarea value')
+        expect($('#testTextarea').text()).to.equal('test textarea value')
         expect($('#testCheckbox').attr('checked')).to.equal('checked')
         expect($('#testRadioButton').attr('checked')).to.equal('checked')
       })
