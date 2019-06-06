@@ -6,3 +6,8 @@ static-snapshots:
   base-url: /blog/
   snapshot-files: '**/*.html'
   ignore-files: '**/*.htm'
+agent:
+  asset-discovery:
+    network-idle-timeout: 50 # ms
+    page-pool-size-min: 5
+    page-pool-size-max: 20
