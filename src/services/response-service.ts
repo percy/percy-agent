@@ -73,7 +73,7 @@ export default class ResponseService extends PercyClientService {
   }
 
   async makeLocalCopy(response: puppeteer.Response): Promise<string> {
-    logger.debug(`making local copy of response: ${response.url()}`)
+    logger.debug(`Making local copy of response: ${response.url()}`)
 
     const buffer = await response.buffer()
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
@@ -82,7 +82,7 @@ export default class ResponseService extends PercyClientService {
     if (!fs.existsSync(filename)) {
       fs.writeFileSync(filename, buffer)
     } else {
-      logger.debug(`Skipping file copy (already copied): ${response.url()}`)
+      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
     }
 
     return filename
