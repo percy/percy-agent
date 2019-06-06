@@ -8,6 +8,8 @@ import ResponseService from './response-service'
 
 interface AssetDiscoveryOptions {
   networkIdleTimeout?: number
+  pagePoolSizeMin?: number,
+  pagePoolSizeMax?: number,
 }
 
 const DEFAULT_PAGE_POOL_SIZE = process.env.PERCY_POOL_SIZE
