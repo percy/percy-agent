@@ -5,6 +5,7 @@ import * as path from 'path'
 import * as puppeteer from 'puppeteer'
 import {URL} from 'url'
 import logger from '../utils/logger'
+import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
@@ -52,6 +53,13 @@ export default class ResponseService extends PercyClientService {
     if (!response.url().startsWith(rootUrl)) {
       // Disallow remote redirects.
       logger.debug(`Skipping [is_remote_redirect] [${width} px]: ${response.url()}`)
+      return
+    }
+
+    const responseBodySize = (await response.buffer()).length
+    if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
+      // Skip large resources
+      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
       return
     }
 
