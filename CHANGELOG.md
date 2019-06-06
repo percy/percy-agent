@@ -1,3 +1,10 @@
+## [0.5.3](https://github.com/percy/percy-agent/compare/v0.5.2...v0.5.3) (2019-06-06)
+
+
+### Bug Fixes
+
+* Always apply form elements value property as an attribute ([#227](https://github.com/percy/percy-agent/issues/227)) ([8bcc318](https://github.com/percy/percy-agent/commit/8bcc318))
+
 ## [0.5.2](https://github.com/percy/percy-agent/compare/v0.5.1...v0.5.2) (2019-06-03)
 
 
