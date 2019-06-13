@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/percy/percy-agent/compare/v0.7.0...v0.7.1) (2019-06-13)
+
+
+### Bug Fixes
+
+* Replace Rollup with Webpack for client JS bundling ([#249](https://github.com/percy/percy-agent/issues/249)) ([450c31e](https://github.com/percy/percy-agent/commit/450c31e))
+
 # [0.7.0](https://github.com/percy/percy-agent/compare/v0.6.0...v0.7.0) (2019-06-06)
 
 
