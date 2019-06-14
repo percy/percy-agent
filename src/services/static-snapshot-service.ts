@@ -54,9 +54,12 @@ export default class StaticSnapshotService {
         path: percyAgentClientFilename,
       })
 
-      await page.evaluate((name) => {
+      await page.evaluate((url) => {
         const percyAgentClient = new PercyAgent()
-        return percyAgentClient.snapshot(name)
+        const parsedURL = new URL(url)
+        const snapshotName = parsedURL.pathname || url
+
+        return percyAgentClient.snapshot(snapshotName)
       }, url)
     }
 
