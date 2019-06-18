@@ -1,6 +1,6 @@
 import {flags} from '@oclif/command'
 import * as path from 'path'
-import {AgentOptions} from '../services/agent-options'
+import { AgentConfiguration } from '../configuration/agent-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'
 import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import healthCheck from '../utils/health-checker'
@@ -39,19 +39,23 @@ export default class Start extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const {flags} = this.parse(Start)
-    const port = flags.port as number
-    const networkIdleTimeout = flags['network-idle-timeout'] as number
-
-    if (flags.detached) {
-      this.runDetached({port, networkIdleTimeout})
-    } else {
-      await this.runAttached({port, networkIdleTimeout})
+    const configuration: AgentConfiguration = {
+      'port': flags.port,
+      'asset-discovery': {
+        'network-idle-timeout': flags['network-idle-timeout'],
+      },
     }
 
-    await healthCheck(port)
+    if (flags.detached) {
+      this.runDetached(configuration)
+    } else {
+      await this.runAttached(configuration)
+    }
+
+    await healthCheck(flags.port || DEFAULT_PORT)
   }
 
-  private async runAttached(options: AgentOptions = {}) {
+  private async runAttached(configuration: AgentConfiguration = {}) {
     process.on('SIGHUP', async () => {
       await this.agentService.stop()
       process.exit(0)
@@ -67,17 +71,17 @@ export default class Start extends PercyCommand {
       process.exit(0)
     })
 
-    await this.agentService.start(options)
+    await this.agentService.start(configuration)
     this.logStart()
   }
 
-  private runDetached(options: AgentOptions = {}) {
+  private runDetached(configuration: AgentConfiguration = {}) {
     const pid = this.processService.runDetached(
       [
         path.resolve(`${__dirname}/../../bin/run`),
         'start',
-        '-p', String(options.port),
-        '-t', String(options.networkIdleTimeout),
+        '-p', String(configuration.port),
+        '-t', String(configuration['asset-discovery']!['network-idle-timeout']),
       ],
     )
 

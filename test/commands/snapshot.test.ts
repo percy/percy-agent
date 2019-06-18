@@ -34,7 +34,7 @@ describe('snapshot', () => {
     }
 
     it('starts the static snapshot service', async () => {
-      const expectedAgentOptions = {networkIdleTimeout: 50, port: 5338}
+      const expectedAgentOptions = {'asset-discovery': {'network-idle-timeout': 50 }, 'port': 5338}
 
       const agentServiceStub = AgentServiceStub()
       const staticSnapshotServiceStub = StaticSnapshotServiceStub()

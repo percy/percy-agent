@@ -18,22 +18,26 @@ export class AssetDiscoveryService extends PercyClientService {
   browser: puppeteer.Browser | null
   pagePool: pool.Pool<puppeteer.Page> | null
 
-  networkIdleTimeout: number // ms
-  pagePoolSizeMin: number // pages
-  pagePoolSizeMax: number // pages
+  networkIdleTimeout: number = DEFAULT_NETWORK_IDLE_TIMEOUT // ms
+  pagePoolSizeMin: number = DEFAULT_PAGE_POOL_SIZE_MIN // pages
+  pagePoolSizeMax: number = DEFAULT_PAGE_POOL_SIZE_MAX // pages
 
-  constructor(buildId: number, options: AssetDiscoveryConfiguration = {}) {
+  constructor(buildId: number) {
     super()
     this.responseService = new ResponseService(buildId)
-    this.networkIdleTimeout = options['network-idle-timeout'] || DEFAULT_NETWORK_IDLE_TIMEOUT
-    this.pagePoolSizeMin = options['page-pool-size-min'] || DEFAULT_PAGE_POOL_SIZE_MIN
-    this.pagePoolSizeMax = options['page-pool-size-max'] || DEFAULT_PAGE_POOL_SIZE_MAX
     this.browser = null
     this.pagePool = null
   }
 
-  async setup() {
+  async setup(configuration?: AssetDiscoveryConfiguration) {
     profile('-> assetDiscoveryService.setup')
+
+    if (configuration) {
+      this.networkIdleTimeout = configuration['network-idle-timeout'] || DEFAULT_NETWORK_IDLE_TIMEOUT
+      this.pagePoolSizeMin = configuration['page-pool-size-min'] || DEFAULT_PAGE_POOL_SIZE_MIN
+      this.pagePoolSizeMax = configuration['page-pool-size-max'] || DEFAULT_PAGE_POOL_SIZE_MAX
+    }
+
     const browser = this.browser = await this.createBrowser()
     this.pagePool = await this.createPagePool(() => {
       return this.createPage(browser)

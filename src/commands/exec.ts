@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import * as spawn from 'cross-spawn'
+import { AgentConfiguration } from '../configuration/agent-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'
 import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import PercyCommand from './percy-command'
@@ -33,8 +34,6 @@ export default class Exec extends PercyCommand {
     const {argv} = this.parse(Exec)
     const {flags} = this.parse(Exec)
 
-    const port = flags.port as number
-    const networkIdleTimeout = flags['network-idle-timeout'] as number
     const command = argv.shift()
 
     if (!command) {
@@ -45,7 +44,13 @@ export default class Exec extends PercyCommand {
     }
 
     if (this.percyWillRun()) {
-      await this.agentService.start({port, networkIdleTimeout})
+      const configuration: AgentConfiguration = {
+        'port': flags.port,
+        'asset-discovery': {
+          'network-idle-timeout': flags['network-idle-timeout'],
+        },
+      }
+      await this.agentService.start(configuration)
       this.logStart()
     }
 

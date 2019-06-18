@@ -2,12 +2,12 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
 import {Server} from 'http'
+import { AgentConfiguration } from '../configuration/agent-configuration'
 import configuration from '../configuration/configuration'
 import {SnapshotConfiguration} from '../configuration/snapshot-configuration'
 import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
 import logger, {profile} from '../utils/logger'
-import {AgentOptions} from './agent-options'
-import {HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH} from './agent-service-constants'
+import {DEFAULT_PORT, HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH} from './agent-service-constants'
 import BuildService from './build-service'
 import Constants from './constants'
 import ProcessService from './process-service'
@@ -38,17 +38,18 @@ export class AgentService {
 
     this.buildService = new BuildService()
   }
-  async start(options: AgentOptions = {}) {
+  async start(configuration: AgentConfiguration = {}) {
 
     this.buildId = await this.buildService.create()
 
     if (this.buildId !== null) {
-      this.server = this.app.listen(options.port)
+      this.server = this.app.listen(DEFAULT_PORT)
       this.snapshotService = new SnapshotService(
         this.buildId,
-        {assetDiscoveryOptions: {'network-idle-timeout': options.networkIdleTimeout}},
       )
-      await this.snapshotService.assetDiscoveryService.setup()
+      await this.snapshotService.assetDiscoveryService.setup(
+        configuration['asset-discovery'],
+      )
       return
     }
 

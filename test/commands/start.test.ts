@@ -6,6 +6,7 @@ import * as sinon from 'sinon'
 import Start from '../../src/commands/start'
 import {AgentService} from '../../src/services/agent-service'
 import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
+import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../../src/services/asset-discovery-service'
 import ProcessService from '../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
 
@@ -51,7 +52,10 @@ describe('Start', () => {
         await Start.run([])
       })
 
-      expect(agentServiceStub.start).to.calledWithMatch({port: DEFAULT_PORT, networkIdleTimeout: 50})
+      expect(agentServiceStub.start).to.calledWithMatch({
+        'asset-discovery': {'network-idle-timeout': DEFAULT_NETWORK_IDLE_TIMEOUT },
+        'port': DEFAULT_PORT,
+      })
       expect(stdout).to.contain('[percy] percy has started.')
     })
 
@@ -77,7 +81,10 @@ describe('Start', () => {
         await Start.run(options)
       })
 
-      expect(agentServiceStub.start).to.calledWithMatch({port: +port, networkIdleTimeout: 50})
+      expect(agentServiceStub.start).to.calledWithMatch({
+        'asset-discovery': {'network-idle-timeout': 50 },
+        'port': 55000,
+      })
       expect(stdout).to.contain('[percy] percy has started.')
     })
 

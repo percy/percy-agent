@@ -1,4 +1,5 @@
 import {flags} from '@oclif/command'
+import { AgentConfiguration } from '../configuration/agent-configuration'
 import configuration from '../configuration/configuration'
 import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'
@@ -88,8 +89,15 @@ export default class Snapshot extends PercyCommand {
       this.exit(1)
     }
 
+    const agentConfiguration: AgentConfiguration = {
+      'port': flags.port,
+      'asset-discovery': {
+        'network-idle-timeout': flags['network-idle-timeout'],
+      },
+    }
+
     // start the agent service
-    await this.agentService.start({port, networkIdleTimeout})
+    await this.agentService.start(agentConfiguration)
     this.logStart()
 
     const options: StaticSnapshotOptions = {
