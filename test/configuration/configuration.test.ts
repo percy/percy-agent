@@ -16,6 +16,6 @@ describe('Configuration', () => {
   it('gracefully handles a missing file', () => {
     const subject = configuration('test/support/.file-does-not-exist.yml')
 
-    expect(subject).to.eql({'version': 1.0, 'snapshot': {}, 'static-snapshots': {}})
+    expect(subject).to.eql({'version': 1.0, 'agent': {}, 'snapshot': {}, 'static-snapshots': {}})
   })
 })

@@ -1,38 +1,33 @@
 import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
+import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, {logError, profile} from '../utils/logger'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 
-interface AssetDiscoveryOptions {
-  networkIdleTimeout?: number
-  pagePoolSizeMin?: number,
-  pagePoolSizeMax?: number,
-}
+export const DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // in milliseconds
+export const DEFAULT_PAGE_POOL_SIZE_MIN: number = 2 // pages
+export const DEFAULT_PAGE_POOL_SIZE_MAX: number = 10 // pages
+export const MAX_SNAPSHOT_WIDTHS: number = 10
+export const DEFAULT_WIDTHS: number[] = [1280, 375] // px. Must match Percy service defaults.
 
-const DEFAULT_PAGE_POOL_SIZE = process.env.PERCY_POOL_SIZE
-
-export default class AssetDiscoveryService extends PercyClientService {
+export class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
   pagePool: pool.Pool<puppeteer.Page> | null
 
-  readonly DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // ms
   networkIdleTimeout: number // ms
+  pagePoolSizeMin: number // pages
+  pagePoolSizeMax: number // pages
 
-  readonly MAX_SNAPSHOT_WIDTHS: number = 10
-  readonly PAGE_POOL_SIZE_MIN: number = 2
-  readonly PAGE_POOL_SIZE_MAX: number = DEFAULT_PAGE_POOL_SIZE ? parseInt(DEFAULT_PAGE_POOL_SIZE) : 10
-
-  // Default widths to use for asset discovery. Must match Percy service defaults.
-  readonly DEFAULT_WIDTHS: number[] = [1280, 375]
-
-  constructor(buildId: number, options: AssetDiscoveryOptions = {}) {
+  constructor(buildId: number, options: AssetDiscoveryConfiguration = {}) {
     super()
     this.responseService = new ResponseService(buildId)
-    this.networkIdleTimeout = options.networkIdleTimeout || this.DEFAULT_NETWORK_IDLE_TIMEOUT
+    this.networkIdleTimeout = options['network-idle-timeout'] || DEFAULT_NETWORK_IDLE_TIMEOUT
+    this.pagePoolSizeMin = options['page-pool-size-min'] || DEFAULT_PAGE_POOL_SIZE_MIN
+    this.pagePoolSizeMax = options['page-pool-size-max'] || DEFAULT_PAGE_POOL_SIZE_MAX
     this.browser = null
     this.pagePool = null
   }
@@ -42,7 +37,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     const browser = this.browser = await this.createBrowser()
     this.pagePool = await this.createPagePool(() => {
       return this.createPage(browser)
-    }, this.PAGE_POOL_SIZE_MIN, this.PAGE_POOL_SIZE_MAX)
+    }, this.pagePoolSizeMin, this.pagePoolSizeMax)
     profile('-> assetDiscoveryService.setup')
   }
 
@@ -98,8 +93,8 @@ export default class AssetDiscoveryService extends PercyClientService {
       return []
     }
 
-    if (options.widths && options.widths.length > this.MAX_SNAPSHOT_WIDTHS) {
-      logger.error(`Too many widths requested. Max is ${this.MAX_SNAPSHOT_WIDTHS}. Requested: ${options.widths}`)
+    if (options.widths && options.widths.length > MAX_SNAPSHOT_WIDTHS) {
+      logger.error(`Too many widths requested. Max is ${MAX_SNAPSHOT_WIDTHS}. Requested: ${options.widths}`)
       return []
     }
 
@@ -108,7 +103,7 @@ export default class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     const enableJavaScript = options.enableJavaScript || false
-    const widths = options.widths || this.DEFAULT_WIDTHS
+    const widths = options.widths || DEFAULT_WIDTHS
 
     // Do asset discovery for each requested width in parallel. We don't keep track of which page
     // is doing work, and instead rely on the fact that we always have fewer widths to work on than

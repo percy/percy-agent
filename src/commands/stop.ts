@@ -1,6 +1,6 @@
 import {flags} from '@oclif/command'
 import Axios from 'axios'
-import Constants from '../services/constants'
+import {DEFAULT_PORT, STOP_PATH} from '../services/agent-service-constants'
 import {logError} from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -16,7 +16,7 @@ export default class Stop extends PercyCommand {
   static flags = {
     port: flags.integer({
       char: 'p',
-      default: Constants.PORT,
+      default: DEFAULT_PORT,
       description: 'port',
     }),
   }
@@ -28,10 +28,10 @@ export default class Stop extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const {flags} = this.parse(Stop)
-    const port = flags.port ? flags.port : Constants.PORT
+    const port = flags.port ? flags.port : DEFAULT_PORT
 
     if (this.processService.isRunning()) {
-      await this.postToRunningAgent(Constants.STOP_PATH, port)
+      await this.postToRunningAgent(STOP_PATH, port)
     } else {
       this.logger.warn('percy is already stopped.')
     }

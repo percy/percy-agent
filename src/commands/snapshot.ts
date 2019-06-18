@@ -1,7 +1,8 @@
 import {flags} from '@oclif/command'
 import configuration from '../configuration/configuration'
 import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
-import Constants from '../services/constants'
+import {DEFAULT_PORT} from '../services/agent-service-constants'
+import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import {StaticSnapshotOptions} from '../services/static-snapshot-options'
 import StaticSnapshotService from '../services/static-snapshot-service'
 import logger from '../utils/logger'
@@ -43,12 +44,12 @@ export default class Snapshot extends PercyCommand {
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: Constants.NETWORK_IDLE_TIMEOUT,
+      default: DEFAULT_NETWORK_IDLE_TIMEOUT,
       description: 'Asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
       char: 'p',
-      default: Constants.PORT,
+      default: DEFAULT_PORT,
       description: 'Port',
     }),
   }

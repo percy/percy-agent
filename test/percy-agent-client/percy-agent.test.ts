@@ -1,8 +1,7 @@
 import {expect} from 'chai'
 import * as sinon from 'sinon'
 import PercyAgent from '../../src/percy-agent-client/percy-agent'
-import Constants from '../../src/services/constants'
-import { htmlWithoutSelector } from '../helpers/html-string'
+import {DEFAULT_PORT, SNAPSHOT_PATH} from '../../src/services/agent-service-constants'
 
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []
@@ -37,7 +36,7 @@ describe('PercyAgent', () => {
       const request = requests[0]
       const requestBody = JSON.parse(request.requestBody)
 
-      expect(request.url).to.equal(`http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`)
+      expect(request.url).to.equal(`http://localhost:${DEFAULT_PORT}${SNAPSHOT_PATH}`)
       expect(request.method).to.equal('post')
       expect(requestBody.name).to.equal('test snapshot')
     })
@@ -51,7 +50,7 @@ describe('PercyAgent', () => {
       const request = requests[0]
       const requestBody = JSON.parse(request.requestBody)
 
-      expect(request.url).to.equal(`http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`)
+      expect(request.url).to.equal(`http://localhost:${DEFAULT_PORT}${SNAPSHOT_PATH}`)
       expect(request.method).to.equal('post')
       expect(requestBody.name).to.equal('test snapshot with options')
       expect(requestBody.enableJavaScript).to.equal(true)

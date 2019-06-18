@@ -4,8 +4,8 @@ import * as nock from 'nock'
 import * as path from 'path'
 import * as sinon from 'sinon'
 import Start from '../../src/commands/start'
-import AgentService from '../../src/services/agent-service'
-import Constants from '../../src/services/constants'
+import {AgentService} from '../../src/services/agent-service'
+import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
 import ProcessService from '../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
 
@@ -51,7 +51,7 @@ describe('Start', () => {
         await Start.run([])
       })
 
-      expect(agentServiceStub.start).to.calledWithMatch({port: Constants.PORT, networkIdleTimeout: 50})
+      expect(agentServiceStub.start).to.calledWithMatch({port: DEFAULT_PORT, networkIdleTimeout: 50})
       expect(stdout).to.contain('[percy] percy has started.')
     })
 
@@ -63,7 +63,7 @@ describe('Start', () => {
       })
 
       expect(processService.runDetached).to.calledWithMatch(
-        [path.resolve(`${__dirname}/../../bin/run`), 'start', '-p', String(Constants.PORT), '-t', '50'],
+        [path.resolve(`${__dirname}/../../bin/run`), 'start', '-p', String(DEFAULT_PORT), '-t', '50'],
       )
     })
 

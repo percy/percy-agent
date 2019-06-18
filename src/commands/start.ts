@@ -1,7 +1,8 @@
 import {flags} from '@oclif/command'
 import * as path from 'path'
 import {AgentOptions} from '../services/agent-options'
-import Constants from '../services/constants'
+import {DEFAULT_PORT} from '../services/agent-service-constants'
+import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
@@ -11,7 +12,7 @@ export default class Start extends PercyCommand {
 
   static examples = [
     '$ percy start\n' +
-    `info: percy has started on port ${Constants.PORT}.`,
+    `info: percy has started on port ${DEFAULT_PORT}.`,
   ]
 
   static flags = {
@@ -21,12 +22,12 @@ export default class Start extends PercyCommand {
     }),
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: Constants.NETWORK_IDLE_TIMEOUT,
+      default: DEFAULT_NETWORK_IDLE_TIMEOUT,
       description: 'asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
       char: 'p',
-      default: Constants.PORT,
+      default: DEFAULT_PORT,
       description: 'port',
     }),
   }

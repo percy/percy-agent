@@ -1,11 +1,12 @@
-import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
+import {AssetDiscoveryConfiguration} from '../configuration/asset-discovery-configuration'
+import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
 import {logError, profile} from '../utils/logger'
-import AssetDiscoveryService from './asset-discovery-service'
+import {AssetDiscoveryService} from './asset-discovery-service'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
 interface SnapshotServiceOptions {
-  networkIdleTimeout?: number
+  assetDiscoveryOptions?: AssetDiscoveryConfiguration
 }
 
 export default class SnapshotService extends PercyClientService {
@@ -20,7 +21,7 @@ export default class SnapshotService extends PercyClientService {
     this.buildId = buildId
     this.assetDiscoveryService = new AssetDiscoveryService(
       buildId,
-      {networkIdleTimeout: options.networkIdleTimeout},
+      options.assetDiscoveryOptions,
     )
 
     this.resourceService = new ResourceService(buildId)

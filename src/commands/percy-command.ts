@@ -1,6 +1,6 @@
 import {Command} from '@oclif/command'
 import * as winston from 'winston'
-import AgentService from '../services/agent-service'
+import {AgentService} from '../services/agent-service'
 import ProcessService from '../services/process-service'
 import logger from '../utils/logger'
 

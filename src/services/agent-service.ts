@@ -7,12 +7,13 @@ import {SnapshotConfiguration} from '../configuration/snapshot-configuration'
 import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
 import logger, {profile} from '../utils/logger'
 import {AgentOptions} from './agent-options'
+import {HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH} from './agent-service-constants'
 import BuildService from './build-service'
 import Constants from './constants'
 import ProcessService from './process-service'
 import SnapshotService from './snapshot-service'
 
-export default class AgentService {
+export class AgentService {
   buildService: BuildService
   snapshotService: SnapshotService | null = null
 
@@ -30,20 +31,23 @@ export default class AgentService {
     this.app.use(bodyParser.json({limit: '50mb'}))
     this.app.use(express.static(this.publicDirectory))
 
-    this.app.post(Constants.SNAPSHOT_PATH, this.handleSnapshot.bind(this))
-    this.app.post(Constants.STOP_PATH, this.handleStop.bind(this))
+    this.app.post(SNAPSHOT_PATH, this.handleSnapshot.bind(this))
+    this.app.post(STOP_PATH, this.handleStop.bind(this))
 
-    this.app.get(Constants.HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
+    this.app.get(HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
   }
-
   async start(options: AgentOptions = {}) {
+
     this.buildId = await this.buildService.create()
 
     if (this.buildId !== null) {
       this.server = this.app.listen(options.port)
-      this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
+      this.snapshotService = new SnapshotService(
+        this.buildId,
+        {assetDiscoveryOptions: {'network-idle-timeout': options.networkIdleTimeout}},
+      )
       await this.snapshotService.assetDiscoveryService.setup()
       return
     }

@@ -1,12 +1,11 @@
+import {expect, test} from '@oclif/test'
 import * as chai from 'chai'
 import {describe} from 'mocha'
 import * as sinon from 'sinon'
 import Snapshot from '../../src/commands/snapshot'
-import AgentService from '../../src/services/agent-service'
+import {AgentService} from '../../src/services/agent-service'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
-
-import {expect, test} from '@oclif/test'
 
 describe('snapshot', () => {
   describe('#run', () => {

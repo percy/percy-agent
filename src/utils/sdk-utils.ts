@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import * as path from 'path'
-import Constants from '../services/constants'
+import {DEFAULT_PORT, HEALTHCHECK_PATH} from '../services/agent-service-constants'
 import {logError} from './logger'
 
 export function agentJsFilename() {
@@ -14,7 +14,7 @@ export function agentJsFilename() {
 export async function isAgentRunning() {
     return Axios({
       method: 'get',
-      url: `http://localhost:${Constants.PORT}${Constants.HEALTHCHECK_PATH}`,
+      url: `http://localhost:${DEFAULT_PORT}${HEALTHCHECK_PATH}`,
     } as any).then(() => {
       return true
     }).catch((error) => {
@@ -23,7 +23,7 @@ export async function isAgentRunning() {
   }
 
 export async function postSnapshot(body: any) {
-    const URL = `http://localhost:${Constants.PORT}${Constants.SNAPSHOT_PATH}`
+    const URL = `http://localhost:${DEFAULT_PORT}${HEALTHCHECK_PATH}`
     const ONE_HUNDRED_MB_IN_BYTES = 100_000_000
 
     return Axios({

@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
+import { AgentConfiguration } from './agent-configuration'
 import { SnapshotConfiguration } from './snapshot-configuration'
 import { StaticSnapshotsConfiguration } from './static-snapshots-configuration'
 
@@ -8,6 +9,7 @@ export interface Configuration {
   version: number,
   snapshot: SnapshotConfiguration
   'static-snapshots': StaticSnapshotsConfiguration
+  agent: AgentConfiguration
 }
 
 const configuration = (relativePath = '.percy.yml'): Configuration => {
@@ -23,6 +25,7 @@ const configuration = (relativePath = '.percy.yml'): Configuration => {
       'version': 1.0,
       'snapshot': {},
       'static-snapshots': {},
+      'agent': {}, // could potentially set all default values here
     }
 
     return defaultConfiguration

@@ -1,5 +1,5 @@
 import {describe} from 'mocha'
-import Constants from '../../src/services/constants'
+import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
 import {StaticSnapshotOptions} from '../../src/services/static-snapshot-options'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
@@ -8,7 +8,7 @@ import chai from '../support/chai'
 const expect = chai.expect
 
 describe('StaticSnapshotService', () => {
-  const staticSitePort = Constants.PORT + 1
+  const staticSitePort = DEFAULT_PORT + 1
 
   const options: StaticSnapshotOptions = {
     port: staticSitePort,
