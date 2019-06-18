@@ -1,6 +1,6 @@
 import {flags} from '@oclif/command'
 import * as path from 'path'
-import { AgentConfiguration } from '../configuration/agent-configuration'
+import {AgentConfiguration} from '../configuration/agent-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'
 import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import healthCheck from '../utils/health-checker'

@@ -1,5 +1,5 @@
 import {flags} from '@oclif/command'
-import { AgentConfiguration } from '../configuration/agent-configuration'
+import {AgentConfiguration} from '../configuration/agent-configuration'
 import configuration from '../configuration/configuration'
 import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'

@@ -1,6 +1,6 @@
 import {flags} from '@oclif/command'
 import * as spawn from 'cross-spawn'
-import { AgentConfiguration } from '../configuration/agent-configuration'
+import {AgentConfiguration} from '../configuration/agent-configuration'
 import {DEFAULT_PORT} from '../services/agent-service-constants'
 import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
 import PercyCommand from './percy-command'

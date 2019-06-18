@@ -25,7 +25,7 @@ const configuration = (relativePath = '.percy.yml'): Configuration => {
       'version': 1.0,
       'snapshot': {},
       'static-snapshots': {},
-      'agent': {}, // could potentially set all default values here
+      'agent': {},
     }
 
     return defaultConfiguration
