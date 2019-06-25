@@ -17,15 +17,20 @@ jobs:
       - run: npm install -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
       - run: ./bin/run --version
       - run: ./bin/run --help
-      - run: |
-          mkdir -p reports
-          $NYC yarn test --reporter mocha-junit-reporter
       - run:
-          $NYC yarn test-client --singleRun
+          name: Unit tests
+          command: |
+            mkdir -p reports
+            $NYC yarn test --reporter mocha-junit-reporter
       - run:
-          $NYC yarn test-integration
+          name: Client tests
+          command: $NYC yarn test-client --singleRun
       - run:
-          $NYC report --reporter text-lcov > coverage.lcov
+          name: Integration tests
+          command: $NYC yarn test-integration
+      - run:
+          name: Gather reports
+          command: $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
           path: ~/cli/reports
   node-8:
