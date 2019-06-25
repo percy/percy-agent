@@ -13,10 +13,18 @@ jobs:
       - restore_cache: &restore_cache
           keys:
             - v2-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "package-lock.json"}}
-      - run: npm ci
-      - run: npm install -D nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
-      - run: ./bin/run --version
-      - run: ./bin/run --help
+      - run:
+          name: Install project dependencies
+          command: npm ci
+      - run:
+          name: Install CI only dependencies
+          command: npm install -D --no-package-lock nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
+      - run:
+          name: Version command
+          command: ./bin/run --version
+      - run:
+          name: Help command
+          command: ./bin/run --help
       - run:
           name: Unit tests
           command: |
