@@ -20,8 +20,11 @@ jobs:
       - run: |
           mkdir -p reports
           $NYC yarn test --reporter mocha-junit-reporter
+      - run:
           $NYC yarn test-client --singleRun
+      - run:
           $NYC yarn test-integration
+      - run:
           $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
           path: ~/cli/reports
