@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import {DEFAULT_PORT} from '../services/agent-service-constants'
+import ConfigurationService from '../services/configuration-service'
 import healthCheck from '../utils/health-checker'
 
 export default class HealthCheck extends Command {
@@ -9,7 +9,7 @@ export default class HealthCheck extends Command {
   static flags = {
     port: flags.integer({
       char: 'p',
-      default: DEFAULT_PORT,
+      default: ConfigurationService.DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
   }

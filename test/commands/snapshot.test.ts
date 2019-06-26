@@ -4,6 +4,7 @@ import {describe} from 'mocha'
 import * as sinon from 'sinon'
 import Snapshot from '../../src/commands/snapshot'
 import {AgentService} from '../../src/services/agent-service'
+import ConfigurationService from '../../src/services/configuration-service'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
 
@@ -34,8 +35,7 @@ describe('snapshot', () => {
     }
 
     it('starts the static snapshot service', async () => {
-      const expectedAgentOptions = {'asset-discovery': {'network-idle-timeout': 50 }, 'port': 5338}
-
+      const expectedConfiguration = ConfigurationService.DEFAULT_CONFIGURATION
       const agentServiceStub = AgentServiceStub()
       const staticSnapshotServiceStub = StaticSnapshotServiceStub()
 
@@ -43,7 +43,7 @@ describe('snapshot', () => {
         await Snapshot.run(['./dummy-test-dir'])
       })
 
-      chai.expect(agentServiceStub.start).to.be.calledWith(expectedAgentOptions)
+      chai.expect(agentServiceStub.start).to.be.calledWith(expectedConfiguration)
       chai.expect(staticSnapshotServiceStub.start).to.have.callCount(1)
       chai.expect(staticSnapshotServiceStub.snapshotAll).to.have.callCount(1)
       chai.expect(stdout).to.match(/\[percy\] percy has started./)

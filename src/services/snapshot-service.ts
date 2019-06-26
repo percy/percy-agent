@@ -1,3 +1,4 @@
+import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
 import {logError, profile} from '../utils/logger'
 import {AssetDiscoveryService} from './asset-discovery-service'
@@ -10,13 +11,12 @@ export default class SnapshotService extends PercyClientService {
 
   buildId: number
 
-  constructor(buildId: number) {
+  constructor(buildId: number, configuration?: AssetDiscoveryConfiguration) {
     super()
 
     this.buildId = buildId
-    this.assetDiscoveryService = new AssetDiscoveryService(buildId)
-
     this.resourceService = new ResourceService(buildId)
+    this.assetDiscoveryService = new AssetDiscoveryService(buildId, configuration)
   }
 
   async buildResources(

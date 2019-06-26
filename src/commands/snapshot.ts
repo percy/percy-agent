@@ -1,10 +1,5 @@
 import {flags} from '@oclif/command'
-import {AgentConfiguration} from '../configuration/agent-configuration'
-import configuration from '../configuration/configuration'
-import {StaticSnapshotsConfiguration} from '../configuration/static-snapshots-configuration'
-import {DEFAULT_PORT} from '../services/agent-service-constants'
-import {DEFAULT_NETWORK_IDLE_TIMEOUT} from '../services/asset-discovery-service'
-import {StaticSnapshotOptions} from '../services/static-snapshot-options'
+import ConfigurationService from '../services/configuration-service'
 import StaticSnapshotService from '../services/static-snapshot-service'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
@@ -29,28 +24,28 @@ export default class Snapshot extends PercyCommand {
     'snapshot-files': flags.string({
       char: 's',
       description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
-      default: '**/*.html,**/*.htm',
+      default: ConfigurationService.DEFAULT_CONFIGURATION['static-snapshots']['snapshot-files'],
     }),
     'ignore-files': flags.string({
       char: 'i',
       description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
-      default: '',
+      default: ConfigurationService.DEFAULT_CONFIGURATION['static-snapshots']['ignore-files'],
     }),
     'base-url': flags.string({
       char: 'b',
       description: 'If your static files will be hosted in a subdirectory, instead \n' +
       'of the webserver\'s root path, set that subdirectory with this flag.',
-      default: '/',
+      default: ConfigurationService.DEFAULT_CONFIGURATION['static-snapshots']['base-url'],
     }),
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: DEFAULT_NETWORK_IDLE_TIMEOUT,
+      default: ConfigurationService.DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],
       description: 'Asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
       char: 'p',
-      default: DEFAULT_PORT,
+      default: ConfigurationService.DEFAULT_CONFIGURATION.agent.port,
       description: 'Port',
     }),
   }
@@ -60,28 +55,15 @@ export default class Snapshot extends PercyCommand {
 
     const {args, flags} = this.parse(Snapshot)
 
-    const snapshotDirectory = args.snapshotDirectory as string
-    const port = flags.port as number
-    const staticServerPort = port + 1
-    const networkIdleTimeout = flags['network-idle-timeout'] as number
-
-    const baseUrlFlag = flags['base-url'] as string
-    const rawIgnoreGlobFlag = flags['ignore-files'] as string
-    const rawSnapshotGlobFlag = flags['snapshot-files'] as string
+    const configurationService = new ConfigurationService()
+    configurationService.applyFlags(flags)
+    configurationService.applyArgs(args)
+    const configuration = configurationService.configuration
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
-    // read configurations from the percy.yml file
-    const conf = (configuration()['static-snapshots'] || {}) as StaticSnapshotsConfiguration
-    const baseUrl = conf['base-url'] || baseUrlFlag
-    const rawSnapshotFiles = conf['snapshot-files'] || rawSnapshotGlobFlag
-    const rawIgnoreFiles = conf['ignore-files'] || rawIgnoreGlobFlag
-
-    const snapshotGlobs = rawSnapshotFiles.split(',')
-
-    // if it is an empty string then convert it to an empty array instead of an array of an empty string
-    const ignoreGlobs = rawIgnoreFiles ? rawIgnoreFiles.split(',') : []
+    const baseUrl = configuration['static-snapshots']['base-url']
 
     // check that base url starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
@@ -89,26 +71,10 @@ export default class Snapshot extends PercyCommand {
       this.exit(1)
     }
 
-    const agentConfiguration: AgentConfiguration = {
-      'port': flags.port,
-      'asset-discovery': {
-        'network-idle-timeout': flags['network-idle-timeout'],
-      },
-    }
-
-    // start the agent service
-    await this.agentService.start(agentConfiguration)
+    await this.agentService.start(configuration)
     this.logStart()
 
-    const options: StaticSnapshotOptions = {
-      port: staticServerPort,
-      snapshotDirectory,
-      baseUrl,
-      snapshotGlobs,
-      ignoreGlobs,
-    }
-
-    const staticSnapshotService = new StaticSnapshotService(options)
+    const staticSnapshotService = new StaticSnapshotService(configuration['static-snapshots'])
 
     // start the snapshot service
     await staticSnapshotService.start()

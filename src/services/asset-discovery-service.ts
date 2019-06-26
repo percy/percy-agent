@@ -4,44 +4,35 @@ import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-co
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, {logError, profile} from '../utils/logger'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
+import ConfigurationService from './configuration-service'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 
-export const DEFAULT_NETWORK_IDLE_TIMEOUT: number = 50 // in milliseconds
-export const DEFAULT_PAGE_POOL_SIZE_MIN: number = 2 // pages
-export const DEFAULT_PAGE_POOL_SIZE_MAX: number = 10 // pages
 export const MAX_SNAPSHOT_WIDTHS: number = 10
-export const DEFAULT_WIDTHS: number[] = [1280, 375] // px. Must match Percy service defaults.
 
 export class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
   browser: puppeteer.Browser | null
   pagePool: pool.Pool<puppeteer.Page> | null
 
-  networkIdleTimeout: number = DEFAULT_NETWORK_IDLE_TIMEOUT // ms
-  pagePoolSizeMin: number = DEFAULT_PAGE_POOL_SIZE_MIN // pages
-  pagePoolSizeMax: number = DEFAULT_PAGE_POOL_SIZE_MAX // pages
+  configuration: AssetDiscoveryConfiguration
 
-  constructor(buildId: number) {
+  constructor(buildId: number, configuration?: AssetDiscoveryConfiguration) {
     super()
     this.responseService = new ResponseService(buildId)
     this.browser = null
     this.pagePool = null
+    this.configuration = configuration || ConfigurationService.DEFAULT_CONFIGURATION.agent['asset-discovery']
   }
 
-  async setup(configuration?: AssetDiscoveryConfiguration) {
+  async setup() {
     profile('-> assetDiscoveryService.setup')
-
-    if (configuration) {
-      this.networkIdleTimeout = configuration['network-idle-timeout'] || DEFAULT_NETWORK_IDLE_TIMEOUT
-      this.pagePoolSizeMin = configuration['page-pool-size-min'] || DEFAULT_PAGE_POOL_SIZE_MIN
-      this.pagePoolSizeMax = configuration['page-pool-size-max'] || DEFAULT_PAGE_POOL_SIZE_MAX
-    }
 
     const browser = this.browser = await this.createBrowser()
     this.pagePool = await this.createPagePool(() => {
       return this.createPage(browser)
-    }, this.pagePoolSizeMin, this.pagePoolSizeMax)
+    }, this.configuration['page-pool-size-min'],
+       this.configuration['page-pool-size-max'])
     profile('-> assetDiscoveryService.setup')
   }
 
@@ -107,7 +98,7 @@ export class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     const enableJavaScript = options.enableJavaScript || false
-    const widths = options.widths || DEFAULT_WIDTHS
+    const widths = options.widths || ConfigurationService.DEFAULT_CONFIGURATION.snapshot.widths
 
     // Do asset discovery for each requested width in parallel. We don't keep track of which page
     // is doing work, and instead rely on the fact that we always have fewer widths to work on than
@@ -224,7 +215,7 @@ export class AssetDiscoveryService extends PercyClientService {
       profile('--> assetDiscoveryService.page.goto')
 
       profile('--> assetDiscoveryService.waitForNetworkIdle')
-      await waitForNetworkIdle(page, this.networkIdleTimeout)
+      await waitForNetworkIdle(page, this.configuration['network-idle-timeout'])
       profile('--> assetDiscoveryService.waitForNetworkIdle')
 
       profile('--> assetDiscoveryServer.waitForResourceProcessing')

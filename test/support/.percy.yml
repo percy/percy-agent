@@ -1,13 +1,16 @@
 version: 1
 snapshot:
   widths: [375, 1280]
-  min-height: 1024
+  min-height: 1024 # px
 static-snapshots:
+  path: _site/
+  port: 9999
   base-url: /blog/
   snapshot-files: '**/*.html'
   ignore-files: '**/*.htm'
 agent:
+  port: 1111
   asset-discovery:
     network-idle-timeout: 50 # ms
-    page-pool-size-min: 5
-    page-pool-size-max: 20
+    page-pool-size-min: 5 # pages
+    page-pool-size-max: 20 # pages
