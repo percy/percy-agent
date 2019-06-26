@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import * as spawn from 'cross-spawn'
+import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import ConfigurationService from '../services/configuration-service'
 import PercyCommand from './percy-command'
 
@@ -16,12 +17,12 @@ export default class Exec extends PercyCommand {
   static flags = {
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: ConfigurationService.DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],
+      default: DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],
       description: 'asset discovery network idle timeout (in milliseconds)',
     }),
     'port': flags.integer({
       char: 'p',
-      default: ConfigurationService.DEFAULT_CONFIGURATION.agent.port,
+      default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
   }

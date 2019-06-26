@@ -4,10 +4,10 @@ import * as express from 'express'
 import * as globby from 'globby'
 import {Server} from 'http'
 import * as puppeteer from 'puppeteer'
+import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { StaticSnapshotsConfiguration } from '../configuration/static-snapshots-configuration'
 import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
-import ConfigurationService from './configuration-service'
 
 // Use this instead of importing PercyAgent - we only want the compiled version
 declare var PercyAgent: any
@@ -19,7 +19,7 @@ export default class StaticSnapshotService {
 
   constructor(configuration?: StaticSnapshotsConfiguration) {
     this.app = express()
-    this.configuration = configuration || ConfigurationService.DEFAULT_CONFIGURATION['static-snapshots']
+    this.configuration = configuration || DEFAULT_CONFIGURATION['static-snapshots']
 
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({extended: true}))

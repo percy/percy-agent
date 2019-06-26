@@ -1,10 +1,10 @@
 import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
+import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, {logError, profile} from '../utils/logger'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
-import ConfigurationService from './configuration-service'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 
@@ -22,7 +22,7 @@ export class AssetDiscoveryService extends PercyClientService {
     this.responseService = new ResponseService(buildId)
     this.browser = null
     this.pagePool = null
-    this.configuration = configuration || ConfigurationService.DEFAULT_CONFIGURATION.agent['asset-discovery']
+    this.configuration = configuration || DEFAULT_CONFIGURATION.agent['asset-discovery']
   }
 
   async setup() {
@@ -98,7 +98,7 @@ export class AssetDiscoveryService extends PercyClientService {
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
     const enableJavaScript = options.enableJavaScript || false
-    const widths = options.widths || ConfigurationService.DEFAULT_CONFIGURATION.snapshot.widths
+    const widths = options.widths || DEFAULT_CONFIGURATION.snapshot.widths
 
     // Do asset discovery for each requested width in parallel. We don't keep track of which page
     // is doing work, and instead rely on the fact that we always have fewer widths to work on than

@@ -1,5 +1,6 @@
 import {flags} from '@oclif/command'
 import Axios from 'axios'
+import {DEFAULT_CONFIGURATION} from '../configuration/configuration'
 import {STOP_PATH} from '../services/agent-service-constants'
 import ConfigurationService from '../services/configuration-service'
 import {logError} from '../utils/logger'
@@ -17,7 +18,7 @@ export default class Stop extends PercyCommand {
   static flags = {
     port: flags.integer({
       char: 'p',
-      default: ConfigurationService.DEFAULT_CONFIGURATION.agent.port,
+      default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
   }

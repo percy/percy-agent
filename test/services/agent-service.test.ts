@@ -1,14 +1,14 @@
 import {describe} from 'mocha'
 import * as nock from 'nock'
+import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
 import {AgentService} from '../../src/services/agent-service'
-import ConfigurationService from '../../src/services/configuration-service'
 import {captureStdOut} from '../helpers/stdout'
 import chai from '../support/chai'
 const expect = chai.expect
 
 describe('AgentService', () => {
   const subject = new AgentService()
-  const configuration = ConfigurationService.DEFAULT_CONFIGURATION
+  const configuration = DEFAULT_CONFIGURATION
   const buildCreateResponse = require('../fixtures/build-create.json')
   const buildId = buildCreateResponse.data.id
 

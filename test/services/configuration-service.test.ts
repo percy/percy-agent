@@ -1,4 +1,5 @@
-import {expect} from 'chai'
+import { expect } from 'chai'
+import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
 import ConfigurationService from '../../src/services/configuration-service'
 
 describe('ConfigurationService', () => {
@@ -24,12 +25,12 @@ describe('ConfigurationService', () => {
   describe('#configuration', () => {
     it('returns default configuration by default', () => {
       const subject = new ConfigurationService().configuration
-      expect(subject).to.eql(ConfigurationService.DEFAULT_CONFIGURATION)
+      expect(subject).to.eql(DEFAULT_CONFIGURATION)
     })
 
     it('gracefully falls back to default configuration when file does not exist', () => {
       const subject = new ConfigurationService('test/support/.file-does-not-exist.yml').configuration
-      expect(subject).to.eql(ConfigurationService.DEFAULT_CONFIGURATION)
+      expect(subject).to.eql(DEFAULT_CONFIGURATION)
     })
   })
 })

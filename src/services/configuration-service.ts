@@ -3,39 +3,16 @@ import * as fs from 'fs'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
 import logger from '../utils/logger'
-import { Configuration } from './../configuration/configuration'
-import { DEFAULT_PORT } from './agent-service-constants'
+import { Configuration, DEFAULT_CONFIGURATION } from './../configuration/configuration'
 
 export default class ConfigurationService {
-  static DEFAULT_CONFIGURATION_FILE: '.percy.yml'
-  static DEFAULT_CONFIGURATION: Configuration = {
-    'version': 1.0,
-    'snapshot': {
-      'widths': [1280, 375], // px
-      'min-height': 512, // px
-    },
-    'agent': {
-      'port': DEFAULT_PORT,
-      'asset-discovery': {
-        'network-idle-timeout': 50, // ms
-        'page-pool-size-min': 2, // pages
-        'page-pool-size-max': 10, // pages
-      },
-    },
-    'static-snapshots': {
-      'path': '.',
-      'base-url': '/',
-      'snapshot-files': '**/*.html,**/*.htm',
-      'ignore-files': '',
-      'port': DEFAULT_PORT + 1,
-    },
-  }
+  static DEFAULT_FILE: '.percy.yml'
 
   configuration: Configuration
 
-  constructor(configurationFile: string = ConfigurationService.DEFAULT_CONFIGURATION_FILE) {
+  constructor(configurationFile: string = ConfigurationService.DEFAULT_FILE) {
     // We start with the default configuration
-    this.configuration = ConfigurationService.DEFAULT_CONFIGURATION
+    this.configuration = DEFAULT_CONFIGURATION
 
     // Next we merge in configuration from .percy.yml if we have it
     this.applyFile(configurationFile)
