@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
 import ConfigurationService from '../../src/services/configuration-service'
-import { captureStdErr } from '../helpers/stdout'
 
 describe('ConfigurationService', () => {
   describe('#configuration', () => {

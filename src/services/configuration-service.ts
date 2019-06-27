@@ -6,7 +6,7 @@ import logger from '../utils/logger'
 import { Configuration, DEFAULT_CONFIGURATION } from './../configuration/configuration'
 
 export default class ConfigurationService {
-  static DEFAULT_FILE: '.percy.yml'
+  static DEFAULT_FILE = '.percy.yml'
 
   configuration: Configuration
 
