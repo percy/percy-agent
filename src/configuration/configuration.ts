@@ -14,7 +14,7 @@ export const DEFAULT_CONFIGURATION: Configuration = {
   'version': 1.0,
   'snapshot': {
     'widths': [1280, 375], // px
-    'min-height': 512, // px
+    'min-height': 1024, // px
   },
   'agent': {
     'port': DEFAULT_PORT,
