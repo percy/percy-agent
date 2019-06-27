@@ -20,8 +20,8 @@ export const DEFAULT_CONFIGURATION: Configuration = {
     'port': DEFAULT_PORT,
     'asset-discovery': {
       'network-idle-timeout': 50, // ms
-      'page-pool-size-min': 2, // pages
-      'page-pool-size-max': 10, // pages
+      'page-pool-size-min': 1, // pages
+      'page-pool-size-max': 5, // pages
     },
   },
   'static-snapshots': {
