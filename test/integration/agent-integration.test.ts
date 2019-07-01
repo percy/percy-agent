@@ -97,13 +97,13 @@ describe('Integration test', () => {
       it('snapshots large DOM', async () => {
         await page.goto(`http://localhost:${PORT}/exceeds-dom-snapshot-size-limit.html`)
 
-        await snapshot(page, 'Large DOM  snapshot')
+        await snapshot(page, 'Large DOM snapshot')
       })
 
       it('snapshots pages with large assets', async () => {
         await page.goto(`http://localhost:${PORT}/exceeds-resource-size-limit.html`)
 
-        await snapshot(page, 'Large DOM  snapshot')
+        await snapshot(page, 'Large assets snapshot')
       })
     })
 
