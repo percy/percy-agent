@@ -93,12 +93,26 @@ describe('Integration test', () => {
       server.close()
     })
 
-    it('snapshots all test cases', async () => {
-      const testFiles = fs.readdirSync(testCaseDir).filter((fn) => fn.endsWith('.html'))
-      for (const fname of testFiles) {
-        await page.goto(`http://localhost:${PORT}/${fname}`)
-        await snapshot(page, `Test case: ${fname}`)
-      }
+    describe('large resources', () => {
+      it('snapshots large DOM', async () => {
+        await page.goto(`http://localhost:${PORT}/exceeds-dom-snapshot-size-limit.html`)
+
+        await snapshot(page, 'Large DOM snapshot')
+      })
+
+      it('snapshots pages with large assets', async () => {
+        await page.goto(`http://localhost:${PORT}/exceeds-resource-size-limit.html`)
+
+        await snapshot(page, 'Large assets snapshot')
+      })
+    })
+
+    describe('responsive  assets', () => {
+      it('properly  captures all assets', async () => {
+        await page.goto(`http://localhost:${PORT}/responsive-assets.html`)
+
+        await snapshot(page, 'Responsive assets')
+      })
     })
 
     describe('stabilizes DOM', () => {
