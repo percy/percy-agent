@@ -41,7 +41,6 @@ export class AgentService {
     this.buildId = await this.buildService.create()
 
     if (this.buildId !== null) {
-      console.log(`DAVE: ${configuration.agent.port}`)
       this.server = this.app.listen(configuration.agent.port)
       this.snapshotService = new SnapshotService(
         this.buildId,
