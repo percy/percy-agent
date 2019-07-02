@@ -1,3 +1,10 @@
+## [0.8.2](https://github.com/percy/percy-agent/compare/v0.8.1...v0.8.2) (2019-07-02)
+
+
+### Bug Fixes
+
+* `POST` snapshots to the right endpoint ([#271](https://github.com/percy/percy-agent/issues/271)) ([bf8fc6c](https://github.com/percy/percy-agent/commit/bf8fc6c))
+
 ## [0.8.1](https://github.com/percy/percy-agent/compare/v0.8.0...v0.8.1) (2019-07-02)
 
 
