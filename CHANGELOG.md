@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/percy/percy-agent/compare/v0.7.2...v0.8.0) (2019-07-02)
+
+
+### Features
+
+* Expanded `.percy.yml` configuration support ([#257](https://github.com/percy/percy-agent/issues/257)) ([9538202](https://github.com/percy/percy-agent/commit/9538202))
+
 ## [0.7.2](https://github.com/percy/percy-agent/compare/v0.7.1...v0.7.2) (2019-06-14)
 
 
