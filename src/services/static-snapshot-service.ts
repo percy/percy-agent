@@ -49,7 +49,7 @@ export default class StaticSnapshotService {
     for (const url of pageUrls) {
       logger.debug(`visiting ${url}`)
 
-      await page.goto(url)
+      await page.goto(url, { waitUntil: 'networkidle0' })
 
       await page.addScriptTag({
         path: percyAgentClientFilename,
