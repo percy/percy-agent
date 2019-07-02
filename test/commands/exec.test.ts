@@ -3,8 +3,8 @@ import {describe} from 'mocha'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 import Exec from '../../src/commands/exec'
-import AgentService from '../../src/services/agent-service'
-import Constants from '../../src/services/constants'
+import {AgentService} from '../../src/services/agent-service'
+import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
 import {captureStdOut} from '../helpers/stdout'
 
 const expect = chai.expect
@@ -39,7 +39,7 @@ describe('Exec', () => {
         await Exec.run(['--', 'echo', 'hello'])
       })
 
-      expect(agentServiceStub.start).to.calledWithMatch(Constants.PORT)
+      expect(agentServiceStub.start).to.calledWithMatch(DEFAULT_PORT)
       expect(stdout).to.match(/\[percy\] percy has started on port \d+./)
     })
 

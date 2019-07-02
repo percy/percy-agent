@@ -1,6 +1,6 @@
 import {describe} from 'mocha'
-import Constants from '../../src/services/constants'
-import {StaticSnapshotOptions} from '../../src/services/static-snapshot-options'
+import { StaticSnapshotsConfiguration } from '../../src/configuration/static-snapshots-configuration'
+import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
 import chai from '../support/chai'
@@ -8,22 +8,22 @@ import chai from '../support/chai'
 const expect = chai.expect
 
 describe('StaticSnapshotService', () => {
-  const staticSitePort = Constants.PORT + 1
+  const staticSitePort = DEFAULT_PORT + 1
 
-  const options: StaticSnapshotOptions = {
-    port: staticSitePort,
-    snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
-    snapshotGlobs: ['**/*.html', '**/*.htm'],
-    ignoreGlobs: ['**/blog/*'],
-    baseUrl: '/',
+  const configuration: StaticSnapshotsConfiguration = {
+    'port': staticSitePort,
+    'path': './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
+    'snapshot-files': '**/*.html,**/*.htm',
+    'ignore-files': '**/blog/*',
+    'base-url': '/',
   }
 
-  const subject = new StaticSnapshotService(options)
+  const subject = new StaticSnapshotService(configuration)
   const localUrl = subject._buildLocalUrl()
 
   describe('#constructor', () => {
     it('creates a static snapshot service with the given arguments', () => {
-      expect(subject.options).to.eq(options)
+      expect(subject.configuration).to.eq(configuration)
     })
   })
 
@@ -63,15 +63,15 @@ describe('StaticSnapshotService', () => {
   })
 
   describe('#_buildPageUrls without the ignore flag set', () => {
-    const options: StaticSnapshotOptions = {
-      port: staticSitePort,
-      snapshotDirectory: './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
-      snapshotGlobs: ['**/*.html', '**/*.htm'],
-      ignoreGlobs: [],
-      baseUrl: '/',
+    const configuration: StaticSnapshotsConfiguration = {
+      'port': staticSitePort,
+      'path': './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
+      'snapshot-files': '**/*.html,**/*.htm',
+      'ignore-files': '',
+      'base-url': '/',
     }
 
-    const subject = new StaticSnapshotService(options)
+    const subject = new StaticSnapshotService(configuration)
 
     it('ignores the correct files', async () => {
       const pages = await subject._buildPageUrls()

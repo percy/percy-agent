@@ -2,17 +2,17 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
 import {Server} from 'http'
-import configuration from '../configuration/configuration'
-import {SnapshotConfiguration} from '../configuration/snapshot-configuration'
+import { Configuration } from '../configuration/configuration'
 import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
 import logger, {profile} from '../utils/logger'
-import {AgentOptions} from './agent-options'
+import {HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH} from './agent-service-constants'
 import BuildService from './build-service'
+import ConfigurationService from './configuration-service'
 import Constants from './constants'
 import ProcessService from './process-service'
 import SnapshotService from './snapshot-service'
 
-export default class AgentService {
+export class AgentService {
   buildService: BuildService
   snapshotService: SnapshotService | null = null
 
@@ -30,20 +30,23 @@ export default class AgentService {
     this.app.use(bodyParser.json({limit: '50mb'}))
     this.app.use(express.static(this.publicDirectory))
 
-    this.app.post(Constants.SNAPSHOT_PATH, this.handleSnapshot.bind(this))
-    this.app.post(Constants.STOP_PATH, this.handleStop.bind(this))
-
-    this.app.get(Constants.HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
+    this.app.post(SNAPSHOT_PATH, this.handleSnapshot.bind(this))
+    this.app.post(STOP_PATH, this.handleStop.bind(this))
+    this.app.get(HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
 
     this.buildService = new BuildService()
   }
 
-  async start(options: AgentOptions = {}) {
+  async start(configuration: Configuration) {
     this.buildId = await this.buildService.create()
 
     if (this.buildId !== null) {
-      this.server = this.app.listen(options.port)
-      this.snapshotService = new SnapshotService(this.buildId, {networkIdleTimeout: options.networkIdleTimeout})
+      this.server = this.app.listen(configuration.agent.port)
+      this.snapshotService = new SnapshotService(
+        this.buildId,
+        configuration.agent['asset-discovery'],
+      )
+
       await this.snapshotService.assetDiscoveryService.setup()
       return
     }
@@ -86,11 +89,11 @@ export default class AgentService {
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
-    const snapshotConfiguration = (configuration().snapshot || {}) as SnapshotConfiguration
+    const configuration = new ConfigurationService().configuration
     const snapshotOptions: SnapshotOptions = {
-      widths: request.body.widths || snapshotConfiguration.widths,
+      widths: request.body.widths || configuration.snapshot.widths,
       enableJavaScript: request.body.enableJavaScript,
-      minHeight: request.body.minHeight || snapshotConfiguration['min-height'],
+      minHeight: request.body.minHeight || configuration.snapshot['min-height'],
     }
 
     const domSnapshot = request.body.domSnapshot

@@ -4,32 +4,33 @@ import * as express from 'express'
 import * as globby from 'globby'
 import {Server} from 'http'
 import * as puppeteer from 'puppeteer'
+import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
+import { StaticSnapshotsConfiguration } from '../configuration/static-snapshots-configuration'
 import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
-import {StaticSnapshotOptions} from './static-snapshot-options'
 
 // Use this instead of importing PercyAgent - we only want the compiled version
 declare var PercyAgent: any
 
 export default class StaticSnapshotService {
-  readonly options: StaticSnapshotOptions
+  readonly configuration: StaticSnapshotsConfiguration
   private readonly app: express.Application
   private server: Server | null = null
 
-  constructor(options: StaticSnapshotOptions) {
+  constructor(configuration?: StaticSnapshotsConfiguration) {
     this.app = express()
-    this.options = options
+    this.configuration = configuration || DEFAULT_CONFIGURATION['static-snapshots']
 
     this.app.use(cors())
     this.app.use(bodyParser.urlencoded({extended: true}))
     this.app.use(bodyParser.json({limit: '50mb'}))
 
-    this.app.use(options.baseUrl, express.static(options.snapshotDirectory))
+    this.app.use(this.configuration['base-url'], express.static(this.configuration.path))
   }
 
   async start() {
     logger.info(`serving static site at ${this._buildLocalUrl()}`)
-    this.server = await this.app.listen(this.options.port)
+    this.server = await this.app.listen(this.configuration.port)
   }
 
   async snapshotAll() {
@@ -73,19 +74,27 @@ export default class StaticSnapshotService {
   }
 
   _buildLocalUrl() {
-    return `http://localhost:${this.options.port}${this.options.baseUrl}`
+    return `http://localhost:${this.configuration.port}${this.configuration['base-url']}`
   }
 
   async _buildPageUrls() {
-    const baseUrl = this._buildLocalUrl()
-    const pageUrls = [] as any
+    // We very intentially remove '' values from these globs because that matches every file
+    const ignoreGlobs = this.configuration['ignore-files']
+      .split(',')
+      .filter((value) => value !== '')
+
+    const snapshotGlobs = this.configuration['snapshot-files']
+      .split(',')
+      .filter((value) => value !== '')
 
     const globOptions = {
-      cwd: this.options.snapshotDirectory,
-      ignore: this.options.ignoreGlobs,
+      cwd: this.configuration.path,
+      ignore: ignoreGlobs,
     }
 
-    const paths = await globby(this.options.snapshotGlobs, globOptions)
+    const paths = await globby(snapshotGlobs, globOptions)
+    const pageUrls = [] as any
+    const baseUrl = this._buildLocalUrl()
 
     for (const path of paths) {
       pageUrls.push(baseUrl + path)

@@ -1,12 +1,12 @@
+import {expect, test} from '@oclif/test'
 import * as chai from 'chai'
 import {describe} from 'mocha'
 import * as sinon from 'sinon'
 import Snapshot from '../../src/commands/snapshot'
-import AgentService from '../../src/services/agent-service'
+import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
+import {AgentService} from '../../src/services/agent-service'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
-
-import {expect, test} from '@oclif/test'
 
 describe('snapshot', () => {
   describe('#run', () => {
@@ -35,8 +35,6 @@ describe('snapshot', () => {
     }
 
     it('starts the static snapshot service', async () => {
-      const expectedAgentOptions = {networkIdleTimeout: 50, port: 5338}
-
       const agentServiceStub = AgentServiceStub()
       const staticSnapshotServiceStub = StaticSnapshotServiceStub()
 
@@ -44,7 +42,7 @@ describe('snapshot', () => {
         await Snapshot.run(['./dummy-test-dir'])
       })
 
-      chai.expect(agentServiceStub.start).to.be.calledWith(expectedAgentOptions)
+      chai.expect(agentServiceStub.start).to.be.calledWith(DEFAULT_CONFIGURATION)
       chai.expect(staticSnapshotServiceStub.start).to.have.callCount(1)
       chai.expect(staticSnapshotServiceStub.snapshotAll).to.have.callCount(1)
       chai.expect(stdout).to.match(/\[percy\] percy has started./)

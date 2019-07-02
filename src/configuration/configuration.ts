@@ -1,6 +1,5 @@
-import * as fs from 'fs'
-import * as yaml from 'js-yaml'
-import * as path from 'path'
+import { DEFAULT_PORT } from '../services/agent-service-constants'
+import { AgentConfiguration } from './agent-configuration'
 import { SnapshotConfiguration } from './snapshot-configuration'
 import { StaticSnapshotsConfiguration } from './static-snapshots-configuration'
 
@@ -8,25 +7,28 @@ export interface Configuration {
   version: number,
   snapshot: SnapshotConfiguration
   'static-snapshots': StaticSnapshotsConfiguration
+  agent: AgentConfiguration
 }
 
-const configuration = (relativePath = '.percy.yml'): Configuration => {
-  const configFilePath = path.join(process.cwd(), relativePath)
-
-  try {
-    return yaml.safeLoad(fs.readFileSync(configFilePath, 'utf8'))
-  } catch {
-    // this is ok because we just use this configuration as one of the fallbacks
-    // in a chain. snapshot specific options -> agent configuration -> default values
-
-    const defaultConfiguration: Configuration = {
-      'version': 1.0,
-      'snapshot': {},
-      'static-snapshots': {},
-    }
-
-    return defaultConfiguration
-  }
+export const DEFAULT_CONFIGURATION: Configuration = {
+  'version': 1.0,
+  'snapshot': {
+    'widths': [1280, 375], // px
+    'min-height': 1024, // px
+  },
+  'agent': {
+    'port': DEFAULT_PORT,
+    'asset-discovery': {
+      'network-idle-timeout': 50, // ms
+      'page-pool-size-min': 1, // pages
+      'page-pool-size-max': 5, // pages
+    },
+  },
+  'static-snapshots': {
+    'path': '.',
+    'base-url': '/',
+    'snapshot-files': '**/*.html,**/*.htm',
+    'ignore-files': '',
+    'port': DEFAULT_PORT + 1,
+  },
 }
-
-export default configuration
