@@ -4,7 +4,7 @@ import { Server } from 'http'
 import * as httpServer from 'http-server'
 import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
-import { agentJsFilename } from '../../src/utils/sdk-utils'
+import { agentJsFilename, postSnapshot } from '../../src/utils/sdk-utils'
 import chai from '../support/chai'
 
 const expect = chai.expect
@@ -14,10 +14,20 @@ declare var PercyAgent: any
 
 async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
   await page.addScriptTag({path: agentJsFilename()})
-  return page.evaluate((name: string, options: any) => {
-    const percyAgentClient = new PercyAgent({ clientInfo: 'integration-microSDK' })
+  const domSnapshot = await page.evaluate((name: string, options: any) => {
+    const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
     return percyAgentClient.snapshot(name, options)
   }, name, options)
+
+  await postSnapshot({
+    name,
+    domSnapshot,
+    url: page.url(),
+    clientInfo: 'integration-microSDK',
+    ...options,
+  })
+
+  return domSnapshot
 }
 
 describe('Integration test', () => {
