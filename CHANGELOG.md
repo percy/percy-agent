@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/percy/percy-agent/compare/v0.8.0...v0.8.1) (2019-07-02)
+
+
+### Bug Fixes
+
+* Static service wait for network idle ([#270](https://github.com/percy/percy-agent/issues/270)) ([7d438d2](https://github.com/percy/percy-agent/commit/7d438d2))
+
 # [0.8.0](https://github.com/percy/percy-agent/compare/v0.7.2...v0.8.0) (2019-07-02)
 
 
