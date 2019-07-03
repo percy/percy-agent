@@ -44,27 +44,46 @@ export default class StaticSnapshotService {
     const percyAgentClientFilename = agentJsFilename()
     const page = await browser.newPage()
 
+    // Do not follow redirects to ensure we don't navigate to another page
+    await page.setRequestInterception(true)
+    page.on('request', (request) => {
+      if (request.isNavigationRequest() && request.redirectChain().length) {
+        logger.debug(`Skipping redirect: ${request.url()}`)
+        request.abort()
+      } else {
+        request.continue()
+      }
+    })
+
     const pageUrls = await this._buildPageUrls()
 
     for (const url of pageUrls) {
       logger.debug(`visiting ${url}`)
 
-      await page.goto(url, { waitUntil: 'networkidle0' })
+      try {
+        await page.goto(url, { waitUntil: 'networkidle2' })
+      } catch (error) {
+        logger.error(`Failed to navigate to ${url}, skipping. Error: ${error}`)
+      }
 
-      await page.addScriptTag({
-        path: percyAgentClientFilename,
-      })
+      try {
+        await page.addScriptTag({
+          path: percyAgentClientFilename,
+        })
 
-      await page.evaluate((url) => {
-        const percyAgentClient = new PercyAgent()
-        const parsedURL = new URL(url)
-        const snapshotName = parsedURL.pathname || url
+        await page.evaluate((url) => {
+          const percyAgentClient = new PercyAgent()
+          const parsedURL = new URL(url)
+          const snapshotName = parsedURL.pathname || url
 
-        return percyAgentClient.snapshot(snapshotName)
-      }, url)
+          return percyAgentClient.snapshot(snapshotName)
+        }, url)
+      } catch (error) {
+        logger.error(`Failed to inject agent JS: ${error}`)
+      }
     }
 
-    browser.close()
+    await browser.close()
   }
 
   async stop() {
