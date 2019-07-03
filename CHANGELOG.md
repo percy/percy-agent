@@ -1,3 +1,10 @@
+## [0.8.3](https://github.com/percy/percy-agent/compare/v0.8.2...v0.8.3) (2019-07-03)
+
+
+### Bug Fixes
+
+* Reject redirected requests for static snapshots ([#273](https://github.com/percy/percy-agent/issues/273)) ([a75a445](https://github.com/percy/percy-agent/commit/a75a445))
+
 ## [0.8.2](https://github.com/percy/percy-agent/compare/v0.8.1...v0.8.2) (2019-07-02)
 
 
