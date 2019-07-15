@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import * as cheerio from 'cheerio'
 // @ts-ignore
-import { check, type, select, scoped } from 'interactor.js'
+import { check, select, type } from 'interactor.js'
 import * as sinon from 'sinon'
 import DOM from '../../src/percy-agent-client/dom'
 
@@ -244,12 +244,12 @@ describe('DOM -', () => {
       })
 
       it('does not mutate original select elements', async () => {
-        const singleSelect = document.querySelector('#singleSelect')
-        const multiSelect = document.querySelector('#multiselect')
+        const singleSelect = document.querySelector('#singleSelect') as HTMLSelectElement
+        const multiSelect = document.querySelector('#multiselect') as HTMLSelectElement
 
-        Array.from(multiSelect.options).forEach(option => expect(option.getAttribute('selected')).to.equal(null))
-        Array.from(singleSelect.options).forEach(option => expect(option.getAttribute('selected')).to.equal(null))
-      });
+        Array.from(multiSelect.options).forEach((option) => expect(option.getAttribute('selected')).to.equal(null))
+        Array.from(singleSelect.options).forEach((option) => expect(option.getAttribute('selected')).to.equal(null))
+      })
 
       it('serializes inputs with already present value attributes', () => {
         expect($domString('#valueAttr').attr('value')).to.equal('Replacement Value!')

@@ -118,9 +118,8 @@ class DOM {
     formElements.forEach((elem) => {
       const inputId = elem.getAttribute('data-percy-element-id')
       const selector = `[data-percy-element-id="${inputId}"]`
-      // TODO, ugh typescript.
-      type FormElementUnion = HTMLSelectElement | HTMLInputElement;
-      const cloneEl = clonedDOM.querySelector(selector) as FormElementUnion
+      // TODO: lol, TypeScript. This seems bad... They're not all selects and TS is totally fine with it.
+      const cloneEl = clonedDOM.querySelector(selector) as HTMLSelectElement
 
       switch (elem.type) {
         case 'checkbox':
@@ -131,17 +130,18 @@ class DOM {
           break
         case 'select-one':
           if (elem.selectedIndex !== -1) {
-            cloneEl.options[elem.selectedIndex].setAttribute('selected', true)
+            cloneEl.options[elem.selectedIndex].setAttribute('selected', 'true')
           }
           break
         case 'select-multiple':
-          const selectedOptions = Array.from(elem.selectedOptions);
-          const clonedOptions = Array.from(cloneEl.options);
+          const selectedOptions = Array.from(elem.selectedOptions)
+          const clonedOptions = Array.from(cloneEl.options)
 
           if (selectedOptions.length) {
-            selectedOptions.forEach((option) => {
-              let matchingOption = clonedOptions.find(cloneOption => option.text === cloneOption.text)
-              matchingOption.setAttribute('selected', true)
+            selectedOptions.forEach((option: any) => {
+              const matchingOption = clonedOptions
+                .find((cloneOption) => option.text === cloneOption.text) as HTMLOptionElement
+              matchingOption.setAttribute('selected', 'true')
             })
           }
 

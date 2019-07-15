@@ -135,7 +135,7 @@
     "build": "npm run clean && rm -rf dist && tsc && npm run build-client",
     "build-client": "webpack",
     "clean": "rm -f .oclif.manifest.json",
-    "lint": "",
+    "lint": "tsc -p test --noEmit && tslint -p test -t stylish --fix",
     "postpublish": "npm run clean",
     "posttest": "npm run lint",
     "prepublishOnly": "npm run build && oclif-dev manifest && oclif-dev readme",
