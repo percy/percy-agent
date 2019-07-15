@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import * as cheerio from 'cheerio'
 // @ts-ignore
-import { check, type } from 'interactor.js'
+import { check, type, select, scoped } from 'interactor.js'
 import * as sinon from 'sinon'
 import DOM from '../../src/percy-agent-client/dom'
 
@@ -177,6 +177,20 @@ describe('DOM -', () => {
             <input id="nevercheckedradio" type="radio" />
             <label for="nevercheckedradio">Never checked</label>
 
+            <label for="singleSelect">Does this work?</label>
+            <select id="singleSelect">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+              <option value="maybe">Maybe</option>
+            </select>
+
+            <label for="multiselect">Which car?</label>
+            <select id="multiselect" multiple>
+              <option value="gt350">Shelby GT350</option>
+              <option value="gt500">Shelby GT500</option>
+              <option value="first-gen-miata">NA Miata</option>
+            </select>
+
             <label for="feedback">Feedback</label>
             <textarea id="feedback"></textarea>
           </form>
@@ -187,6 +201,8 @@ describe('DOM -', () => {
         await type('#valueAttr', 'Replacement Value!', { range: [0, 500]})
         await type('#feedback', 'This is my feedback... And it is not very helpful')
         await check('#radio')
+        await select('#singleSelect', 'Maybe')
+        await select('#multiselect', ['Shelby GT350', 'NA Miata'])
         await check('#mailing')
 
         dom = new DOM(example)
@@ -215,12 +231,32 @@ describe('DOM -', () => {
         expect($domString('#name').attr('value')).to.equal('Bob Boberson')
       })
 
+      it('serializes single select elements', () => {
+        expect($domString('#singleSelect').children().eq(0).attr('selected')).to.equal(undefined)
+        expect($domString('#singleSelect').children().eq(1).attr('selected')).to.equal(undefined)
+        expect($domString('#singleSelect').children().eq(2).attr('selected')).to.equal('selected')
+      })
+
+      it('serializes multi-select elements', () => {
+        expect($domString('#multiselect').children().eq(0).attr('selected')).to.equal('selected')
+        expect($domString('#multiselect').children().eq(1).attr('selected')).to.equal(undefined)
+        expect($domString('#multiselect').children().eq(2).attr('selected')).to.equal('selected')
+      })
+
+      it('does not mutate original select elements', async () => {
+        const singleSelect = document.querySelector('#singleSelect')
+        const multiSelect = document.querySelector('#multiselect')
+
+        Array.from(multiSelect.options).forEach(option => expect(option.getAttribute('selected')).to.equal(null))
+        Array.from(singleSelect.options).forEach(option => expect(option.getAttribute('selected')).to.equal(null))
+      });
+
       it('serializes inputs with already present value attributes', () => {
         expect($domString('#valueAttr').attr('value')).to.equal('Replacement Value!')
       })
 
       it('adds a guid data-attribute to the original DOM', () => {
-        expect(document.querySelectorAll('[data-percy-element-id]').length).to.equal(6)
+        expect(document.querySelectorAll('[data-percy-element-id]').length).to.equal(8)
       })
 
       it('adds matching guids to the orignal DOM and cloned DOM', () => {

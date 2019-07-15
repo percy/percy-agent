@@ -134,6 +134,7 @@ describe('Integration test', () => {
         await page.type('#testInputText', 'test input value')
         await page.type('#testTextarea', 'test textarea value')
         await page.click('#testCheckbox')
+        await page.select('#testSelect', 'maybe')
         await page.click('#testRadioButton')
 
         const domSnapshot = await snapshot(page, 'Serialize input elements')
@@ -142,6 +143,7 @@ describe('Integration test', () => {
         expect($('#testInputText').attr('value')).to.equal('test input value')
         expect($('#testTextarea').text()).to.equal('test textarea value')
         expect($('#testCheckbox').attr('checked')).to.equal('checked')
+        expect($('#testSelect').children().eq(2).attr('selected')).to.equal('selected')
         expect($('#testRadioButton').attr('checked')).to.equal('checked')
       })
     })

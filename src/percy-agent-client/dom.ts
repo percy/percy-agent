@@ -3,6 +3,8 @@ export interface DOMOptions {
   domTransformation?: (dom: HTMLDocument) => void
 }
 
+const FORM_ELEMENTS_SELECTOR = 'input, textarea, select'
+
 /**
  * A single class to encapsulate all DOM operations that need to be performed to
  * capture the customer's application state.
@@ -110,13 +112,15 @@ class DOM {
    *
    */
   private serializeInputElements(clonedDOM: HTMLDocument): void {
-    const formNodes = this.originalDOM.querySelectorAll('input, textarea')
+    const formNodes = this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR)
     const formElements = Array.from(formNodes) as HTMLFormElement[]
 
     formElements.forEach((elem) => {
       const inputId = elem.getAttribute('data-percy-element-id')
       const selector = `[data-percy-element-id="${inputId}"]`
-      const cloneEl = clonedDOM.querySelector(selector) as HTMLInputElement
+      // TODO, ugh typescript.
+      type FormElementUnion = HTMLSelectElement | HTMLInputElement;
+      const cloneEl = clonedDOM.querySelector(selector) as FormElementUnion
 
       switch (elem.type) {
         case 'checkbox':
@@ -124,6 +128,23 @@ class DOM {
           if (elem.checked) {
             cloneEl!.setAttribute('checked', '')
           }
+          break
+        case 'select-one':
+          if (elem.selectedIndex !== -1) {
+            cloneEl.options[elem.selectedIndex].setAttribute('selected', true)
+          }
+          break
+        case 'select-multiple':
+          const selectedOptions = Array.from(elem.selectedOptions);
+          const clonedOptions = Array.from(cloneEl.options);
+
+          if (selectedOptions.length) {
+            selectedOptions.forEach((option) => {
+              let matchingOption = clonedOptions.find(cloneOption => option.text === cloneOption.text)
+              matchingOption.setAttribute('selected', true)
+            })
+          }
+
           break
         case 'textarea':
           // setting text or value does not work but innerText does
@@ -192,7 +213,7 @@ class DOM {
       $el.setAttribute('data-percy-element-id', ID)
     }
 
-    const formNodes = this.originalDOM.querySelectorAll('input, textarea')
+    const formNodes = this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR)
     const formElements = Array.from(formNodes) as HTMLFormElement[]
     // loop through each form element and apply an ID for serialization later
     formElements.forEach((elem) => {
