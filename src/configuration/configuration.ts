@@ -1,5 +1,6 @@
 import { DEFAULT_PORT } from '../services/agent-service-constants'
 import { AgentConfiguration } from './agent-configuration'
+import { ImageSnapshotsConfiguration } from './image-snapshots-configuration'
 import { SnapshotConfiguration } from './snapshot-configuration'
 import { StaticSnapshotsConfiguration } from './static-snapshots-configuration'
 
@@ -7,6 +8,7 @@ export interface Configuration {
   version: number,
   snapshot: SnapshotConfiguration
   'static-snapshots': StaticSnapshotsConfiguration
+  'image-snapshots': ImageSnapshotsConfiguration
   agent: AgentConfiguration
 }
 
@@ -32,5 +34,9 @@ export const DEFAULT_CONFIGURATION: Configuration = {
     'snapshot-files': '**/*.html,**/*.htm',
     'ignore-files': '',
     'port': DEFAULT_PORT + 1,
+  },
+  'image-snapshots': {
+    path: '.',
+    files: '**/*.png,**/*.jpg,**/*.jpeg',
   },
 }
