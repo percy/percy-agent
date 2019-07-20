@@ -145,6 +145,7 @@
     "test-client": "karma start ./test/percy-agent-client/karma.conf.js",
     "test-integration": "yarn build-client && node ./bin/run exec -h *.localtest.me -- mocha test/integration/**/*.test.ts",
     "test-snapshot-command": "./bin/run snapshot test/integration/test-static-site -b /dummy-base-url -i '(red-keep)' -c '\\.(html)$'",
+    "test-upload-command": "./bin/run upload test/integration/test-static-images",
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
