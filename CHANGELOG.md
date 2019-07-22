@@ -1,3 +1,10 @@
+# [0.9.0](https://github.com/percy/percy-agent/compare/v0.8.3...v0.9.0) (2019-07-22)
+
+
+### Features
+
+* Serialize select elements values ([#295](https://github.com/percy/percy-agent/issues/295)) ([3df435b](https://github.com/percy/percy-agent/commit/3df435b))
+
 ## [0.8.3](https://github.com/percy/percy-agent/compare/v0.8.2...v0.8.3) (2019-07-03)
 
 
