@@ -118,8 +118,7 @@ class DOM {
     formElements.forEach((elem) => {
       const inputId = elem.getAttribute('data-percy-element-id')
       const selector = `[data-percy-element-id="${inputId}"]`
-      // TODO: lol, TypeScript. This seems bad... They're not all selects and TS is totally fine with it.
-      const cloneEl = clonedDOM.querySelector(selector) as HTMLSelectElement
+      const cloneEl = clonedDOM.querySelector(selector) as any
 
       switch (elem.type) {
         case 'checkbox':
@@ -140,7 +139,7 @@ class DOM {
           if (selectedOptions.length) {
             selectedOptions.forEach((option: any) => {
               const matchingOption = clonedOptions
-                .find((cloneOption) => option.text === cloneOption.text) as HTMLOptionElement
+                .find((cloneOption: any) => option.text === cloneOption.text) as HTMLOptionElement
               matchingOption.setAttribute('selected', 'true')
             })
           }
