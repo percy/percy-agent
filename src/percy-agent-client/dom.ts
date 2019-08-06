@@ -146,8 +146,8 @@ class DOM {
 
           break
         case 'textarea':
-          // setting text or value does not work but innerText does
-          cloneEl!.innerText = elem.value
+          // setting text or value does not work but innerHTML does
+          cloneEl!.innerHTML = elem.value
           break
         default:
           cloneEl!.setAttribute('value', elem.value)
