@@ -22,12 +22,13 @@ export default class ConfigurationService {
     try {
       const userConfigFilePath = path.join(process.cwd(), configurationFile)
       const userConf = yaml.safeLoad(fs.readFileSync(userConfigFilePath, 'utf8'))
+      logger.debug(`Current config file path: ${userConfigFilePath}`)
 
       // apply a deep overwrite merge to userConf and this.configuration
       const overwriteMerge = (destinationArray: any, sourceArray: any, options: any) => sourceArray
       this.configuration = deepmerge(this.configuration, userConf, { arrayMerge: overwriteMerge })
-    } catch {
-      logger.debug('.percy.yml configuration file not supplied or failed to be loaded and parsed.')
+    } catch (error) {
+      logger.debug(`.percy.yml configuration file not supplied or failed to be loaded and parsed: ${error}`)
     }
 
     return this.configuration
