@@ -1,3 +1,11 @@
+## [0.9.1](https://github.com/percy/percy-agent/compare/v0.9.0...v0.9.1) (2019-08-06)
+
+
+### Bug Fixes
+
+* Log error if there is one from the config service ([#318](https://github.com/percy/percy-agent/issues/318)) ([6432b63](https://github.com/percy/percy-agent/commit/6432b63))
+* Use `innerHTML` rather than `innerText` for textareas ([#317](https://github.com/percy/percy-agent/issues/317)) ([b700fbb](https://github.com/percy/percy-agent/commit/b700fbb))
+
 # [0.9.0](https://github.com/percy/percy-agent/compare/v0.8.3...v0.9.0) (2019-07-22)
 
 
