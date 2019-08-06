@@ -1,3 +1,10 @@
+## [0.9.2](https://github.com/percy/percy-agent/compare/v0.9.1...v0.9.2) (2019-08-06)
+
+
+### Bug Fixes
+
+* Pin `@oclif/command` to `1.5.16` ([#319](https://github.com/percy/percy-agent/issues/319)) ([2ba2698](https://github.com/percy/percy-agent/commit/2ba2698)), closes [/github.com/oclif/command/compare/v1.5.16...v1.5.17#diff-53649f4ba3d51e10eff913927cc17e0](https://github.com//github.com/oclif/command/compare/v1.5.16...v1.5.17/issues/diff-53649f4ba3d51e10eff913927cc17e0)
+
 ## [0.9.1](https://github.com/percy/percy-agent/compare/v0.9.0...v0.9.1) (2019-08-06)
 
 
