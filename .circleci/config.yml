@@ -26,6 +26,9 @@ jobs:
           name: Help command
           command: ./bin/run --help
       - run:
+          name: Build package
+          command: npm run build
+      - run:
           name: Unit tests
           command: |
             mkdir -p reports
