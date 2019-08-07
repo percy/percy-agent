@@ -1,3 +1,10 @@
+# [0.10.0](https://github.com/percy/percy-agent/compare/v0.9.2...v0.10.0) (2019-08-07)
+
+
+### Features
+
+* Support capturing assets from allowed hostnames ([#320](https://github.com/percy/percy-agent/issues/320)) ([c3fb8ac](https://github.com/percy/percy-agent/commit/c3fb8ac))
+
 ## [0.9.2](https://github.com/percy/percy-agent/compare/v0.9.1...v0.9.2) (2019-08-06)
 
 

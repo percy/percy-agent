@@ -19,7 +19,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.9.2 linux-x64 node-v10.16.1
+@percy/agent/0.10.0 linux-x64 node-v10.16.1
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -42,6 +42,7 @@ USAGE
   $ percy exec
 
 OPTIONS
+  -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
   -p, --port=port                                  [default: 5338] port
   -t, --network-idle-timeout=network-idle-timeout  [default: 50] asset discovery network idle timeout (in milliseconds)
 
@@ -98,6 +99,8 @@ OPTIONS
   -b, --base-url=base-url                          [default: /] If your static files will be hosted in a subdirectory,
                                                    instead
                                                    of the webserver's root path, set that subdirectory with this flag.
+
+  -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
 
   -i, --ignore-files=ignore-files                  Glob or comma-seperated string of globs for matching the files and
                                                    directories to ignore.
