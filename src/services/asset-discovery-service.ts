@@ -19,10 +19,10 @@ export class AssetDiscoveryService extends PercyClientService {
 
   constructor(buildId: number, configuration?: AssetDiscoveryConfiguration) {
     super()
-    this.responseService = new ResponseService(buildId)
     this.browser = null
     this.pagePool = null
     this.configuration = configuration || DEFAULT_CONFIGURATION.agent['asset-discovery']
+    this.responseService = new ResponseService(buildId, this.configuration['allowed-hostnames'])
   }
 
   async setup() {

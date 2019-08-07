@@ -11,6 +11,8 @@ static-snapshots:
 agent:
   port: 1111
   asset-discovery:
+    allowed-hostnames:
+      - localassets.dev
     network-idle-timeout: 50 # ms
     page-pool-size-min: 5 # pages
     page-pool-size-max: 20 # pages

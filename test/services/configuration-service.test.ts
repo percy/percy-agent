@@ -23,6 +23,7 @@ describe('ConfigurationService', () => {
       expect(subject['static-snapshots']['snapshot-files']).to.eql('**/*.html')
       expect(subject['static-snapshots']['ignore-files']).to.eql('**/*.htm')
       expect(subject.agent.port).to.eql(1111)
+      expect(subject.agent['asset-discovery']['allowed-hostnames']).to.eql(['localassets.dev'])
       expect(subject.agent['asset-discovery']['network-idle-timeout']).to.eql(50)
       expect(subject.agent['asset-discovery']['page-pool-size-min']).to.eql(5)
       expect(subject.agent['asset-discovery']['page-pool-size-max']).to.eql(20)
