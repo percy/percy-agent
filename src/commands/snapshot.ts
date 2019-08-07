@@ -38,6 +38,11 @@ export default class Snapshot extends PercyCommand {
       'of the webserver\'s root path, set that subdirectory with this flag.',
       default: DEFAULT_CONFIGURATION['static-snapshots']['base-url'],
     }),
+    'allowed-hostname': flags.string({
+      char: 'h',
+      description: 'Allowable hostname(s) to capture assets from',
+      multiple: true,
+    }),
     // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
       char: 't',
