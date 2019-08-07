@@ -14,10 +14,28 @@ export default class ResponseService extends PercyClientService {
 
   readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
   responsesProcessed: Map<string, string> = new Map()
+  allowedHostnames: string[]
 
-  constructor(buildId: number) {
+  constructor(buildId: number, allowedHostnames: string[]) {
     super()
     this.resourceService = new ResourceService(buildId)
+    this.allowedHostnames = allowedHostnames
+  }
+
+  shouldCaptureResource(rootUrl: string, resourceUrl: string): boolean {
+    // Capture if the resourceUrl is the same as the rootUrL
+    if (resourceUrl.startsWith(rootUrl)) {
+      return true
+    }
+
+    // Capture if the resourceUrl has a hostname in the allowedHostnames
+    const parsedResourceUrl = new URL(resourceUrl)
+    if (this.allowedHostnames.some((hostname) => parsedResourceUrl.hostname === hostname)) {
+      return true
+    }
+
+    // Resource is not allowed
+    return false
   }
 
   async processResponse(rootResourceUrl: string, response: puppeteer.Response, width: number): Promise<any | null> {
@@ -44,13 +62,13 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    if (!request.url().startsWith(rootUrl)) {
+    if (!this.shouldCaptureResource(rootUrl, request.url())) {
       // Disallow remote resource requests.
       logger.debug(`Skipping [is_remote_resource] [${width} px]: ${request.url()}`)
       return
     }
 
-    if (!response.url().startsWith(rootUrl)) {
+    if (!this.shouldCaptureResource(rootUrl, response.url())) {
       // Disallow remote redirects.
       logger.debug(`Skipping [is_remote_redirect] [${width} px]: ${response.url()}`)
       return
