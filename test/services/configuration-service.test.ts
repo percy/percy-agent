@@ -42,6 +42,7 @@ describe('ConfigurationService', () => {
         'base-url': '/flag/',
         'snapshot-files': 'flags/*.html',
         'ignore-files': 'ignore-flags/*.html',
+        'allowed-hostname': ['additional-hostname.local'],
       }
       const subject = new ConfigurationService('test/support/.percy.yml').applyFlags(flags)
 
@@ -49,6 +50,9 @@ describe('ConfigurationService', () => {
       expect(subject['static-snapshots']['snapshot-files']).to.eql('flags/*.html')
       expect(subject['static-snapshots']['ignore-files']).to.eql('ignore-flags/*.html')
       expect(subject.agent['asset-discovery']['network-idle-timeout']).to.eql(51)
+      expect(subject.agent['asset-discovery']['allowed-hostnames']).to.eql(
+        ['additional-hostname.local'],
+      )
     })
   })
 
