@@ -1,5 +1,4 @@
 import * as cheerio from 'cheerio'
-import * as fs from 'fs'
 import { Server } from 'http'
 import * as httpServer from 'http-server'
 import { describe } from 'mocha'
@@ -117,11 +116,19 @@ describe('Integration test', () => {
       })
     })
 
-    describe('responsive  assets', () => {
-      it('properly  captures all assets', async () => {
+    describe('responsive assets', () => {
+      it('properly captures all assets', async () => {
         await page.goto(`http://localhost:${PORT}/responsive-assets.html`)
 
         await snapshot(page, 'Responsive assets')
+      })
+    })
+
+    describe('alternate hostnames', () => {
+      it('properly captures assets from alternate hostnames', async () => {
+        await page.goto(`http://localhost:${PORT}/alternate-hostname.html`)
+
+        await snapshot(page, 'Alternate hostname')
       })
     })
 

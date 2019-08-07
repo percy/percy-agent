@@ -15,6 +15,11 @@ export default class Exec extends PercyCommand {
   ]
 
   static flags = {
+    'allowed-hostname': flags.string({
+      char: 'h',
+      description: 'hostnames that assets should be captured from',
+      multiple: true,
+    }),
     'network-idle-timeout': flags.integer({
       char: 't',
       default: DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],

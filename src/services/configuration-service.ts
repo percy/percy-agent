@@ -39,6 +39,10 @@ export default class ConfigurationService {
       this.configuration.agent.port = flags.port
     }
 
+    if (flags['allowed-hostname']) {
+      this.configuration.agent['asset-discovery']['allowed-hostnames'] = flags['allowed-hostname']
+    }
+
     if (flags['network-idle-timeout']) {
       this.configuration.agent['asset-discovery']['network-idle-timeout'] = flags['network-idle-timeout']
     }

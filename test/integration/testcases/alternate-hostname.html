@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html><head>
+    <title>Alternate hostname testing</title>
+</head>
+<body>
+  <div>
+    <p>
+      If alternate hostname support is working, there should be an svg image of the vue logo below.
+    </p>
+    <p>
+      It works because localhost.me resolves to 127.0.0.1, allowing us to serve the vue logo over
+      it, and we start the integration tests by specifying localhost.me as an allowed-hostname
+      with the -h flag.
+    </p>
+    <img src="http://localtest.me:8000/vue.svg">
+  </div>
+</body>
+</html>

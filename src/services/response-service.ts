@@ -29,7 +29,8 @@ export default class ResponseService extends PercyClientService {
     }
 
     // Capture if the resourceUrl has a hostname in the allowedHostnames
-    if (this.allowedHostnames.some((hostname) => resourceUrl.startsWith(hostname))) {
+    const parsedResourceUrl = new URL(resourceUrl)
+    if (this.allowedHostnames.some((hostname) => parsedResourceUrl.hostname === hostname)) {
       return true
     }
 
