@@ -22,7 +22,7 @@ export default class PercyCommand extends Command {
   }
 
   async run() {
-    if (this.percyEnabled && !this.percyTokenPresent()) {
+    if (this.percyEnabled() && !this.percyTokenPresent()) {
       this.warn('Skipping visual tests. PERCY_TOKEN was not provided.')
     }
   }
