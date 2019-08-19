@@ -32,6 +32,9 @@ export default class Exec extends PercyCommand {
     }),
   }
 
+  // helps prevent exiting before the agent service has stopped
+  private exiting = false
+
   async run() {
     await super.run()
 
@@ -61,7 +64,10 @@ export default class Exec extends PercyCommand {
     process.on('SIGTERM', () => this.stop())
   }
 
-  async stop(exitCode?: number | null) {
+  private async stop(exitCode?: number | null) {
+    if (this.exiting) { return }
+    this.exiting = true
+
     if (this.percyWillRun()) {
       await this.agentService.stop()
     }
