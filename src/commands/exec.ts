@@ -1,4 +1,4 @@
-import {flags} from '@oclif/command'
+import { flags } from '@oclif/command'
 import * as spawn from 'cross-spawn'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import ConfigurationService from '../services/configuration-service'
@@ -35,9 +35,7 @@ export default class Exec extends PercyCommand {
   async run() {
     await super.run()
 
-    const {argv} = this.parse(Exec)
-    const {flags} = this.parse(Exec)
-
+    const { argv, flags } = this.parse(Exec)
     const command = argv.shift()
 
     if (!command) {
@@ -54,14 +52,20 @@ export default class Exec extends PercyCommand {
     }
 
     // Even if Percy will not run, continue to run the subprocess
-    const spawnedProcess = spawn(command, argv, {stdio: 'inherit'})
+    const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
+    spawnedProcess.on('exit', (code) => this.stop(code))
 
-    spawnedProcess.on('exit', async (code: any) => {
-      if (this.percyWillRun()) {
-        await this.agentService.stop()
-      }
+    // Recieving any of these events should stop the agent and exit
+    process.on('SIGHUP', () => this.stop())
+    process.on('SIGINT', () => this.stop())
+    process.on('SIGTERM', () => this.stop())
+  }
 
-      process.exit(code)
-    })
+  async stop(exitCode?: number | null) {
+    if (this.percyWillRun()) {
+      await this.agentService.stop()
+    }
+
+    process.exit(exitCode || 0)
   }
 }
