@@ -14,15 +14,13 @@ describe('percy-command', () => {
     .stub(process, 'env', {PERCY_ENABLE: '0', PERCY_TOKEN: ''})
     .stderr()
     .command(['percy-command'])
-    .do((output) => expect(output.stderr).to.contain(
-      'Warning: Skipping visual tests. PERCY_TOKEN was not provided.',
-    ))
-    .it('warns about PERCY_TOKEN to be set')
+    .do((output) => expect(output.stderr).to.eql(''))
+    .it('outputs no warnings when PERCY_ENABLED is 0')
 
   test
-    .stub(process, 'env', {PERCY_ENABLE: '0', PERCY_TOKEN: 'ABC'})
+    .stub(process, 'env', {PERCY_TOKEN: 'ABC'})
     .stderr()
     .command(['percy-command'])
     .do((output) => expect(output.stderr).to.eql(''))
-    .it('outputs no errors')
+    .it('outputs no errors when PERCY_TOKEN is set')
 })
