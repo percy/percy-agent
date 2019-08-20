@@ -25,7 +25,7 @@ Here is a summary of the steps to follow:
 $ git checkout master
 $ git pull upstream master
 $ rm -rf node_modules
-$ npm install
+$ yarn install
 ```
 3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
 ```bash
@@ -119,26 +119,26 @@ $ npm install
 
 [@percy/agent](https://github.com/percy/percy-agent) use [tslint](https://github.com/palantir/tslint) for linting.
 
-Before pushing your code changes make sure there are no linting errors with `npm run lint`.
+Before pushing your code changes make sure there are no linting errors with `yarn lint`.
 
 ### Tests
 
 You can run the tests with:
 
 ```bash
-$ npm run test
+$ yarn test
 ```
 
 You can test Percy Agent Client with
 
 ```bash
-$ npm run test-client
+$ yarn test-client
 ```
 
 And the integration tests can be run with:
 
 ```bash
-$ PERCY_TOKEN=xxx npm run test-integration
+$ PERCY_TOKEN=xxx yarn test-integration
 ```
 
 You can find `PERCY_TOKEN` on your Percy project settings.

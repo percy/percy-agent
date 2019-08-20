@@ -12,13 +12,13 @@ jobs:
       - checkout
       - restore_cache: &restore_cache
           keys:
-            - v2-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "package-lock.json"}}
+            - v2-yarn-{{checksum ".circleci/config.yml"}}-{{ checksum "yarn.lock"}}
       - run:
           name: Install project dependencies
-          command: npm ci
+          command: yarn
       - run:
           name: Install CI only dependencies
-          command: npm install -D --no-package-lock nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
+          command: yarn add -D --no-lockfile nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
       - run:
           name: Version command
           command: ./bin/run --version
@@ -52,7 +52,7 @@ jobs:
     <<: *test
     steps:
       - checkout
-      - run: npm ci
+      - run: yarn
       - run: npx semantic-release
       - run: ./release-percy.sh
 workflows:
