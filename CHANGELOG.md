@@ -1,3 +1,10 @@
+## [0.10.1](https://github.com/percy/percy-agent/compare/v0.10.0...v0.10.1) (2019-08-22)
+
+
+### Bug Fixes
+
+* Stop and finalize build on exec termination ([#332](https://github.com/percy/percy-agent/issues/332)) ([2fd90b9](https://github.com/percy/percy-agent/commit/2fd90b9))
+
 # [0.10.0](https://github.com/percy/percy-agent/compare/v0.9.2...v0.10.0) (2019-08-07)
 
 
