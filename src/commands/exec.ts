@@ -58,7 +58,7 @@ export default class Exec extends PercyCommand {
     const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
     spawnedProcess.on('exit', (code) => this.stop(code))
 
-    // Recieving any of these events should stop the agent and exit
+    // Receiving any of these events should stop the agent and exit
     process.on('SIGHUP', () => this.stop())
     process.on('SIGINT', () => this.stop())
     process.on('SIGTERM', () => this.stop())
