@@ -57,7 +57,8 @@ describe('StaticSnapshotService', () => {
         'http://localhost:5339/index.html',
       ]
 
-      expect(pages).to.eql(expectedUrls)
+      expect(pages[0]).to.equal(expectedUrls[0])
+      expect(pages[1]).to.equal(expectedUrls[1])
     })
 
   })
@@ -83,7 +84,9 @@ describe('StaticSnapshotService', () => {
         'http://localhost:5339/blog/index.html',
       ]
 
-      expect(pages).to.eql(expectedUrls)
+      expect(pages[0]).to.equal(expectedUrls[0])
+      expect(pages[1]).to.equal(expectedUrls[1])
+      expect(pages[2]).to.equal(expectedUrls[2])
     })
   })
 
