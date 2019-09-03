@@ -1,3 +1,10 @@
+# [0.11.0](https://github.com/percy/percy-agent/compare/v0.10.1...v0.11.0) (2019-09-03)
+
+
+### Features
+
+* Add configuration option to enable javascript ([#341](https://github.com/percy/percy-agent/issues/341)) ([fb05050](https://github.com/percy/percy-agent/commit/fb05050))
+
 ## [0.10.1](https://github.com/percy/percy-agent/compare/v0.10.0...v0.10.1) (2019-08-22)
 
 
