@@ -92,7 +92,9 @@ export class AgentService {
     const configuration = new ConfigurationService().configuration
     const snapshotOptions: SnapshotOptions = {
       widths: request.body.widths || configuration.snapshot.widths,
-      enableJavaScript: request.body.enableJavaScript,
+      enableJavaScript: request.body.enableJavaScript != null
+        ? request.body.enableJavaScript
+        : configuration.snapshot['enable-javascript'],
       minHeight: request.body.minHeight || configuration.snapshot['min-height'],
     }
 
