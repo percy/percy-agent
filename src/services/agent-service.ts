@@ -1,11 +1,13 @@
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as express from 'express'
-import {Server} from 'http'
+import { Server } from 'http'
+import * as os from 'os'
+import * as path from 'path'
 import { Configuration } from '../configuration/configuration'
-import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
-import logger, {profile} from '../utils/logger'
-import {HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH} from './agent-service-constants'
+import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
+import logger, { createFileLogger, profile } from '../utils/logger'
+import { HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH } from './agent-service-constants'
 import BuildService from './build-service'
 import ConfigurationService from './configuration-service'
 import Constants from './constants'
@@ -79,13 +81,15 @@ export class AgentService {
       domSnapshotLog += `[truncated at ${Constants.MAX_LOG_LENGTH}]`
     }
 
-    logger.debug('handling snapshot:')
-    logger.debug(`-> headers: ${JSON.stringify(request.headers)}`)
-    logger.debug(`-> name: ${request.body.name}`)
-    logger.debug(`-> url: ${request.body.url}`)
-    logger.debug(`-> clientInfo: ${request.body.clientInfo}`)
-    logger.debug(`-> environmentInfo: ${request.body.environmentInfo}`)
-    logger.debug(`-> domSnapshot: ${domSnapshotLog}`)
+    const snapshotLog = path.join(os.tmpdir(), `percy.${Date.now()}.log`)
+    const snapshotLogger = createFileLogger(snapshotLog)
+    snapshotLogger.debug('handling snapshot:')
+    snapshotLogger.debug(`-> headers: ${JSON.stringify(request.headers)}`)
+    snapshotLogger.debug(`-> name: ${request.body.name}`)
+    snapshotLogger.debug(`-> url: ${request.body.url}`)
+    snapshotLogger.debug(`-> clientInfo: ${request.body.clientInfo}`)
+    snapshotLogger.debug(`-> environmentInfo: ${request.body.environmentInfo}`)
+    snapshotLogger.debug(`-> domSnapshot: ${domSnapshotLog}`)
 
     if (!this.snapshotService) { return response.json({success: false}) }
 
@@ -105,10 +109,14 @@ export class AgentService {
       return response.json({success: true})
     }
 
-    const resources = await this.snapshotService.buildResources(
+    let resources = await this.snapshotService.buildResources(
       request.body.url,
       domSnapshot,
       snapshotOptions,
+    )
+
+    resources = resources.concat(
+      this.snapshotService.buildLogResource(snapshotLog),
     )
 
     const snapshotCreation = this.snapshotService.create(
