@@ -1,6 +1,7 @@
-import {Command} from '@oclif/command'
+import { Command } from '@oclif/command'
 import * as winston from 'winston'
-import {AgentService} from '../services/agent-service'
+import { AgentService } from '../services/agent-service'
+import ConfigurationService from '../services/configuration-service'
 import ProcessService from '../services/process-service'
 import logger from '../utils/logger'
 
@@ -11,6 +12,9 @@ export default class PercyCommand extends Command {
   processService: ProcessService
   logger: winston.Logger
   percyToken: string
+
+  // helps prevent exiting before the agent service has stopped
+  private exiting = false
 
   constructor(argv: string[], config: any) {
     super(argv, config)
@@ -41,5 +45,29 @@ export default class PercyCommand extends Command {
 
   logStart() {
     this.logger.info('percy has started.')
+  }
+
+  async start(flags: any) {
+    if (this.percyWillRun()) {
+      const configuration = new ConfigurationService().applyFlags(flags)
+      await this.agentService.start(configuration)
+      this.logStart()
+
+      // Receiving any of these events should stop the agent and exit
+      process.on('SIGHUP', () => this.stop())
+      process.on('SIGINT', () => this.stop())
+      process.on('SIGTERM', () => this.stop())
+    }
+  }
+
+  async stop(exitCode?: number | null) {
+    if (this.exiting) { return }
+    this.exiting = true
+
+    if (this.percyWillRun()) {
+      await this.agentService.stop()
+    }
+
+    process.exit(exitCode || 0)
   }
 }

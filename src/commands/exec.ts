@@ -32,9 +32,6 @@ export default class Exec extends PercyCommand {
     }),
   }
 
-  // helps prevent exiting before the agent service has stopped
-  private exiting = false
-
   async run() {
     await super.run()
 
@@ -49,29 +46,11 @@ export default class Exec extends PercyCommand {
     }
 
     if (this.percyWillRun()) {
-      const configuration = new ConfigurationService().applyFlags(flags)
-      await this.agentService.start(configuration)
-      this.logStart()
+      await this.start(flags)
     }
 
     // Even if Percy will not run, continue to run the subprocess
     const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
     spawnedProcess.on('exit', (code) => this.stop(code))
-
-    // Receiving any of these events should stop the agent and exit
-    process.on('SIGHUP', () => this.stop())
-    process.on('SIGINT', () => this.stop())
-    process.on('SIGTERM', () => this.stop())
-  }
-
-  private async stop(exitCode?: number | null) {
-    if (this.exiting) { return }
-    this.exiting = true
-
-    if (this.percyWillRun()) {
-      await this.agentService.stop()
-    }
-
-    process.exit(exitCode || 0)
   }
 }
