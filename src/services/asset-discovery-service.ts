@@ -3,7 +3,7 @@ import * as puppeteer from 'puppeteer'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
-import logger, {logError, profile} from '../utils/logger'
+import { logError, profile } from '../utils/logger'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
@@ -75,7 +75,12 @@ export class AssetDiscoveryService extends PercyClientService {
     return page
   }
 
-  async discoverResources(rootResourceUrl: string, domSnapshot: string, options: SnapshotOptions): Promise<any[]> {
+  async discoverResources(
+    rootResourceUrl: string,
+    domSnapshot: string,
+    options: SnapshotOptions,
+    logger: any,
+  ): Promise<any[]> {
     profile('-> assetDiscoveryService.discoverResources')
 
     if (this.browser === null) {
@@ -105,13 +110,19 @@ export class AssetDiscoveryService extends PercyClientService {
     // the number of pages in our pool. If we wanted to do something smarter here, we should consider
     // switching to use puppeteer-cluster instead.
     profile('--> assetDiscoveryService.discoverForWidths', {url: rootResourceUrl})
-    const resourcePromises: Array<Promise<any[]>> = []
-    for (const width of widths) {
-      const promise = this.resourcesForWidth(this.pagePool, width, domSnapshot, rootResourceUrl, enableJavaScript)
-      resourcePromises.push(promise)
-    }
-    const resourceArrays: any[][] = await Promise.all(resourcePromises)
-    let resources: any[] = ([] as any[]).concat(...resourceArrays)
+
+    let resources: any[] = [].concat(...(await Promise.all(
+      widths.map((width) => this.resourcesForWidth(
+        // @ts-ignore - for some reason, ts thinks we're assigning null here
+        this.pagePool,
+        width,
+        domSnapshot,
+        rootResourceUrl,
+        enableJavaScript,
+        logger,
+      )),
+    )) as any[])
+
     profile('--> assetDiscoveryService.discoverForWidths')
 
     const resourceUrls: string[] = []
@@ -157,6 +168,7 @@ export class AssetDiscoveryService extends PercyClientService {
     domSnapshot: string,
     rootResourceUrl: string,
     enableJavaScript: boolean,
+    logger: any,
   ): Promise<any[]> {
     logger.debug(`discovering assets for width: ${width}`)
 
@@ -196,7 +208,13 @@ export class AssetDiscoveryService extends PercyClientService {
       if (response) {
         // Parallelize the work in processResponse as much as possible, but make sure to
         // wait for it to complete before returning from the asset discovery phase.
-        const promise = this.responseService.processResponse(rootResourceUrl, response, width)
+        const promise = this.responseService.processResponse(
+          rootResourceUrl,
+          response,
+          width,
+          logger,
+        )
+
         promise.catch(logError)
         maybeResourcePromises.push(promise)
       } else {
@@ -231,7 +249,8 @@ export class AssetDiscoveryService extends PercyClientService {
 
       return maybeResources.filter((maybeResource) => maybeResource != null)
     } catch (error) {
-      logError(error)
+      logger.error(`${error.name} ${error.message}`)
+      logger.debug(error)
     }
 
     return []

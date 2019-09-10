@@ -26,6 +26,7 @@ export default class SnapshotService extends PercyClientService {
     rootResourceUrl: string,
     domSnapshot = '',
     options: SnapshotOptions,
+    logger: any,
   ): Promise<any[]> {
     const rootResource = this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,
@@ -38,6 +39,7 @@ export default class SnapshotService extends PercyClientService {
       rootResourceUrl,
       domSnapshot,
       options,
+      logger,
     )
 
     return [rootResource].concat(discoveredResources)

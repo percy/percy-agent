@@ -113,6 +113,7 @@ export class AgentService {
       request.body.url,
       domSnapshot,
       snapshotOptions,
+      snapshotLogger,
     )
 
     resources = resources.concat(
