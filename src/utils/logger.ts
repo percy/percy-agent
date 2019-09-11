@@ -5,6 +5,7 @@ const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
 
 const consoleTransport = new winston.transports.Console({
   level: LOG_LEVEL,
+  stderrLevels: ['error'],
   format: winston.format.combine(
     winston.format.label({ label: colors.magenta('percy') }),
     winston.format.printf(({ label, message }) => `[${label}] ${message}`),
