@@ -1,5 +1,6 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs'
+import * as os from 'os'
 import * as path from 'path'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
@@ -45,10 +46,16 @@ export default class SnapshotService extends PercyClientService {
     return [rootResource].concat(discoveredResources)
   }
 
-  buildLogResource(localPath: string) {
-    const fileName = path.basename(localPath)
-    const buffer = fs.readFileSync(path.resolve(localPath))
+  buildLogResource(logFilePath: string) {
+    const fileName = path.basename(logFilePath)
+    const buffer = fs.readFileSync(path.resolve(logFilePath))
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const localPath = path.join(os.tmpdir(), sha)
+
+    // copy the file to prevent further logs from being written
+    if (!fs.existsSync(localPath)) {
+      fs.writeFileSync(localPath, buffer)
+    }
 
     return this.percyClient.makeResource({
       resourceUrl: `/${fileName}`,
