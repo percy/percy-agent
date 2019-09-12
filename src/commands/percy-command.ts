@@ -9,7 +9,7 @@ export default class PercyCommand extends Command {
 
   agentService: AgentService
   processService: ProcessService
-  logger: winston.LoggerInstance
+  logger: winston.Logger
   percyToken: string
 
   constructor(argv: string[], config: any) {

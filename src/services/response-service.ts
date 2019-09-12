@@ -3,8 +3,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import * as puppeteer from 'puppeteer'
-import {URL} from 'url'
-import logger from '../utils/logger'
+import { URL } from 'url'
 import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
@@ -38,7 +37,12 @@ export default class ResponseService extends PercyClientService {
     return false
   }
 
-  async processResponse(rootResourceUrl: string, response: puppeteer.Response, width: number): Promise<any | null> {
+  async processResponse(
+    rootResourceUrl: string,
+    response: puppeteer.Response,
+    width: number,
+    logger: any,
+  ): Promise<any | null> {
     logger.debug(`processing response: ${response.url()} for width: ${width}`)
     const url = this.parseRequestPath(response.url())
 
@@ -74,7 +78,7 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    const localCopy = await this.makeLocalCopy(response)
+    const localCopy = await this.makeLocalCopy(response, logger)
 
     const responseBodySize = fs.statSync(localCopy).size
     if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
@@ -84,13 +88,13 @@ export default class ResponseService extends PercyClientService {
     }
 
     const contentType = response.headers()['content-type']
-    const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType)
+    const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType, logger)
     this.responsesProcessed.set(url, resource)
 
     return resource
   }
 
-  async makeLocalCopy(response: puppeteer.Response): Promise<string> {
+  async makeLocalCopy(response: puppeteer.Response, logger: any): Promise<string> {
     logger.debug(`Making local copy of response: ${response.url()}`)
 
     const buffer = await response.buffer()

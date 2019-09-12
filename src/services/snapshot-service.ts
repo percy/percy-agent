@@ -1,7 +1,10 @@
+import * as crypto from 'crypto'
+import * as fs from 'fs'
+import * as path from 'path'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
-import {SnapshotOptions} from '../percy-agent-client/snapshot-options'
-import {logError, profile} from '../utils/logger'
-import {AssetDiscoveryService} from './asset-discovery-service'
+import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
+import { logError, profile } from '../utils/logger'
+import { AssetDiscoveryService } from './asset-discovery-service'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
@@ -23,24 +26,36 @@ export default class SnapshotService extends PercyClientService {
     rootResourceUrl: string,
     domSnapshot = '',
     options: SnapshotOptions,
+    logger: any,
   ): Promise<any[]> {
-    const rootResource = await this.percyClient.makeResource({
+    const rootResource = this.percyClient.makeResource({
       resourceUrl: rootResourceUrl,
       content: domSnapshot,
       isRoot: true,
       mimetype: 'text/html',
     })
 
-    let resources: any[] = []
     const discoveredResources = await this.assetDiscoveryService.discoverResources(
       rootResourceUrl,
       domSnapshot,
       options,
+      logger,
     )
-    resources = resources.concat([rootResource])
-    resources = resources.concat(discoveredResources)
 
-    return resources
+    return [rootResource].concat(discoveredResources)
+  }
+
+  buildLogResource(localPath: string) {
+    const fileName = path.basename(localPath)
+    const buffer = fs.readFileSync(path.resolve(localPath))
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+
+    return this.percyClient.makeResource({
+      resourceUrl: `/${fileName}`,
+      mimetype: 'text/plain',
+      localPath,
+      sha,
+    })
   }
 
   create(
