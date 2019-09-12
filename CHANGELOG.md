@@ -1,3 +1,10 @@
+## [0.12.2](https://github.com/percy/percy-agent/compare/v0.12.1...v0.12.2) (2019-09-12)
+
+
+### Bug Fixes
+
+* Exit nicely if the passed directory doesn't exist ([#344](https://github.com/percy/percy-agent/issues/344)) ([f65acaf](https://github.com/percy/percy-agent/commit/f65acaf))
+
 ## [0.12.1](https://github.com/percy/percy-agent/compare/v0.12.0...v0.12.1) (2019-09-12)
 
 
