@@ -1,3 +1,10 @@
+## [0.12.1](https://github.com/percy/percy-agent/compare/v0.12.0...v0.12.1) (2019-09-12)
+
+
+### Bug Fixes
+
+* Prevent writing to the snapshot log once the resource sha is created ([#345](https://github.com/percy/percy-agent/issues/345)) ([2a46561](https://github.com/percy/percy-agent/commit/2a46561))
+
 # [0.12.0](https://github.com/percy/percy-agent/compare/v0.11.0...v0.12.0) (2019-09-12)
 
 
