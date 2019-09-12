@@ -1,3 +1,10 @@
+# [0.12.0](https://github.com/percy/percy-agent/compare/v0.11.0...v0.12.0) (2019-09-12)
+
+
+### Features
+
+* Automatically capture Winston logs per-snapshot ([#343](https://github.com/percy/percy-agent/issues/343)) ([780bb1c](https://github.com/percy/percy-agent/commit/780bb1c))
+
 # [0.11.0](https://github.com/percy/percy-agent/compare/v0.10.1...v0.11.0) (2019-09-03)
 
 
