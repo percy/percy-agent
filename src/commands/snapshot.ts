@@ -1,4 +1,5 @@
-import {flags} from '@oclif/command'
+import { flags } from '@oclif/command'
+import { existsSync } from 'fs'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import ConfigurationService from '../services/configuration-service'
 import StaticSnapshotService from '../services/static-snapshot-service'
@@ -59,7 +60,7 @@ export default class Snapshot extends PercyCommand {
   async run() {
     await super.run()
 
-    const {args, flags} = this.parse(Snapshot)
+    const { args, flags } = this.parse(Snapshot)
 
     const configurationService = new ConfigurationService()
     configurationService.applyFlags(flags)
@@ -70,10 +71,16 @@ export default class Snapshot extends PercyCommand {
     if (!this.percyWillRun()) { this.exit(0) }
 
     const baseUrl = configuration['static-snapshots']['base-url']
+    const snapshotPath = configuration['static-snapshots'].path
 
     // check that base url starts with a slash and exit if it is missing
     if (baseUrl[0] !== '/') {
       logger.warn('The base-url flag must begin with a slash.')
+      this.exit(1)
+    }
+
+    if (!existsSync(snapshotPath)) {
+      logger.warn(`Exiting. The passed directory (${snapshotPath}) is empty.`)
       this.exit(1)
     }
 
