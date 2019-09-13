@@ -1,4 +1,5 @@
 export interface DOMOptions {
+  percyCSS?: string,
   enableJavaScript?: boolean,
   domTransformation?: (dom: HTMLDocument) => void
 }
@@ -99,6 +100,10 @@ class DOM {
       this.serializeCSSOM(clonedDOM)
     }
 
+    if (this.options.percyCSS) {
+      this.applyPercySpecificCSS();
+    }
+
     return clonedDOM.documentElement
   }
 
@@ -193,6 +198,14 @@ class DOM {
         documentClone.head.appendChild($style)
       }
     })
+  }
+
+  /**
+   * Inject Percy specific CSS into the cloned DOM snapshot
+   *
+   */
+  private applyPercySpecificCSS() {
+    // TODO
   }
 
   /**
