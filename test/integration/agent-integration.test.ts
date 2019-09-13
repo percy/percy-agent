@@ -13,8 +13,10 @@ declare var PercyAgent: any
 
 async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
   await page.addScriptTag({path: agentJsFilename()})
+
   const domSnapshot = await page.evaluate((name: string, options: any) => {
     const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
+
     return percyAgentClient.snapshot(name, options)
   }, name, options)
 
@@ -61,10 +63,17 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('Example Domain')
     })
 
-    it('snapshots an HTTPS site', async () => {
+    it('applies Percy specific CSS', async () => {
       await page.goto('https://example.com')
-      const domSnapshot = await snapshot(page, 'Example.com HTTPS snapshot')
-      expect(domSnapshot).contains('Example Domain')
+      await snapshot(page, 'Percy Specific CSS', {
+        percyCSS: `body { background-color: purple !important; }`
+      })
+    });
+
+    it('snapshots an HTTPS, CORS, HSTS, & CSP site', async () => {
+      await page.goto('https://sdk-test.percy.dev')
+      const domSnapshot = await snapshot(page, 'SDK example page snapshot')
+      expect(domSnapshot).contains('SDK Test Website')
     })
 
     it('snapshots an invalid HTTPS site', async () => {

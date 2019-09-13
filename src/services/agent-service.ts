@@ -95,6 +95,7 @@ export class AgentService {
 
     const configuration = new ConfigurationService().configuration
     const snapshotOptions: SnapshotOptions = {
+      percyCSS: request.body.percyCSS || configuration.snapshot.percyCSS,
       widths: request.body.widths || configuration.snapshot.widths,
       enableJavaScript: request.body.enableJavaScript != null
         ? request.body.enableJavaScript
@@ -102,7 +103,14 @@ export class AgentService {
       minHeight: request.body.minHeight || configuration.snapshot['min-height'],
     }
 
-    const domSnapshot = request.body.domSnapshot
+    let domSnapshot = request.body.domSnapshot
+    let percyCSSFileName = `${Date.now()}-percy-specific.css` as string;
+
+    // Inject the link to the percy specific css if the option is passed
+    if (snapshotOptions.percyCSS) {
+      const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
+      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink  + '$&');
+    }
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
@@ -118,6 +126,8 @@ export class AgentService {
 
     resources = resources.concat(
       this.snapshotService.buildLogResource(snapshotLog),
+      // @ts-ignore we won't write anything if no css is passed
+      this.snapshotService.buildPercyCSSResource(percyCSSFileName, snapshotOptions.percyCSS),
     )
 
     const snapshotCreation = this.snapshotService.create(

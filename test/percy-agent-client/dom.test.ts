@@ -62,6 +62,10 @@ describe('DOM -', () => {
     it('always has a doctype', () => {
       expect(dom.snapshotString()).to.contain('<!DOCTYPE html>')
     })
+
+    it('does not create Percy CSS when the option is not passed', () => {
+      expect(dom.snapshotString()).to.not.contain('data-percy-specific-css')
+    });
   })
 
   describe('passing a DOM transform option', () => {

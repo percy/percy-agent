@@ -65,6 +65,25 @@ export default class SnapshotService extends PercyClientService {
     })
   }
 
+  buildPercyCSSResource(fileName: string, css: string) {
+    if (!css) return []
+    const buffer = Buffer.from(css, 'utf8');
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const localPath = path.join(os.tmpdir(), sha)
+
+    // write the SHA file if it doesn't exist
+    if (!fs.existsSync(localPath)) {
+      fs.writeFileSync(localPath, buffer, 'utf8');
+    }
+
+    return this.percyClient.makeResource({
+      resourceUrl: `/${fileName}`,
+      mimetype: 'text/css',
+      localPath,
+      sha,
+    })
+  }
+
   create(
     name: string,
     resources: any[],

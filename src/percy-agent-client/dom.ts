@@ -100,10 +100,6 @@ class DOM {
       this.serializeCSSOM(clonedDOM)
     }
 
-    if (this.options.percyCSS) {
-      this.applyPercySpecificCSS();
-    }
-
     return clonedDOM.documentElement
   }
 
@@ -201,14 +197,6 @@ class DOM {
   }
 
   /**
-   * Inject Percy specific CSS into the cloned DOM snapshot
-   *
-   */
-  private applyPercySpecificCSS() {
-    // TODO
-  }
-
-  /**
    * A single place to mutate the original DOM. This should be the last resort!
    * This will change the customer's DOM and have a possible impact on the
    * customer's application.
@@ -219,8 +207,8 @@ class DOM {
       const ID =
         '_' +
         Math.random()
-          .toString(36)
-          .substr(2, 9)
+        .toString(36)
+        .substr(2, 9)
 
       $el.setAttribute('data-percy-element-id', ID)
     }
