@@ -106,12 +106,12 @@ export class AgentService {
     }
 
     let domSnapshot = request.body.domSnapshot
-    const percyCSSFileName = `${Date.now()}-percy-specific.css` as string
+    const percyCSSFileName = `percy-specific.${Date.now()}.css` as string
 
     // Inject the link to the percy specific css if the option is passed
     if (snapshotOptions.percyCSS) {
       const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
-      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink  + '$&')
+      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink + '$&')
     }
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
