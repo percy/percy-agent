@@ -38,6 +38,7 @@ export default class PercyAgent {
       this.client.post(SNAPSHOT_PATH, {
         name,
         url: documentObject.URL,
+        percyCSS: options.percyCSS,
         // enableJavascript is deprecated. Use enableJavaScript
         enableJavaScript: options.enableJavaScript || options.enableJavascript,
         widths: options.widths,

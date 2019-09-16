@@ -18,6 +18,7 @@ describe('ConfigurationService', () => {
       expect(subject.snapshot.widths).to.eql([375, 1280])
       expect(subject.snapshot['min-height']).to.eql(1024)
       expect(subject.snapshot['enable-javascript']).to.eql(true)
+      expect(subject.snapshot['percy-css']).to.eql('iframe { display: none; }')
       expect(subject['static-snapshots'].path).to.eql('_site/')
       expect(subject['static-snapshots'].port).to.eql(9999)
       expect(subject['static-snapshots']['base-url']).to.eql('/blog/')

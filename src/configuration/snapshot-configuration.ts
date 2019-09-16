@@ -1,6 +1,6 @@
 export interface SnapshotConfiguration {
-  percyCSS: string,
   widths: number[],
+  'percy-css': string,
   'min-height': number,
   'enable-javascript'?: boolean
 }

@@ -95,7 +95,7 @@ export class AgentService {
 
     const configuration = new ConfigurationService().configuration
     // trim the string of whitespace and concat per-snapshot CSS with the globally specified CSS
-    const percySpecificCSS = configuration.snapshot.percyCSS.concat(request.body.percyCSS || '').trim() || ''
+    const percySpecificCSS = configuration.snapshot['percy-css'].concat(request.body.percyCSS || '').trim() || ''
     const snapshotOptions: SnapshotOptions = {
       percyCSS: percySpecificCSS,
       widths: request.body.widths || configuration.snapshot.widths,

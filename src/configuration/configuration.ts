@@ -13,7 +13,7 @@ export interface Configuration {
 export const DEFAULT_CONFIGURATION: Configuration = {
   'version': 1.0,
   'snapshot': {
-    'percyCSS': '',
+    'percy-css': '',
     'widths': [1280, 375], // px
     'min-height': 1024, // px
   },
