@@ -94,8 +94,10 @@ export class AgentService {
     if (!this.snapshotService) { return response.json({success: false}) }
 
     const configuration = new ConfigurationService().configuration
+    // trim the string of whitespace and concat per-snapshot CSS with the globally specified CSS
+    const percySpecificCSS = configuration.snapshot.percyCSS.concat(request.body.percyCSS || '').trim() || ''
     const snapshotOptions: SnapshotOptions = {
-      percyCSS: request.body.percyCSS || configuration.snapshot.percyCSS,
+      percyCSS: percySpecificCSS,
       widths: request.body.widths || configuration.snapshot.widths,
       enableJavaScript: request.body.enableJavaScript != null
         ? request.body.enableJavaScript
@@ -104,12 +106,12 @@ export class AgentService {
     }
 
     let domSnapshot = request.body.domSnapshot
-    let percyCSSFileName = `${Date.now()}-percy-specific.css` as string;
+    const percyCSSFileName = `${Date.now()}-percy-specific.css` as string
 
     // Inject the link to the percy specific css if the option is passed
     if (snapshotOptions.percyCSS) {
       const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
-      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink  + '$&');
+      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink  + '$&')
     }
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {

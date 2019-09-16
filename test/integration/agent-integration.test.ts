@@ -63,13 +63,6 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('Example Domain')
     })
 
-    it('applies Percy specific CSS', async () => {
-      await page.goto('https://example.com')
-      await snapshot(page, 'Percy Specific CSS', {
-        percyCSS: `body { background-color: purple !important; }`
-      })
-    });
-
     it('snapshots an HTTPS, CORS, HSTS, & CSP site', async () => {
       await page.goto('https://sdk-test.percy.dev')
       const domSnapshot = await snapshot(page, 'SDK example page snapshot')
@@ -109,6 +102,17 @@ describe('Integration test', () => {
 
     after(() => {
       server.close()
+    })
+
+    it('applies Percy specific CSS', async () => {
+      await page.goto(`http://localhost:${PORT}/percy-specific-css.html`)
+      await snapshot(page, 'Percy Specific CSS', {
+        percyCSS: `.percy-only-css-snapshot {
+                     height: 100px;
+                     width: 100px;
+                     background-color: purple;
+                  }`,
+      })
     })
 
     describe('large resources', () => {

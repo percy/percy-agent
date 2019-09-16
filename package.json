@@ -112,7 +112,7 @@
   "homepage": "https://github.com/percy/percy-agent",
   "husky": {
     "hooks": {
-      "pre-commit": ""
+      "pre-commit": "yarn lint"
     }
   },
   "keywords": [
