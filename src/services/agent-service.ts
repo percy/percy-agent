@@ -128,7 +128,7 @@ export class AgentService {
 
     resources = resources.concat(
       this.snapshotService.buildLogResource(snapshotLog),
-      // @ts-ignore we won't write anything if no css is passed
+      // @ts-ignore we won't write anything if css is not is passed
       this.snapshotService.buildPercyCSSResource(percyCSSFileName, snapshotOptions.percyCSS),
     )
 
