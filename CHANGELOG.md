@@ -1,3 +1,10 @@
+# [0.13.0](https://github.com/percy/percy-agent/compare/v0.12.2...v0.13.0) (2019-09-17)
+
+
+### Features
+
+* Introduce an API for Percy Specific CSS ([#346](https://github.com/percy/percy-agent/issues/346)) ([6158f57](https://github.com/percy/percy-agent/commit/6158f57))
+
 ## [0.12.2](https://github.com/percy/percy-agent/compare/v0.12.1...v0.12.2) (2019-09-12)
 
 
