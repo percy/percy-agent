@@ -5,4 +5,5 @@ export interface SnapshotOptions {
   minHeight?: number,
   minimumHeight?: number, // deprecated. Use minHeight
   document?: Document,
+  percyCSS?: string
 }

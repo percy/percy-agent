@@ -203,11 +203,7 @@ class DOM {
    */
   private mutateOriginalDOM() {
     function createUID($el: Element) {
-      const ID =
-        '_' +
-        Math.random()
-          .toString(36)
-          .substr(2, 9)
+      const ID = `_${Math.random().toString(36).substr(2, 9)}`
 
       $el.setAttribute('data-percy-element-id', ID)
     }

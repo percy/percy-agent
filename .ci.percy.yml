@@ -1,0 +1,8 @@
+version: 1
+snapshot:
+  percy-css: |
+    .percy-only-css-global {
+      height: 300px;
+      width: 300px;
+      background-color: blue;
+    }

@@ -3,6 +3,10 @@ snapshot:
   widths: [375, 1280]
   min-height: 1024 # px
   enable-javascript: true
+  percy-css: |
+    iframe {
+      display: none;
+    }
 static-snapshots:
   path: _site/
   port: 9999

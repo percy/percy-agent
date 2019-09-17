@@ -13,8 +13,10 @@ declare var PercyAgent: any
 
 async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
   await page.addScriptTag({path: agentJsFilename()})
+
   const domSnapshot = await page.evaluate((name: string, options: any) => {
     const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
+
     return percyAgentClient.snapshot(name, options)
   }, name, options)
 
@@ -61,10 +63,10 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('Example Domain')
     })
 
-    it('snapshots an HTTPS site', async () => {
-      await page.goto('https://example.com')
-      const domSnapshot = await snapshot(page, 'Example.com HTTPS snapshot')
-      expect(domSnapshot).contains('Example Domain')
+    it('snapshots an HTTPS, CORS, HSTS, & CSP site', async () => {
+      await page.goto('https://sdk-test.percy.dev')
+      const domSnapshot = await snapshot(page, 'SDK example page snapshot')
+      expect(domSnapshot).contains('SDK Test Website')
     })
 
     it('snapshots an invalid HTTPS site', async () => {
@@ -100,6 +102,17 @@ describe('Integration test', () => {
 
     after(() => {
       server.close()
+    })
+
+    it('applies Percy specific CSS', async () => {
+      await page.goto(`http://localhost:${PORT}/percy-specific-css.html`)
+      await snapshot(page, 'Percy Specific CSS', {
+        percyCSS: `.percy-only-css-snapshot {
+                     height: 100px;
+                     width: 100px;
+                     background-color: purple;
+                  }`,
+      })
     })
 
     describe('large resources', () => {
