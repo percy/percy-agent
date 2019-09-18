@@ -1,3 +1,4 @@
+import Axios from 'axios'
 import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as os from 'os'
@@ -12,7 +13,8 @@ import ResourceService from './resource-service'
 export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
 
-  readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 304]
+  readonly REDIRECT_STATUSES = [301, 302, 304, 307, 308]
+  readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 301, 302, 304, 307, 308]
   responsesProcessed: Map<string, string> = new Map()
   allowedHostnames: string[]
 
@@ -52,6 +54,7 @@ export default class ResponseService extends PercyClientService {
 
     const request = response.request()
     const parsedRootResourceUrl = new URL(rootResourceUrl)
+    const isRedirect = this.REDIRECT_STATUSES.includes(response.status())
     const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
 
     if (request.url() === rootResourceUrl) {
@@ -72,15 +75,19 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    if (!this.shouldCaptureResource(rootUrl, response.url())) {
-      // Disallow remote redirects.
-      logger.debug(`Skipping [is_remote_redirect] [${width} px]: ${response.url()}`)
-      return
+    if (isRedirect) {
+      // We don't want to follow too deep of a chain
+      if (request.redirectChain().length > 4) {
+        logger.debug(`Skipping [redirect_too_deep: ${request.redirectChain().length}] [${width} px]: ${response.url()}`)
+        return
+      }
+
+      return this.handleRedirect(url, width, response, logger)
     }
 
     const localCopy = await this.makeLocalCopy(response, logger)
-
     const responseBodySize = fs.statSync(localCopy).size
+
     if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
       // Skip large resources
       logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
@@ -90,6 +97,35 @@ export default class ResponseService extends PercyClientService {
     const contentType = response.headers()['content-type']
     const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType, logger)
     this.responsesProcessed.set(url, resource)
+
+    return resource
+  }
+
+  async handleRedirect(redirectedURL: string, width: number, response: puppeteer.Response, logger: any) {
+    logger.debug(`Making local copy of redirected response: ${redirectedURL}`)
+
+    const { data } = await Axios(redirectedURL, { responseType: 'text' }) as any
+    const buffer = Buffer.from(data, 'utf8')
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const localCopy = path.join(this.tmpDir(), sha)
+
+    if (!fs.existsSync(localCopy)) {
+      fs.writeFileSync(localCopy, buffer)
+    } else {
+      logger.debug(`Skipping file copy [already_copied]: ${redirectedURL}`)
+    }
+
+    const responseBodySize = fs.statSync(localCopy).size
+    if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
+      // Skip large resources
+      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
+      return
+    }
+
+    // By not setting it to text, it serves it correctly it seems?
+    const contentType = ''
+    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, contentType, logger)
+    this.responsesProcessed.set(redirectedURL, resource)
 
     return resource
   }

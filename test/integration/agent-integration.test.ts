@@ -88,6 +88,13 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('Buildkite')
     })
 
+    it('snapshots a site with redirected assets', async () => {
+      await page.goto('https://kind-goldstine-64b202.netlify.com/redirects/')
+      const domSnapshot = await snapshot(page, 'Redirects snapshot')
+
+      expect(domSnapshot).contains('redirected resource')
+    })
+
   })
 
   describe('on local test cases', () => {
