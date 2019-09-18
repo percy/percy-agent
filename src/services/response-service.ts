@@ -4,6 +4,7 @@ import * as os from 'os'
 import * as path from 'path'
 import * as puppeteer from 'puppeteer'
 import { URL } from 'url'
+import domainMatch from '../utils/domain-match'
 import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
@@ -28,8 +29,7 @@ export default class ResponseService extends PercyClientService {
     }
 
     // Capture if the resourceUrl has a hostname in the allowedHostnames
-    const parsedResourceUrl = new URL(resourceUrl)
-    if (this.allowedHostnames.some((hostname) => parsedResourceUrl.hostname === hostname)) {
+    if (this.allowedHostnames.some((hostname) => domainMatch(hostname, resourceUrl))) {
       return true
     }
 
