@@ -1,3 +1,10 @@
+# [0.14.0](https://github.com/percy/percy-agent/compare/v0.13.0...v0.14.0) (2019-09-18)
+
+
+### Features
+
+* :sparkles: Allow wildcard hostnames ([#347](https://github.com/percy/percy-agent/issues/347)) ([730161f](https://github.com/percy/percy-agent/commit/730161f))
+
 # [0.13.0](https://github.com/percy/percy-agent/compare/v0.12.2...v0.13.0) (2019-09-17)
 
 
