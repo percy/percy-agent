@@ -10,11 +10,11 @@ import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
 
+const REDIRECT_STATUSES = [301, 302, 304, 307, 308]
+const ALLOWED_RESPONSE_STATUSES = [200, 201, ...REDIRECT_STATUSES]
+
 export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
-
-  readonly REDIRECT_STATUSES = [301, 302, 304, 307, 308]
-  readonly ALLOWED_RESPONSE_STATUSES = [200, 201, 301, 302, 304, 307, 308]
   responsesProcessed: Map<string, string> = new Map()
   allowedHostnames: string[]
 
@@ -54,7 +54,7 @@ export default class ResponseService extends PercyClientService {
 
     const request = response.request()
     const parsedRootResourceUrl = new URL(rootResourceUrl)
-    const isRedirect = this.REDIRECT_STATUSES.includes(response.status())
+    const isRedirect = REDIRECT_STATUSES.includes(response.status())
     const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
 
     if (request.url() === rootResourceUrl) {
@@ -63,7 +63,7 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    if (!this.ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
+    if (!ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
       // Only allow 2XX responses:
       logger.debug(`Skipping [disallowed_response_status_${response.status()}] [${width} px]: ${response.url()}`)
       return
