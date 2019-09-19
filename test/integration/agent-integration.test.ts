@@ -89,7 +89,7 @@ describe('Integration test', () => {
     })
 
     it('snapshots a site with redirected assets', async () => {
-      await page.goto('https://kind-goldstine-64b202.netlify.com/redirects/')
+      await page.goto('https://sdk-test.percy.dev/redirects/')
       await page.waitFor('.note')
       const domSnapshot = await snapshot(page, 'Redirects snapshot')
 

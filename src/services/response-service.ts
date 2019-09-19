@@ -80,7 +80,7 @@ export default class ResponseService extends PercyClientService {
     if (isRedirect) {
       // We don't want to follow too deep of a chain
       // `followRedirects` is the npm package axios uses to follow redirected requests
-      // we'll use their max redirect setting as a gaurd here
+      // we'll use their max redirect setting as a guard here
       if (request.redirectChain().length > followRedirects.maxRedirects) {
         logger.debug(`Skipping [redirect_too_deep: ${request.redirectChain().length}] [${width} px]: ${response.url()}`)
         return
