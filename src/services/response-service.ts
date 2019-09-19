@@ -98,8 +98,8 @@ export default class ResponseService extends PercyClientService {
   async handleRedirectResouce(redirectedURL: string, response: puppeteer.Response, width: number, logger: any) {
     logger.debug(`Making local copy of redirected response: ${redirectedURL}`)
 
-    const { data } = await Axios(redirectedURL, { responseType: 'text' }) as any
-    const buffer = Buffer.from(data, 'utf8')
+    const { data, headers } = await Axios(redirectedURL, { responseType: 'arraybuffer' }) as any
+    const buffer = Buffer.from(data)
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
     const localCopy = path.join(os.tmpdir(), sha)
     const didWriteFile = this.maybeWriteFile(localCopy, buffer)
@@ -115,7 +115,8 @@ export default class ResponseService extends PercyClientService {
     }
 
     // By not setting contentType, it serves it correctly in our proxy
-    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, '', logger)
+    const contentType = headers['content-type'] as string
+    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, contentType, logger)
     this.responsesProcessed.set(redirectedURL, resource)
 
     return resource

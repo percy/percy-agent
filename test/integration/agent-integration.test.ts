@@ -90,9 +90,10 @@ describe('Integration test', () => {
 
     it('snapshots a site with redirected assets', async () => {
       await page.goto('https://kind-goldstine-64b202.netlify.com/redirects/')
+      await page.waitFor('.note')
       const domSnapshot = await snapshot(page, 'Redirects snapshot')
 
-      expect(domSnapshot).contains('redirected resource')
+      expect(domSnapshot).contains('correctly snapshotted')
     })
 
   })
