@@ -88,6 +88,14 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('Buildkite')
     })
 
+    it('snapshots a site with redirected assets', async () => {
+      await page.goto('https://sdk-test.percy.dev/redirects/')
+      await page.waitFor('.note')
+      const domSnapshot = await snapshot(page, 'Redirects snapshot')
+
+      expect(domSnapshot).contains('correctly snapshotted')
+    })
+
   })
 
   describe('on local test cases', () => {
