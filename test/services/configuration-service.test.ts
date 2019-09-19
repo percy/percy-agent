@@ -52,9 +52,8 @@ describe('ConfigurationService', () => {
       expect(subject['static-snapshots']['snapshot-files']).to.eql('flags/*.html')
       expect(subject['static-snapshots']['ignore-files']).to.eql('ignore-flags/*.html')
       expect(subject.agent['asset-discovery']['network-idle-timeout']).to.eql(51)
-      expect(subject.agent['asset-discovery']['allowed-hostnames']).to.eql(
-        ['additional-hostname.local'],
-      )
+      expect(subject.agent['asset-discovery']['allowed-hostnames'][1]).to.eql('localassets.dev')
+      expect(subject.agent['asset-discovery']['allowed-hostnames'][0]).to.eql('additional-hostname.local')
     })
   })
 

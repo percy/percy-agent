@@ -40,7 +40,8 @@ export default class ConfigurationService {
     }
 
     if (flags['allowed-hostname']) {
-      this.configuration.agent['asset-discovery']['allowed-hostnames'] = flags['allowed-hostname']
+      this.configuration.agent['asset-discovery']['allowed-hostnames'] =
+        flags['allowed-hostname'].concat(this.configuration.agent['asset-discovery']['allowed-hostnames'])
     }
 
     if (flags['network-idle-timeout']) {
