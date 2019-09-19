@@ -98,7 +98,6 @@ export default class ResponseService extends PercyClientService {
    * will download the resource from node, and save the content as the orignal
    * requesting url. This works since axios follows the redirect chain
    * automatically.
-   *
    */
   async handleRedirectResouce(originalURL: string, redirectedURL: string, width: number, logger: any) {
     logger.debug(`Making local copy of redirected response: ${originalURL}`)
@@ -119,9 +118,9 @@ export default class ResponseService extends PercyClientService {
       return
     }
 
-    // By not setting contentType, it serves it correctly in our proxy
     const contentType = headers['content-type'] as string
     const resource = this.resourceService.createResourceFromFile(originalURL, localCopy, contentType, logger)
+
     this.responsesProcessed.set(originalURL, resource)
     this.responsesProcessed.set(redirectedURL, resource)
 
@@ -131,7 +130,6 @@ export default class ResponseService extends PercyClientService {
   /**
    * Handle processing and saving a resource coming from Puppeteer. This will
    * take the response object from Puppeteer and save the asset locally.
-   *
    */
   async handlePuppeteerResource(url: string, response: puppeteer.Response, width: number, logger: any) {
     logger.debug(`Making local copy of response: ${response.url()}`)
@@ -162,7 +160,6 @@ export default class ResponseService extends PercyClientService {
   /**
    * Write a local copy of the SHA only if it doesn't exist on the file system
    * already.
-   *
    */
   maybeWriteFile(filePath: string, buffer: any): boolean {
     if (!fs.existsSync(filePath)) {
@@ -176,7 +173,6 @@ export default class ResponseService extends PercyClientService {
   /**
    * Ensures the saved file is not larger than what the Percy API accepts. It
    * returns if the file is too large, as well as the files size.
-   *
    */
   checkFileSize(filePath: string) {
     const responseBodySize = fs.statSync(filePath).size
