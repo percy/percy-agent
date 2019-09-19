@@ -1,5 +1,7 @@
 import Axios from 'axios'
 import * as crypto from 'crypto'
+// @ts-ignore
+import * as followRedirects from 'follow-redirects'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
@@ -77,12 +79,15 @@ export default class ResponseService extends PercyClientService {
 
     if (isRedirect) {
       // We don't want to follow too deep of a chain
-      if (request.redirectChain().length > 4) {
+      // `followRedirects` is the npm package axios uses to follow redirected requests
+      // we'll use their max redirect setting as a gaurd here
+      if (request.redirectChain().length > followRedirects.maxRedirects) {
         logger.debug(`Skipping [redirect_too_deep: ${request.redirectChain().length}] [${width} px]: ${response.url()}`)
         return
       }
 
-      return this.handleRedirectResouce(url, response, width, logger)
+      const redirectedURL = `${rootUrl}${response.headers().location}` as string
+      return this.handleRedirectResouce(url, redirectedURL, width, logger)
     }
 
     return this.handlePuppeteerResource(url, response, width, logger)
@@ -95,10 +100,10 @@ export default class ResponseService extends PercyClientService {
    * automatically.
    *
    */
-  async handleRedirectResouce(redirectedURL: string, response: puppeteer.Response, width: number, logger: any) {
-    logger.debug(`Making local copy of redirected response: ${redirectedURL}`)
+  async handleRedirectResouce(originalURL: string, redirectedURL: string, width: number, logger: any) {
+    logger.debug(`Making local copy of redirected response: ${originalURL}`)
 
-    const { data, headers } = await Axios(redirectedURL, { responseType: 'arraybuffer' }) as any
+    const { data, headers } = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
     const buffer = Buffer.from(data)
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
     const localCopy = path.join(os.tmpdir(), sha)
@@ -106,17 +111,18 @@ export default class ResponseService extends PercyClientService {
     const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
 
     if (!didWriteFile) {
-      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
+      logger.debug(`Skipping file copy [already_copied]: ${originalURL}`)
     }
 
     if (fileIsTooLarge) {
-      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
+      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${originalURL}`)
       return
     }
 
     // By not setting contentType, it serves it correctly in our proxy
     const contentType = headers['content-type'] as string
-    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, contentType, logger)
+    const resource = this.resourceService.createResourceFromFile(originalURL, localCopy, contentType, logger)
+    this.responsesProcessed.set(originalURL, resource)
     this.responsesProcessed.set(redirectedURL, resource)
 
     return resource

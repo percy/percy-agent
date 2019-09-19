@@ -29,6 +29,7 @@
     "cross-spawn": "^6.0.5",
     "deepmerge": "^4.0.0",
     "express": "^4.16.3",
+    "follow-redirects": "^1.9.0",
     "generic-pool": "^3.7.1",
     "globby": "^10.0.1",
     "js-yaml": "^3.13.1",
