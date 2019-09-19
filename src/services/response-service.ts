@@ -82,71 +82,99 @@ export default class ResponseService extends PercyClientService {
         return
       }
 
-      return this.handleRedirect(url, width, response, logger)
+      return this.handleRedirectResouce(url, response, width, logger)
     }
 
-    const localCopy = await this.makeLocalCopy(response, logger)
-    const responseBodySize = fs.statSync(localCopy).size
+    return this.handlePuppeteerResource(url, response, width, logger)
+  }
 
-    if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
-      // Skip large resources
+  /**
+   * Handle processing and saving a resource that has a redirect chain. This
+   * will download the resource from node, and save the content as the orignal
+   * requesting url. This works since axios follows the redirect chain
+   * automatically.
+   *
+   */
+  async handleRedirectResouce(redirectedURL: string, response: puppeteer.Response, width: number, logger: any) {
+    logger.debug(`Making local copy of redirected response: ${redirectedURL}`)
+
+    const { data } = await Axios(redirectedURL, { responseType: 'text' }) as any
+    const buffer = Buffer.from(data, 'utf8')
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const localCopy = path.join(os.tmpdir(), sha)
+    const didWriteFile = this.maybeWriteFile(localCopy, buffer)
+    const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
+
+    if (!didWriteFile) {
+      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
+    }
+
+    if (fileIsTooLarge) {
       logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
       return
     }
 
+    // By not setting contentType, it serves it correctly in our proxy
+    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, '', logger)
+    this.responsesProcessed.set(redirectedURL, resource)
+
+    return resource
+  }
+
+  /**
+   * Handle processing and saving a resource coming from Puppeteer. This will
+   * take the response object from Puppeteer and save the asset locally.
+   *
+   */
+  async handlePuppeteerResource(url: string, response: puppeteer.Response, width: number, logger: any) {
+    logger.debug(`Making local copy of response: ${response.url()}`)
+
+    const buffer = await response.buffer()
+    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+    const localCopy = path.join(os.tmpdir(), sha)
+    const didWriteFile = this.maybeWriteFile(localCopy, buffer)
+
+    if (!didWriteFile) {
+      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
+    }
+
     const contentType = response.headers()['content-type']
+    const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
+
+    if (fileIsTooLarge) {
+      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
+      return
+    }
+
     const resource = this.resourceService.createResourceFromFile(url, localCopy, contentType, logger)
     this.responsesProcessed.set(url, resource)
 
     return resource
   }
 
-  async handleRedirect(redirectedURL: string, width: number, response: puppeteer.Response, logger: any) {
-    logger.debug(`Making local copy of redirected response: ${redirectedURL}`)
-
-    const { data } = await Axios(redirectedURL, { responseType: 'text' }) as any
-    const buffer = Buffer.from(data, 'utf8')
-    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
-    const localCopy = path.join(this.tmpDir(), sha)
-
-    if (!fs.existsSync(localCopy)) {
-      fs.writeFileSync(localCopy, buffer)
+  /**
+   * Write a local copy of the SHA only if it doesn't exist on the file system
+   * already.
+   *
+   */
+  maybeWriteFile(filePath: string, buffer: any): boolean {
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, buffer)
+      return true
     } else {
-      logger.debug(`Skipping file copy [already_copied]: ${redirectedURL}`)
+      return false
     }
-
-    const responseBodySize = fs.statSync(localCopy).size
-    if (responseBodySize > Constants.MAX_FILE_SIZE_BYTES) {
-      // Skip large resources
-      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
-      return
-    }
-
-    // By not setting it to text, it serves it correctly it seems?
-    const contentType = ''
-    const resource = this.resourceService.createResourceFromFile(redirectedURL, localCopy, contentType, logger)
-    this.responsesProcessed.set(redirectedURL, resource)
-
-    return resource
   }
 
-  async makeLocalCopy(response: puppeteer.Response, logger: any): Promise<string> {
-    logger.debug(`Making local copy of response: ${response.url()}`)
+  /**
+   * Ensures the saved file is not larger than what the Percy API accepts. It
+   * returns if the file is too large, as well as the files size.
+   *
+   */
+  checkFileSize(filePath: string) {
+    const responseBodySize = fs.statSync(filePath).size
+    const fileIsTooLarge = responseBodySize > Constants.MAX_FILE_SIZE_BYTES
 
-    const buffer = await response.buffer()
-    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
-    const filename = path.join(this.tmpDir(), sha)
-
-    if (!fs.existsSync(filename)) {
-      fs.writeFileSync(filename, buffer)
-    } else {
-      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
-    }
-
-    return filename
-  }
-
-  tmpDir(): string {
-    return os.tmpdir()
+    return { fileIsTooLarge, responseBodySize }
   }
 }
