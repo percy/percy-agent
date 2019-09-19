@@ -1,3 +1,10 @@
+## [0.14.1](https://github.com/percy/percy-agent/compare/v0.14.0...v0.14.1) (2019-09-19)
+
+
+### Bug Fixes
+
+* Concat hostname option from CLI & config file ([#348](https://github.com/percy/percy-agent/issues/348)) ([7090bfd](https://github.com/percy/percy-agent/commit/7090bfd))
+
 # [0.14.0](https://github.com/percy/percy-agent/compare/v0.13.0...v0.14.0) (2019-09-18)
 
 
