@@ -1,3 +1,10 @@
+# [0.15.0](https://github.com/percy/percy-agent/compare/v0.14.1...v0.15.0) (2019-09-19)
+
+
+### Features
+
+* Capture redirected assets  ([#349](https://github.com/percy/percy-agent/issues/349)) ([aa918cc](https://github.com/percy/percy-agent/commit/aa918cc))
+
 ## [0.14.1](https://github.com/percy/percy-agent/compare/v0.14.0...v0.14.1) (2019-09-19)
 
 
