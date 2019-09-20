@@ -1,3 +1,10 @@
+## [0.15.1](https://github.com/percy/percy-agent/compare/v0.15.0...v0.15.1) (2019-09-20)
+
+
+### Bug Fixes
+
+* Check for widths array length so empty arrays are never used ([#351](https://github.com/percy/percy-agent/issues/351)) ([e044749](https://github.com/percy/percy-agent/commit/e044749))
+
 # [0.15.0](https://github.com/percy/percy-agent/compare/v0.14.1...v0.15.0) (2019-09-19)
 
 
