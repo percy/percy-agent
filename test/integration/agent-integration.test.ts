@@ -96,6 +96,12 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('correctly snapshotted')
     })
 
+    it('falls back to default widths when nothing is passed', async () => {
+      await page.goto('https://sdk-test.percy.dev/')
+
+      await snapshot(page, 'Empty widths array', { widths: [] })
+    })
+
   })
 
   describe('on local test cases', () => {
