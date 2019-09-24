@@ -1,3 +1,10 @@
+## [0.15.2](https://github.com/percy/percy-agent/compare/v0.15.1...v0.15.2) (2019-09-24)
+
+
+### Bug Fixes
+
+* Add Percy specific CSS to root resource after asset discovery ([#352](https://github.com/percy/percy-agent/issues/352)) ([5984a65](https://github.com/percy/percy-agent/commit/5984a65))
+
 ## [0.15.1](https://github.com/percy/percy-agent/compare/v0.15.0...v0.15.1) (2019-09-20)
 
 
