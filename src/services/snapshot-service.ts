@@ -65,8 +65,10 @@ export default class SnapshotService extends PercyClientService {
     })
   }
 
-  buildPercyCSSResource(fileName: string, css: string) {
+  buildPercyCSSResource(fileName: string, css: string, logger: any) {
     if (!css) { return [] }
+    logger.debug(`Creating Percy Specific file: ${fileName}. CSS string: ${css}`)
+
     const buffer = Buffer.from(css, 'utf8')
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
     const localPath = path.join(os.tmpdir(), sha)
@@ -74,6 +76,8 @@ export default class SnapshotService extends PercyClientService {
     // write the SHA file if it doesn't exist
     if (!fs.existsSync(localPath)) {
       fs.writeFileSync(localPath, buffer, 'utf8')
+    } else {
+      logger.debug(`Skipping writing Percy specific file: ${fileName}.`)
     }
 
     return this.percyClient.makeResource({
