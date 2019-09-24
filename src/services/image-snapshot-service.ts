@@ -8,18 +8,24 @@ import * as path from 'path'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { ImageSnapshotsConfiguration } from '../configuration/image-snapshots-configuration'
 import logger, { logError, profile } from '../utils/logger'
+import BuildService from './build-service'
 import PercyClientService from './percy-client-service'
 
 const ALLOWED_IMAGE_TYPES = /\.(png|jpg|jpeg)$/i
 
 export default class ImageSnapshotService extends PercyClientService {
-  private buildId: number | null = null
+  private readonly buildService: BuildService
   private readonly configuration: ImageSnapshotsConfiguration
 
   constructor(configuration?: ImageSnapshotsConfiguration) {
     super()
 
+    this.buildService = new BuildService()
     this.configuration = configuration || DEFAULT_CONFIGURATION['image-snapshots']
+  }
+
+  get buildId() {
+    return this.buildService.buildId
   }
 
   makeLocalCopy(imagePath: string) {
@@ -99,11 +105,8 @@ export default class ImageSnapshotService extends PercyClientService {
 
   async snapshotAll() {
     try {
-      // start build without `BuildService` to avoid duplicate `PercyClient` instances
-      const build = await this.percyClient.createBuild()
-      this.buildId = parseInt(build.body.data.id) as number
-
-      logger.debug('Uploading snapshots of static images')
+      await this.buildService.create()
+      logger.debug('uploading snapshots of static images')
 
       // intentially remove '' values from because that matches every file
       const globs = this.configuration.files.split(',').filter(Boolean)
@@ -111,9 +114,11 @@ export default class ImageSnapshotService extends PercyClientService {
 
       // wait for snapshots in parallel
       await Promise.all(paths.reduce((promises, pathname) => {
+        logger.debug(`handling snapshot: '${pathname}'`)
+
         // only snapshot supported images
         if (!pathname.match(ALLOWED_IMAGE_TYPES)) {
-          logger.info(`Skipping unsupported image type: ${path}`)
+          logger.info(`skipping unsupported image type: '${pathname}'`)
           return promises
         }
 
@@ -122,13 +127,14 @@ export default class ImageSnapshotService extends PercyClientService {
 
         const resources = this.buildResources(pathname)
         const snapshotPromise = this.createSnapshot(pathname, resources, width, height)
+        logger.info(`snapshot uploaded: '${pathname}'`)
         promises.push(snapshotPromise)
 
         return promises
       }, [] as any[]))
 
       // finalize build
-      await this.percyClient.finalizeBuild(this.buildId)
+      await this.buildService.finalize()
     } catch (error) {
       logError(error)
       process.exit(1)
