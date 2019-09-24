@@ -110,17 +110,18 @@ export default class ImageSnapshotService extends PercyClientService {
       const paths = await globby(globs, { cwd: this.configuration.path })
 
       // wait for snapshots in parallel
-      await Promise.all(paths.reduce((promises, path) => {
+      await Promise.all(paths.reduce((promises, pathname) => {
         // only snapshot supported images
-        if (!path.match(ALLOWED_IMAGE_TYPES)) {
+        if (!pathname.match(ALLOWED_IMAGE_TYPES)) {
           logger.info(`Skipping unsupported image type: ${path}`)
           return promises
         }
 
         // @ts-ignore - if dimensions are undefined, the library throws an error
-        const { width, height } = imageSize(path)
-        const resources = this.buildResources(path)
-        const snapshotPromise = this.createSnapshot(path, resources, width, height)
+        const { width, height } = imageSize(path.resolve(this.configuration.path, pathname))
+
+        const resources = this.buildResources(pathname)
+        const snapshotPromise = this.createSnapshot(pathname, resources, width, height)
         promises.push(snapshotPromise)
 
         return promises
@@ -130,6 +131,7 @@ export default class ImageSnapshotService extends PercyClientService {
       await this.percyClient.finalizeBuild(this.buildId)
     } catch (error) {
       logError(error)
+      process.exit(1)
     }
   }
 }
