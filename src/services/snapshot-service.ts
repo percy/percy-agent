@@ -23,27 +23,27 @@ export default class SnapshotService extends PercyClientService {
     this.assetDiscoveryService = new AssetDiscoveryService(buildId, configuration)
   }
 
-  async buildResources(
+  buildResources(
     rootResourceUrl: string,
     domSnapshot = '',
     options: SnapshotOptions,
     logger: any,
   ): Promise<any[]> {
-    const rootResource = this.percyClient.makeResource({
-      resourceUrl: rootResourceUrl,
-      content: domSnapshot,
-      isRoot: true,
-      mimetype: 'text/html',
-    })
-
-    const discoveredResources = await this.assetDiscoveryService.discoverResources(
+    return this.assetDiscoveryService.discoverResources(
       rootResourceUrl,
       domSnapshot,
       options,
       logger,
     )
+  }
 
-    return [rootResource].concat(discoveredResources)
+  buildRootResource(rootResourceUrl: string, domSnapshot = ''): Promise<any[]> {
+    return this.percyClient.makeResource({
+      resourceUrl: rootResourceUrl,
+      content: domSnapshot,
+      isRoot: true,
+      mimetype: 'text/html',
+    })
   }
 
   buildLogResource(logFilePath: string) {
