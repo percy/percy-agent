@@ -107,13 +107,6 @@ export class AgentService {
     }
 
     let domSnapshot = request.body.domSnapshot
-    const percyCSSFileName = `percy-specific.${Date.now()}.css` as string
-
-    // Inject the link to the percy specific css if the option is passed
-    if (snapshotOptions.percyCSS) {
-      const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
-      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink + '$&')
-    }
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
@@ -127,10 +120,21 @@ export class AgentService {
       snapshotLogger,
     )
 
+    const percyCSSFileName = `percy-specific.${Date.now()}.css` as string
+
+    // Inject the link to the percy specific css if the option is passed
+    // This must be done _AFTER_ asset discovery, or you risk their server
+    // serving a response for this CSS we're injecting into the DOM
+    if (snapshotOptions.percyCSS) {
+      const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
+      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink + '$&')
+    }
+
     resources = resources.concat(
-      this.snapshotService.buildLogResource(snapshotLog),
+      this.snapshotService.buildRootResource(request.body.url, domSnapshot),
       // @ts-ignore we won't write anything if css is not is passed
-      this.snapshotService.buildPercyCSSResource(percyCSSFileName, snapshotOptions.percyCSS),
+      this.snapshotService.buildPercyCSSResource(percyCSSFileName, snapshotOptions.percyCSS, snapshotLogger),
+      this.snapshotService.buildLogResource(snapshotLog),
     )
 
     const snapshotCreation = this.snapshotService.create(
