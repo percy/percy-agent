@@ -105,12 +105,18 @@ export default class ImageSnapshotService extends PercyClientService {
 
   async snapshotAll() {
     try {
-      await this.buildService.create()
-      logger.debug('uploading snapshots of static images')
-
       // intentially remove '' values from because that matches every file
       const globs = this.configuration.files.split(',').filter(Boolean)
       const paths = await globby(globs, { cwd: this.configuration.path })
+
+      if (!paths.length) {
+        logger.error(`no files found in '${this.configuration.path}' matching '${this.configuration.files}'`)
+        logger.info('exiting')
+        return process.exit(1)
+      }
+
+      await this.buildService.create()
+      logger.debug('uploading snapshots of static images')
 
       // wait for snapshots in parallel
       await Promise.all(paths.reduce((promises, pathname) => {
