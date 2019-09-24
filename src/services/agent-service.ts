@@ -106,14 +106,7 @@ export class AgentService {
       minHeight: request.body.minHeight || configuration.snapshot['min-height'],
     }
 
-    let domSnapshot = request.body.domSnapshot
-    const percyCSSFileName = `percy-specific.${Date.now()}.css` as string
-
-    // Inject the link to the percy specific css if the option is passed
-    if (snapshotOptions.percyCSS) {
-      const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
-      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink + '$&')
-    }
+    const domSnapshot = request.body.domSnapshot
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
@@ -126,6 +119,16 @@ export class AgentService {
       snapshotOptions,
       snapshotLogger,
     )
+
+    const percyCSSFileName = `percy-specific.${Date.now()}.css` as string
+
+    // Inject the link to the percy specific css if the option is passed
+    // This must be done _AFTER_ asset discovery, or you risk their server
+    // serving a response for this CSS we're injecting into the DOM
+    if (snapshotOptions.percyCSS) {
+      const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
+      resources[0].content = resources[0].content.replace(/<\/body>/i, cssLink + '$&')
+    }
 
     resources = resources.concat(
       // @ts-ignore we won't write anything if css is not is passed
