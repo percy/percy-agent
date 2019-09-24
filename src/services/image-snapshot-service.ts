@@ -1,6 +1,7 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as globby from 'globby'
+import { imageSize } from 'image-size'
 import * as os from 'os'
 import * as path from 'path'
 
@@ -8,6 +9,8 @@ import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { ImageSnapshotsConfiguration } from '../configuration/image-snapshots-configuration'
 import logger, { logError, profile } from '../utils/logger'
 import PercyClientService from './percy-client-service'
+
+const ALLOWED_IMAGE_TYPES = /\.(png|jpg|jpeg)$/i
 
 export default class ImageSnapshotService extends PercyClientService {
   private buildId: number | null = null
@@ -75,9 +78,13 @@ export default class ImageSnapshotService extends PercyClientService {
   async createSnapshot(
     name: string,
     resources: any[],
+    width: number,
+    height: number,
   ): Promise<any> {
     return this.percyClient.createSnapshot(this.buildId, resources, {
       name,
+      widths: [width],
+      minHeight: height,
     }).then(async (response: any) => {
       await this.percyClient.uploadMissingResources(this.buildId, response, resources)
       return response
@@ -103,11 +110,21 @@ export default class ImageSnapshotService extends PercyClientService {
       const paths = await globby(globs, { cwd: this.configuration.path })
 
       // wait for snapshots in parallel
-      await Promise.all(paths.map((path) => {
+      await Promise.all(paths.reduce((promises, path) => {
+        // only snapshot supported images
+        if (!path.match(ALLOWED_IMAGE_TYPES)) {
+          logger.info(`Skipping unsupported image type: ${path}`)
+          return promises
+        }
+
+        // @ts-ignore - if dimensions are undefined, the library throws an error
+        const { width, height } = imageSize(path)
         const resources = this.buildResources(path)
-        const snapshotPromise = this.createSnapshot(path, resources)
-        return snapshotPromise
-      }))
+        const snapshotPromise = this.createSnapshot(path, resources, width, height)
+        promises.push(snapshotPromise)
+
+        return promises
+      }, [] as any[]))
 
       // finalize build
       await this.percyClient.finalizeBuild(this.buildId)
