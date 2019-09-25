@@ -103,9 +103,8 @@ export default class ResponseService extends PercyClientService {
     logger.debug(`Making local copy of redirected response: ${originalURL}`)
 
     try {
-
-      const response = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
-      const buffer = Buffer.from(response.data)
+      const { data, headers } = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
+      const buffer = Buffer.from(data)
       const sha = crypto.createHash('sha256').update(buffer).digest('hex')
       const localCopy = path.join(os.tmpdir(), sha)
       const didWriteFile = this.maybeWriteFile(localCopy, buffer)
@@ -120,7 +119,7 @@ export default class ResponseService extends PercyClientService {
         return
       }
 
-      const contentType = response.headers['content-type'] as string
+      const contentType = headers['content-type'] as string
       const resource = this.resourceService.createResourceFromFile(originalURL, localCopy, contentType, logger)
 
       this.responsesProcessed.set(originalURL, resource)
