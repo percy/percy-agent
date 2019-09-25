@@ -1,3 +1,10 @@
+# [0.16.0](https://github.com/percy/percy-agent/compare/v0.15.2...v0.16.0) (2019-09-25)
+
+
+### Features
+
+* ✨ Add ability to snapshot a directory of static images ([#353](https://github.com/percy/percy-agent/issues/353)) ([96f1ed5](https://github.com/percy/percy-agent/commit/96f1ed5))
+
 ## [0.15.2](https://github.com/percy/percy-agent/compare/v0.15.1...v0.15.2) (2019-09-24)
 
 
