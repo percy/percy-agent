@@ -1,3 +1,10 @@
+## [0.16.1](https://github.com/percy/percy-agent/compare/v0.16.0...v0.16.1) (2019-09-25)
+
+
+### Bug Fixes
+
+* Handle 404 errors when capturing redirected assets ([#354](https://github.com/percy/percy-agent/issues/354)) ([aefcd17](https://github.com/percy/percy-agent/commit/aefcd17))
+
 # [0.16.0](https://github.com/percy/percy-agent/compare/v0.15.2...v0.16.0) (2019-09-25)
 
 
