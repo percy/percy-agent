@@ -133,8 +133,10 @@ ARGUMENTS
   UPLOADDIRECTORY  A path to the directory containing static snapshot images
 
 OPTIONS
-  -s, --files=files  [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
-                     files and directories to snapshot.
+  -f, --files=files    [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
+                       files and directories to snapshot.
+
+  -i, --ignore=ignore  Glob or comma-seperated string of globs for matching the files and directories to ignore.
 
 EXAMPLES
   $ percy upload _images/

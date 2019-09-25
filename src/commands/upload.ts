@@ -20,9 +20,14 @@ export default class Upload extends Command {
 
   static flags = {
     files: flags.string({
-      char: 's',
+      char: 'f',
       description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
       default: DEFAULT_CONFIGURATION['image-snapshots'].files,
+    }),
+    ignore: flags.string({
+      char: 'i',
+      description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
+      default: DEFAULT_CONFIGURATION['image-snapshots'].ignore,
     }),
   }
 

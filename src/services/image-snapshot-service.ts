@@ -107,10 +107,11 @@ export default class ImageSnapshotService extends PercyClientService {
     try {
       // intentially remove '' values from because that matches every file
       const globs = this.configuration.files.split(',').filter(Boolean)
-      const paths = await globby(globs, { cwd: this.configuration.path })
+      const ignore = this.configuration.ignore.split(',').filter(Boolean)
+      const paths = await globby(globs, { cwd: this.configuration.path, ignore })
 
       if (!paths.length) {
-        logger.error(`no files found in '${this.configuration.path}' matching '${this.configuration.files}'`)
+        logger.error(`no matching files found in '${this.configuration.path}''`)
         logger.info('exiting')
         return process.exit(1)
       }

@@ -38,5 +38,6 @@ export const DEFAULT_CONFIGURATION: Configuration = {
   'image-snapshots': {
     path: '.',
     files: '**/*.png,**/*.jpg,**/*.jpeg',
+    ignore: '',
   },
 }

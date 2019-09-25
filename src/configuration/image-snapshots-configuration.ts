@@ -1,4 +1,5 @@
 export interface ImageSnapshotsConfiguration {
   path: string,
-  files: string
+  files: string,
+  ignore: string,
 }

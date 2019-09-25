@@ -64,6 +64,10 @@ export default class ConfigurationService {
       this.configuration['image-snapshots'].files = flags.files
     }
 
+    if (flags.ignore) {
+      this.configuration['image-snapshots'].ignore = flags.ignore
+    }
+
     return this.configuration
   }
 
