@@ -34,6 +34,7 @@ USAGE
 * [`percy finalize`](#percy-finalize)
 * [`percy help [COMMAND]`](#percy-help-command)
 * [`percy snapshot SNAPSHOTDIRECTORY`](#percy-snapshot-snapshotdirectory)
+* [`percy upload UPLOADDIRECTORY`](#percy-upload-uploaddirectory)
 
 ## `percy exec`
 
@@ -118,5 +119,25 @@ EXAMPLES
   $ percy snapshot _site/
   $ percy snapshot _site/ --base-url "/blog/"
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
+```
+
+## `percy upload UPLOADDIRECTORY`
+
+Upload a directory containing static snapshot images.
+
+```
+USAGE
+  $ percy upload UPLOADDIRECTORY
+
+ARGUMENTS
+  UPLOADDIRECTORY  A path to the directory containing static snapshot images
+
+OPTIONS
+  -s, --files=files  [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
+                     files and directories to snapshot.
+
+EXAMPLES
+  $ percy upload _images/
+  $ percy upload _images/ --files **/*.png
 ```
 <!-- commandsstop -->
