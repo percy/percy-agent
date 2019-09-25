@@ -102,29 +102,36 @@ export default class ResponseService extends PercyClientService {
   async handleRedirectResouce(originalURL: string, redirectedURL: string, width: number, logger: any) {
     logger.debug(`Making local copy of redirected response: ${originalURL}`)
 
-    const { data, headers } = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
-    const buffer = Buffer.from(data)
-    const sha = crypto.createHash('sha256').update(buffer).digest('hex')
-    const localCopy = path.join(os.tmpdir(), sha)
-    const didWriteFile = this.maybeWriteFile(localCopy, buffer)
-    const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
+    try {
+      const { data, headers } = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
+      const buffer = Buffer.from(data)
+      const sha = crypto.createHash('sha256').update(buffer).digest('hex')
+      const localCopy = path.join(os.tmpdir(), sha)
+      const didWriteFile = this.maybeWriteFile(localCopy, buffer)
+      const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
 
-    if (!didWriteFile) {
-      logger.debug(`Skipping file copy [already_copied]: ${originalURL}`)
-    }
+      if (!didWriteFile) {
+        logger.debug(`Skipping file copy [already_copied]: ${originalURL}`)
+      }
 
-    if (fileIsTooLarge) {
-      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${originalURL}`)
+      if (fileIsTooLarge) {
+        logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${originalURL}`)
+        return
+      }
+
+      const contentType = headers['content-type'] as string
+      const resource = this.resourceService.createResourceFromFile(originalURL, localCopy, contentType, logger)
+
+      this.responsesProcessed.set(originalURL, resource)
+      this.responsesProcessed.set(redirectedURL, resource)
+
+      return resource
+    } catch (err) {
+      logger.debug(`${err}`)
+      logger.debug(`Failed to make a local copy of redirected response: ${originalURL}`)
+
       return
     }
-
-    const contentType = headers['content-type'] as string
-    const resource = this.resourceService.createResourceFromFile(originalURL, localCopy, contentType, logger)
-
-    this.responsesProcessed.set(originalURL, resource)
-    this.responsesProcessed.set(redirectedURL, resource)
-
-    return resource
   }
 
   /**

@@ -90,10 +90,11 @@ describe('Integration test', () => {
 
     it('snapshots a site with redirected assets', async () => {
       await page.goto('https://sdk-test.percy.dev/redirects/')
-      await page.waitFor('.note')
+      await page.waitFor('h2')
       const domSnapshot = await snapshot(page, 'Redirects snapshot')
 
-      expect(domSnapshot).contains('correctly snapshotted')
+      // This will fail the test if the redirected JS fails to work
+      expect(domSnapshot).contains('Snapshot worked')
     })
 
     it('falls back to default widths when nothing is passed', async () => {
