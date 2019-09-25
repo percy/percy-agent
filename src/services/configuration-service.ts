@@ -60,12 +60,24 @@ export default class ConfigurationService {
       this.configuration['static-snapshots']['ignore-files'] = flags['ignore-files']
     }
 
+    if (flags.files) {
+      this.configuration['image-snapshots'].files = flags.files
+    }
+
+    if (flags.ignore) {
+      this.configuration['image-snapshots'].ignore = flags.ignore
+    }
+
     return this.configuration
   }
 
   applyArgs(args: any): Configuration {
     if (args.snapshotDirectory) {
       this.configuration['static-snapshots'].path = args.snapshotDirectory
+    }
+
+    if (args.uploadDirectory) {
+      this.configuration['image-snapshots'].path = args.uploadDirectory
     }
 
     return this.configuration

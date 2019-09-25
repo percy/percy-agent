@@ -27,7 +27,7 @@ jobs:
           command: ./bin/run --help
       - run:
           name: Build package
-          command: npm run build
+          command: yarn build
       - run:
           name: Unit tests
           command: |
@@ -36,6 +36,13 @@ jobs:
       - run:
           name: Client tests
           command: $NYC yarn test-client --singleRun
+      # [skipped] this uploads 0 snapshots and needs to be fixed
+      # - run:
+      #     name: Snapshot command test
+      #     command: yarn test-snapshot-command
+      - run:
+          name: Upload command test
+          command: yarn test-upload-command
       - run:
           name: Setup integration test .percy.yml
           command: mv .ci.percy.yml .percy.yml
