@@ -59,6 +59,8 @@ jobs:
   finalize_percy:
     <<: *test
     steps:
+      - checkout
+      - run: yarn && yarn build
       - run: ./bin/run finalize --all
   release:
     <<: *test

@@ -23,7 +23,7 @@ async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
   }, nodeName, options)
 
   await postSnapshot({
-    nodeName,
+    name: nodeName,
     domSnapshot,
     url: page.url(),
     clientInfo: 'integration-microSDK',
