@@ -48,9 +48,6 @@ jobs:
           name: Integration tests
           command: $NYC yarn test-integration
       - run:
-          name: Finalize Percy
-          command: ./bin/run finalize --all
-      - run:
           name: Gather reports
           command: $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
@@ -59,6 +56,10 @@ jobs:
     <<: *test
     docker:
       - image: circleci/node:8-browsers
+  finalize_percy:
+    <<: *test
+    steps:
+      - run: ./bin/run finalize --all
   release:
     <<: *test
     steps:
@@ -72,6 +73,10 @@ workflows:
     jobs:
       - node-10
       - node-8
+      - finalize_percy:
+          requires:
+          - node-10
+          - node-8
       - release:
           filters:
             branches:
