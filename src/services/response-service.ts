@@ -57,7 +57,7 @@ export default class ResponseService extends PercyClientService {
     const request = response.request()
     const parsedRootResourceUrl = new URL(rootResourceUrl)
     const isRedirect = REDIRECT_STATUSES.includes(response.status())
-    const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
+    const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.hostname}`
 
     if (request.url() === rootResourceUrl) {
       // Always skip the root resource
