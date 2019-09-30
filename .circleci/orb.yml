@@ -23,8 +23,8 @@ executors:
       parameters:
         tag:
           type: string
-          description: "Docker image tag"
-          default: "latest"
+          description: Docker image tag
+          default: latest
       docker:
           - image: percyio/agent:<<parameters.tag>>
 
