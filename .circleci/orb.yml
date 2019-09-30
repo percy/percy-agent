@@ -1,7 +1,7 @@
 version: "2.1"
-description: Workflow for running Percy builds in parallel. Your token will be read from $PERCY_TOKEN by default, but this
-  can be overridden using the `percy_token` parameter.
-  Repo: https://github.com/percy/percy-agent/
+description: > 
+  Workflow for running Percy builds in parallel. Your token will be read from $PERCY_TOKEN by default, but this
+  can be overridden using the `percy_token` parameter. Source Code: https://github.com/percy/percy-agent/
 
 examples:
   finalize_all_percy_builds:
