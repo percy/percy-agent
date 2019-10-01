@@ -1,6 +1,5 @@
 version: "2.1"
-description: Workflow for running Percy builds in parallel. Your token will be read from $PERCY_TOKEN by default, but this
-  can be overridden using the `percy_token` parameter.
+description: Workflow for running Percy builds in parallel. Your token will be read from environment variable "PERCY_TOKEN".
 
 examples:
   finalize_all_percy_builds:
@@ -27,8 +26,8 @@ commands:
     parameters:
       percy_token:
         description: PERCY_TOKEN for your project. It is found on your project settings.
-        type: string
-        default: $PERCY_TOKEN
+        type: env_var_name
+        default: PERCY_TOKEN
     steps:
       - run: PERCY_TOKEN=<< parameters.percy_token >> percy finalize --all
 
