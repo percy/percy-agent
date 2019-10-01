@@ -85,7 +85,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-webpack": "^4.0.2",
     "mocha": "^6.1.4",
-    "nock": "^10.0.6",
+    "nock": "^11.3.5",
     "npm-watch": "^0.6.0",
     "prettier": "1.18.2",
     "pryjs": "^1.0.3",
