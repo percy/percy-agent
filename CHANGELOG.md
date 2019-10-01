@@ -1,3 +1,10 @@
+# [0.17.0](https://github.com/percy/percy-agent/compare/v0.16.2...v0.17.0) (2019-10-01)
+
+
+### Features
+
+* :sparkles: More config file options ([#383](https://github.com/percy/percy-agent/issues/383)) ([b9875a1](https://github.com/percy/percy-agent/commit/b9875a1))
+
 ## [0.16.2](https://github.com/percy/percy-agent/compare/v0.16.1...v0.16.2) (2019-10-01)
 
 
