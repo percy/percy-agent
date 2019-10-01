@@ -63,7 +63,7 @@
     "@types/http-server": "^0.10.0",
     "@types/js-yaml": "^3.11.2",
     "@types/mocha": "^5.2.5",
-    "@types/nock": "^10.0.2",
+    "@types/nock": "^11.1.0",
     "@types/node": "^12.0.0",
     "@types/puppeteer": "^1.6.0",
     "@types/sinon": "^7.0.12",
