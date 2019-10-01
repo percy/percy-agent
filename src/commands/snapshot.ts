@@ -84,8 +84,8 @@ export default class Snapshot extends PercyCommand {
       this.exit(1)
     }
 
-    await this.agentService.start(configuration)
-    this.logStart()
+    // start agent service and attach process handlers
+    await this.start(flags)
 
     const staticSnapshotService = new StaticSnapshotService(configuration['static-snapshots'])
 
@@ -97,6 +97,6 @@ export default class Snapshot extends PercyCommand {
 
      // stop the static snapshot and agent services
     await staticSnapshotService.stop()
-    await this.agentService.stop()
+    await this.stop()
   }
 }
