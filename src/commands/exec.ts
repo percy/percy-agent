@@ -52,5 +52,9 @@ export default class Exec extends PercyCommand {
     // Even if Percy will not run, continue to run the subprocess
     const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
     spawnedProcess.on('exit', (code) => this.stop(code))
+    spawnedProcess.on('error', (error) => {
+      this.logger.error(error)
+      this.stop(1)
+    })
   }
 }
