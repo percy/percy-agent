@@ -1,6 +1,6 @@
 version: "2.1"
 description: > 
-  Workflow for running Percy builds in parallel. Your token will be read from $PERCY_TOKEN by default, but this
+  Workflow for running Percy builds in parallel. Finalize is commonly used for parallelized builds, especially when the number of parallelized processes is unknown. Your token will be read from $PERCY_TOKEN by default, but this
   can be overridden using the `percy_token` parameter. Source Code: https://github.com/percy/percy-agent/
 
 examples:
