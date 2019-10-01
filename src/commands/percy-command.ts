@@ -1,7 +1,7 @@
 import { Command } from '@oclif/command'
 import * as winston from 'winston'
+import { Configuration } from '../configuration/configuration'
 import { AgentService } from '../services/agent-service'
-import ConfigurationService from '../services/configuration-service'
 import ProcessService from '../services/process-service'
 import logger from '../utils/logger'
 
@@ -47,9 +47,8 @@ export default class PercyCommand extends Command {
     this.logger.info('percy has started.')
   }
 
-  async start(flags: any) {
+  async start(configuration: Configuration) {
     if (this.percyWillRun()) {
-      const configuration = new ConfigurationService().applyFlags(flags)
       await this.agentService.start(configuration)
       this.logStart()
 

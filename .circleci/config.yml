@@ -44,9 +44,6 @@ jobs:
           name: Upload command test
           command: yarn test-upload-command
       - run:
-          name: Setup integration test .percy.yml
-          command: mv .ci.percy.yml .percy.yml
-      - run:
           name: Integration tests
           command: $NYC yarn test-integration
       - run:

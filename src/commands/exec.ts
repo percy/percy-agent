@@ -1,7 +1,7 @@
 import { flags } from '@oclif/command'
 import * as spawn from 'cross-spawn'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
+import config from '../utils/configuration'
 import PercyCommand from './percy-command'
 
 export default class Exec extends PercyCommand {
@@ -30,6 +30,10 @@ export default class Exec extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {
@@ -46,7 +50,7 @@ export default class Exec extends PercyCommand {
     }
 
     if (this.percyWillRun()) {
-      await this.start(flags)
+      await this.start(config(flags))
     }
 
     // Even if Percy will not run, continue to run the subprocess

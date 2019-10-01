@@ -5,11 +5,11 @@ import { Server } from 'http'
 import * as os from 'os'
 import * as path from 'path'
 import { Configuration } from '../configuration/configuration'
+import { SnapshotConfiguration } from '../configuration/snapshot-configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import logger, { createFileLogger, profile } from '../utils/logger'
 import { HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH } from './agent-service-constants'
 import BuildService from './build-service'
-import ConfigurationService from './configuration-service'
 import Constants from './constants'
 import ProcessService from './process-service'
 import SnapshotService from './snapshot-service'
@@ -21,6 +21,7 @@ export class AgentService {
   private readonly app: express.Application
   private readonly publicDirectory: string = `${__dirname}/../../dist/public`
   private snapshotCreationPromises: any[] = []
+  private snapshotConfig: SnapshotConfiguration | any = {}
   private server: Server | null = null
   private buildId: number | null = null
 
@@ -28,8 +29,8 @@ export class AgentService {
     this.app = express()
 
     this.app.use(cors())
-    this.app.use(bodyParser.urlencoded({extended: true}))
-    this.app.use(bodyParser.json({limit: '50mb'}))
+    this.app.use(bodyParser.urlencoded({ extended: true }))
+    this.app.use(bodyParser.json({ limit: '50mb' }))
     this.app.use(express.static(this.publicDirectory))
 
     this.app.post(SNAPSHOT_PATH, this.handleSnapshot.bind(this))
@@ -40,6 +41,7 @@ export class AgentService {
   }
 
   async start(configuration: Configuration) {
+    this.snapshotConfig = configuration.snapshot
     this.buildId = await this.buildService.create()
 
     if (this.buildId !== null) {
@@ -91,19 +93,18 @@ export class AgentService {
     snapshotLogger.debug(`-> environmentInfo: ${request.body.environmentInfo}`)
     snapshotLogger.debug(`-> domSnapshot: ${domSnapshotLog}`)
 
-    if (!this.snapshotService) { return response.json({success: false}) }
+    if (!this.snapshotService) { return response.json({ success: false }) }
 
-    const configuration = new ConfigurationService().configuration
     // trim the string of whitespace and concat per-snapshot CSS with the globally specified CSS
-    const percySpecificCSS = configuration.snapshot['percy-css'].concat(request.body.percyCSS || '').trim()
+    const percySpecificCSS = this.snapshotConfig['percy-css'].concat(request.body.percyCSS || '').trim()
     const hasWidths = !!request.body.widths && request.body.widths.length
     const snapshotOptions: SnapshotOptions = {
       percyCSS: percySpecificCSS,
-      widths: hasWidths ? request.body.widths : configuration.snapshot.widths,
+      widths: hasWidths ? request.body.widths : this.snapshotConfig.widths,
       enableJavaScript: request.body.enableJavaScript != null
         ? request.body.enableJavaScript
-        : configuration.snapshot['enable-javascript'],
-      minHeight: request.body.minHeight || configuration.snapshot['min-height'],
+        : this.snapshotConfig['enable-javascript'],
+      minHeight: request.body.minHeight || this.snapshotConfig['min-height'],
     }
 
     let domSnapshot = request.body.domSnapshot
@@ -149,16 +150,16 @@ export class AgentService {
     logger.info(`snapshot taken: '${request.body.name}'`)
 
     profile('agentService.handleSnapshot')
-    return response.json({success: true})
+    return response.json({ success: true })
   }
 
   private async handleStop(_: express.Request, response: express.Response) {
     await this.stop()
     new ProcessService().kill()
-    return response.json({success: true})
+    return response.json({ success: true })
   }
 
   private async handleHealthCheck(_: express.Request, response: express.Response) {
-    return response.json({success: true})
+    return response.json({ success: true })
   }
 }

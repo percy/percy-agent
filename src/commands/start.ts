@@ -1,7 +1,7 @@
-import {flags} from '@oclif/command'
+import { flags } from '@oclif/command'
 import * as path from 'path'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
+import config from '../utils/configuration'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
@@ -34,6 +34,10 @@ export default class Start extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {
@@ -47,7 +51,7 @@ export default class Start extends PercyCommand {
     if (flags.detached) {
       this.runDetached(flags)
     } else {
-      await this.start(flags)
+      await this.start(config(flags))
     }
 
     await healthCheck(flags.port!)
