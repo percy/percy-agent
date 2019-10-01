@@ -1,8 +1,8 @@
 import { flags } from '@oclif/command'
 import { existsSync } from 'fs'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
 import StaticSnapshotService from '../services/static-snapshot-service'
+import config from '../utils/configuration'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -61,11 +61,7 @@ export default class Snapshot extends PercyCommand {
     await super.run()
 
     const { args, flags } = this.parse(Snapshot)
-
-    const configurationService = new ConfigurationService()
-    configurationService.applyFlags(flags)
-    configurationService.applyArgs(args)
-    const configuration = configurationService.configuration
+    const configuration = config(flags, args)
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
@@ -85,7 +81,7 @@ export default class Snapshot extends PercyCommand {
     }
 
     // start agent service and attach process handlers
-    await this.start(flags)
+    await this.start(configuration)
 
     const staticSnapshotService = new StaticSnapshotService(configuration['static-snapshots'])
 
