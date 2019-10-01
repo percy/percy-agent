@@ -35,6 +35,7 @@ commands:
 
 jobs:
   finalize_all:
+    description: Finalize all Percy builds
     executor: default
     steps:
       - finalize_all
