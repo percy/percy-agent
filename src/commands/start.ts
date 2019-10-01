@@ -53,6 +53,11 @@ export default class Start extends PercyCommand {
     await healthCheck(flags.port!)
   }
 
+  async stop(exitCode?: any) {
+    this.processService.cleanup()
+    await super.stop(exitCode)
+  }
+
   private runDetached(flags: any) {
     const pid = this.processService.runDetached([
       path.resolve(`${__dirname}/../../bin/run`),
