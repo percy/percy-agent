@@ -29,6 +29,10 @@ export default class Upload extends Command {
       description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
       default: DEFAULT_CONFIGURATION['image-snapshots'].ignore,
     }),
+    config: flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   percyToken: string = process.env.PERCY_TOKEN || ''

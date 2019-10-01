@@ -55,6 +55,10 @@ export default class Snapshot extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'Port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {

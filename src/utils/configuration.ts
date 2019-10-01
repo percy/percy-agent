@@ -56,15 +56,17 @@ function transform(flags: any, args: any) {
   })
 }
 
-export default function config(flags: any = {}, args: any = {}) {
-  let config
+export default function config({ config, ...flags }: any, args: any = {}) {
+  let loaded
 
   try {
-    const result = explorer.searchSync()
+    const result = config
+      ? explorer.loadSync(config)
+      : explorer.searchSync()
 
     if (result && result.config) {
       logger.debug(`Current config file path: ${result.filepath}`)
-      config = result.config
+      loaded = result.config
     } else {
       logger.debug('Config file not found')
     }
@@ -73,7 +75,7 @@ export default function config(flags: any = {}, args: any = {}) {
   }
 
   const provided = transform(flags, args)
-  const overrides = config && provided ? merge(config, provided) : (config || provided)
+  const overrides = loaded && provided ? merge(loaded, provided) : (loaded || provided)
 
   if (overrides) {
     logger.debug(`Using config: ${inspect(overrides, { depth: null })}`)

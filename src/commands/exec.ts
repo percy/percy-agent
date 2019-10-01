@@ -30,6 +30,10 @@ export default class Exec extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {
