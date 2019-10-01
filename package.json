@@ -35,7 +35,7 @@
     "globby": "^10.0.1",
     "image-size": "^0.8.2",
     "js-yaml": "^3.13.1",
-    "percy-client": "^3.0.3",
+    "percy-client": "^3.1.0",
     "puppeteer": "^1.13.0",
     "retry-axios": "^1.0.1",
     "winston": "^3.0.0"
