@@ -1,7 +1,7 @@
 import { Command, flags } from '@oclif/command'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
 import ImageSnapshotService from '../services/image-snapshot-service'
+import config from '../utils/configuration'
 
 export default class Upload extends Command {
   static description = 'Upload a directory containing static snapshot images.'
@@ -29,6 +29,10 @@ export default class Upload extends Command {
       description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
       default: DEFAULT_CONFIGURATION['image-snapshots'].ignore,
     }),
+    config: flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   percyToken: string = process.env.PERCY_TOKEN || ''
@@ -45,11 +49,7 @@ export default class Upload extends Command {
     }
 
     const { args, flags } = this.parse(Upload)
-
-    const configurationService = new ConfigurationService()
-    configurationService.applyFlags(flags)
-    configurationService.applyArgs(args)
-    const configuration = configurationService.configuration
+    const configuration = config(flags, args)
 
     // upload snapshot images
     const imageSnapshotService = new ImageSnapshotService(configuration['image-snapshots'])

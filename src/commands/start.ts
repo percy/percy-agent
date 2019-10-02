@@ -1,7 +1,7 @@
-import {flags} from '@oclif/command'
+import { flags } from '@oclif/command'
 import * as path from 'path'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
+import config from '../utils/configuration'
 import healthCheck from '../utils/health-checker'
 import PercyCommand from './percy-command'
 
@@ -34,6 +34,10 @@ export default class Start extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {
@@ -42,51 +46,29 @@ export default class Start extends PercyCommand {
     // If Percy is disabled or is missing a token, gracefully exit here
     if (!this.percyWillRun()) { this.exit(0) }
 
-    const {flags} = this.parse(Start)
+    const { flags } = this.parse(Start)
 
     if (flags.detached) {
-      this.runDetached()
+      this.runDetached(flags)
     } else {
-      await this.runAttached()
+      await this.start(config(flags))
     }
 
     await healthCheck(flags.port!)
   }
 
-  private async runAttached() {
-    const {flags} = this.parse(Start)
-
-    process.on('SIGHUP', async () => {
-      await this.agentService.stop()
-      process.exit(0)
-    })
-
-    process.on('SIGINT', async () => {
-      await this.agentService.stop()
-      process.exit(0)
-    })
-
-    process.on('SIGTERM', async () => {
-      await this.agentService.stop()
-      process.exit(0)
-    })
-
-    const configuration = new ConfigurationService().applyFlags(flags)
-    await this.agentService.start(configuration)
-    this.logStart()
+  async stop(exitCode?: any) {
+    this.processService.cleanup()
+    await super.stop(exitCode)
   }
 
-  private runDetached() {
-    const {flags} = this.parse(Start)
-
-    const pid = this.processService.runDetached(
-      [
-        path.resolve(`${__dirname}/../../bin/run`),
-        'start',
-        '-p', String(flags.port!),
-        '-t', String(flags['network-idle-timeout']),
-      ],
-    )
+  private runDetached(flags: any) {
+    const pid = this.processService.runDetached([
+      path.resolve(`${__dirname}/../../bin/run`),
+      'start',
+      '-p', String(flags.port!),
+      '-t', String(flags['network-idle-timeout']),
+    ])
 
     if (pid) {
       this.logStart()

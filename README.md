@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.16.1 linux-x64 node-v10.16.3
+@percy/agent/0.17.0 linux-x64 node-v10.16.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -45,6 +45,7 @@ USAGE
   $ percy exec
 
 OPTIONS
+  -c, --config=config                              Path to percy config file
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
   -p, --port=port                                  [default: 5338] port
   -t, --network-idle-timeout=network-idle-timeout  [default: 50] asset discovery network idle timeout (in milliseconds)
@@ -103,6 +104,8 @@ OPTIONS
                                                    instead
                                                    of the webserver's root path, set that subdirectory with this flag.
 
+  -c, --config=config                              Path to percy config file
+
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
 
   -i, --ignore-files=ignore-files                  Glob or comma-seperated string of globs for matching the files and
@@ -133,6 +136,8 @@ ARGUMENTS
   UPLOADDIRECTORY  A path to the directory containing static snapshot images
 
 OPTIONS
+  -c, --config=config  Path to percy config file
+
   -f, --files=files    [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
                        files and directories to snapshot.
 

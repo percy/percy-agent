@@ -1,3 +1,17 @@
+# [0.17.0](https://github.com/percy/percy-agent/compare/v0.16.2...v0.17.0) (2019-10-01)
+
+
+### Features
+
+* :sparkles: More config file options ([#383](https://github.com/percy/percy-agent/issues/383)) ([b9875a1](https://github.com/percy/percy-agent/commit/b9875a1))
+
+## [0.16.2](https://github.com/percy/percy-agent/compare/v0.16.1...v0.16.2) (2019-10-01)
+
+
+### Bug Fixes
+
+* Cleanup on stopping agent ([#382](https://github.com/percy/percy-agent/issues/382)) ([cc28320](https://github.com/percy/percy-agent/commit/cc28320)), closes [#340](https://github.com/percy/percy-agent/issues/340)
+
 ## [0.16.1](https://github.com/percy/percy-agent/compare/v0.16.0...v0.16.1) (2019-09-25)
 
 

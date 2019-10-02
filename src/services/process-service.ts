@@ -33,9 +33,18 @@ export default class ProcessService {
   kill() {
     if (this.isRunning()) {
       const pid = this.getPid()
-      fs.unlinkSync(ProcessService.PID_PATH)
+      this.cleanup()
 
       process.kill(pid, 'SIGHUP')
+    }
+  }
+
+  cleanup() {
+    try {
+      fs.unlinkSync(ProcessService.PID_PATH)
+    } catch (e) {
+      // it's fine when the file doesn't exist, raise errors otherwise
+      if (e.code !== 'ENOENT') { throw e }
     }
   }
 

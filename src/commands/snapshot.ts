@@ -1,8 +1,8 @@
 import { flags } from '@oclif/command'
 import { existsSync } from 'fs'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
 import StaticSnapshotService from '../services/static-snapshot-service'
+import config from '../utils/configuration'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -55,17 +55,17 @@ export default class Snapshot extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'Port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
 
   async run() {
     await super.run()
 
     const { args, flags } = this.parse(Snapshot)
-
-    const configurationService = new ConfigurationService()
-    configurationService.applyFlags(flags)
-    configurationService.applyArgs(args)
-    const configuration = configurationService.configuration
+    const configuration = config(flags, args)
 
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
@@ -84,8 +84,8 @@ export default class Snapshot extends PercyCommand {
       this.exit(1)
     }
 
-    await this.agentService.start(configuration)
-    this.logStart()
+    // start agent service and attach process handlers
+    await this.start(configuration)
 
     const staticSnapshotService = new StaticSnapshotService(configuration['static-snapshots'])
 
@@ -97,6 +97,6 @@ export default class Snapshot extends PercyCommand {
 
      // stop the static snapshot and agent services
     await staticSnapshotService.stop()
-    await this.agentService.stop()
+    await this.stop()
   }
 }

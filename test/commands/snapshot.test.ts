@@ -39,7 +39,7 @@ describe('snapshot', () => {
       const staticSnapshotServiceStub = StaticSnapshotServiceStub()
 
       const stdout = await captureStdOut(async () => {
-        await Snapshot.run(['./'])
+        await Snapshot.run(['.'])
       })
 
       chai.expect(agentServiceStub.start).to.be.calledWith(DEFAULT_CONFIGURATION)

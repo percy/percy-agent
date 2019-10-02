@@ -1,7 +1,7 @@
 import { flags } from '@oclif/command'
 import * as spawn from 'cross-spawn'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
-import ConfigurationService from '../services/configuration-service'
+import config from '../utils/configuration'
 import PercyCommand from './percy-command'
 
 export default class Exec extends PercyCommand {
@@ -30,10 +30,11 @@ export default class Exec extends PercyCommand {
       default: DEFAULT_CONFIGURATION.agent.port,
       description: 'port',
     }),
+    'config': flags.string({
+      char: 'c',
+      description: 'Path to percy config file',
+    }),
   }
-
-  // helps prevent exiting before the agent service has stopped
-  private exiting = false
 
   async run() {
     await super.run()
@@ -49,29 +50,15 @@ export default class Exec extends PercyCommand {
     }
 
     if (this.percyWillRun()) {
-      const configuration = new ConfigurationService().applyFlags(flags)
-      await this.agentService.start(configuration)
-      this.logStart()
+      await this.start(config(flags))
     }
 
     // Even if Percy will not run, continue to run the subprocess
     const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
     spawnedProcess.on('exit', (code) => this.stop(code))
-
-    // Receiving any of these events should stop the agent and exit
-    process.on('SIGHUP', () => this.stop())
-    process.on('SIGINT', () => this.stop())
-    process.on('SIGTERM', () => this.stop())
-  }
-
-  private async stop(exitCode?: number | null) {
-    if (this.exiting) { return }
-    this.exiting = true
-
-    if (this.percyWillRun()) {
-      await this.agentService.stop()
-    }
-
-    process.exit(exitCode || 0)
+    spawnedProcess.on('error', (error) => {
+      this.logger.error(error)
+      this.stop(1)
+    })
   }
 }
