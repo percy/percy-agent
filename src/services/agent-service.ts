@@ -77,6 +77,7 @@ export class AgentService {
     profile('agentService.handleSnapshot')
 
     // truncate domSnapshot for the logs if it's very large
+    const rootURL = request.body.url
     let domSnapshotLog = request.body.domSnapshot
     if (domSnapshotLog.length > Constants.MAX_LOG_LENGTH) {
       domSnapshotLog = domSnapshotLog.substring(0, Constants.MAX_LOG_LENGTH)
@@ -116,7 +117,7 @@ export class AgentService {
     }
 
     let resources = await this.snapshotService.buildResources(
-      request.body.url,
+      rootURL,
       domSnapshot,
       snapshotOptions,
       snapshotLogger,
@@ -133,9 +134,9 @@ export class AgentService {
     }
 
     resources = resources.concat(
-      this.snapshotService.buildRootResource(request.body.url, domSnapshot),
+      this.snapshotService.buildRootResource(rootURL, domSnapshot),
       // @ts-ignore we won't write anything if css is not is passed
-      this.snapshotService.buildPercyCSSResource(percyCSSFileName, snapshotOptions.percyCSS, snapshotLogger),
+      this.snapshotService.buildPercyCSSResource(rootURL, percyCSSFileName, snapshotOptions.percyCSS, snapshotLogger),
       this.snapshotService.buildLogResource(snapshotLog),
     )
 
