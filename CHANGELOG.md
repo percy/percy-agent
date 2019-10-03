@@ -1,3 +1,10 @@
+# [0.18.0](https://github.com/percy/percy-agent/compare/v0.17.1...v0.18.0) (2019-10-03)
+
+
+### Features
+
+* :sparkles: Asset discovery headers ([#384](https://github.com/percy/percy-agent/issues/384)) ([488a3b6](https://github.com/percy/percy-agent/commit/488a3b6))
+
 ## [0.17.1](https://github.com/percy/percy-agent/compare/v0.17.0...v0.17.1) (2019-10-03)
 
 
