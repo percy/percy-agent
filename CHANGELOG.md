@@ -1,3 +1,10 @@
+## [0.17.1](https://github.com/percy/percy-agent/compare/v0.17.0...v0.17.1) (2019-10-03)
+
+
+### Bug Fixes
+
+* :bug: Encode image url for static image uploads ([#385](https://github.com/percy/percy-agent/issues/385)) ([6a52a9c](https://github.com/percy/percy-agent/commit/6a52a9c))
+
 # [0.17.0](https://github.com/percy/percy-agent/compare/v0.16.2...v0.17.0) (2019-10-01)
 
 
