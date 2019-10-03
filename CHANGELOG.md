@@ -1,3 +1,10 @@
+## [0.18.2](https://github.com/percy/percy-agent/compare/v0.18.1...v0.18.2) (2019-10-03)
+
+
+### Bug Fixes
+
+* Add rootResourceURL in front of percy specific resources ([#388](https://github.com/percy/percy-agent/issues/388)) ([ebc3594](https://github.com/percy/percy-agent/commit/ebc3594))
+
 ## [0.18.1](https://github.com/percy/percy-agent/compare/v0.18.0...v0.18.1) (2019-10-03)
 
 
