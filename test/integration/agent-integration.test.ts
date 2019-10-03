@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio'
+import * as express from 'express'
+import * as basicAuth from 'express-basic-auth'
 import { Server } from 'http'
-import * as httpServer from 'http-server'
 import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
 import { agentJsFilename, postSnapshot } from '../../src/utils/sdk-utils'
@@ -108,11 +109,14 @@ describe('Integration test', () => {
   describe('on local test cases', () => {
     const testCaseDir = `${__dirname}/testcases`
     const PORT = 8000
+
+    let app: express.Application
     let server: Server
 
     before(() => {
-      server = httpServer.createServer({root: testCaseDir}) as Server
-      server.listen(PORT)
+      app = express()
+      app.use(express.static(testCaseDir))
+      server = app.listen(PORT)
     })
 
     after(() => {
@@ -127,6 +131,39 @@ describe('Integration test', () => {
                      width: 100px;
                      background-color: purple;
                   }`,
+      })
+    })
+
+    describe('protected resources', () => {
+      const username = 'test'
+      const password = 'test'
+
+      before(async () => {
+        app.get('/auth/redirected.png', (_, res) => {
+          res.redirect(301, '/auth/fairy-emojione.png')
+        })
+
+        app.use(
+          '/auth',
+          basicAuth({ users: { [username]: password }, challenge: true }),
+          express.static(testCaseDir),
+        )
+
+        await page.authenticate({ username, password })
+        await page.goto(`http://localhost:${PORT}/auth/protected-with-basic-auth.html`)
+      })
+
+      it('does not capture protected resources without the correct headers', async () => {
+        // the snapshot should show missing resources
+        await snapshot(page, 'Protected assets')
+      })
+
+      it('captures protected resources with the correct headers', async () => {
+        await snapshot(page, 'Captured protected assets', {
+          requestHeaders: {
+            Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
+          },
+        })
       })
     })
 
