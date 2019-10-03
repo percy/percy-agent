@@ -134,10 +134,10 @@ export class AgentService {
     }
 
     resources = resources.concat(
-      this.snapshotService.buildRootResource(rootURL, domSnapshot),
+      this.snapshotService.buildLogResource(snapshotLog),
       // @ts-ignore we won't write anything if css is not is passed
       this.snapshotService.buildPercyCSSResource(rootURL, percyCSSFileName, snapshotOptions.percyCSS, snapshotLogger),
-      this.snapshotService.buildLogResource(snapshotLog),
+      this.snapshotService.buildRootResource(rootURL, domSnapshot),
     )
 
     const snapshotCreation = this.snapshotService.create(
