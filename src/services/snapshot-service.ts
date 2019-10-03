@@ -65,9 +65,13 @@ export default class SnapshotService extends PercyClientService {
     })
   }
 
-  buildPercyCSSResource(fileName: string, css: string, logger: any) {
+  buildPercyCSSResource(url: string, fileName: string, css: string, logger: any) {
     if (!css) { return [] }
-    logger.debug(`Creating Percy Specific file: ${fileName}. CSS string: ${css}`)
+
+    const parsedRootResourceUrl = new URL(url)
+    const rootURL = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
+
+    logger.debug(`Creating Percy Specific file: ${fileName}. Root URL: ${rootURL}. CSS string: ${css}`)
 
     const buffer = Buffer.from(css, 'utf8')
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
@@ -81,7 +85,7 @@ export default class SnapshotService extends PercyClientService {
     }
 
     return this.percyClient.makeResource({
-      resourceUrl: `/${fileName}`,
+      resourceUrl: `${rootURL}/${fileName}`,
       mimetype: 'text/css',
       localPath,
       sha,
