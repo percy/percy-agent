@@ -38,7 +38,8 @@
     "percy-client": "^3.1.0",
     "puppeteer": "^1.13.0",
     "retry-axios": "^1.0.1",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -149,7 +150,9 @@
     "test-snapshot-command": "./bin/run snapshot test/integration/test-static-site -b /dummy-base-url -i '(red-keep)' -s '\\.(html)$'",
     "test-upload-command": "./bin/run upload test/integration/test-static-images",
     "version": "oclif-dev readme && git add README.md",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "types": "dist/index.d.ts",
   "release": {
@@ -165,5 +168,6 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
-  }
+  },
+  "snyk": true
 }
