@@ -1,3 +1,4 @@
+import * as merge from 'deepmerge'
 import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
@@ -102,23 +103,27 @@ export class AssetDiscoveryService extends PercyClientService {
 
     logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
 
-    const enableJavaScript = options.enableJavaScript || false
-    const widths = options.widths || DEFAULT_CONFIGURATION.snapshot.widths
+    const {
+      enableJavaScript = false,
+      widths = DEFAULT_CONFIGURATION.snapshot.widths,
+      requestHeaders,
+    } = options
 
     // Do asset discovery for each requested width in parallel. We don't keep track of which page
     // is doing work, and instead rely on the fact that we always have fewer widths to work on than
     // the number of pages in our pool. If we wanted to do something smarter here, we should consider
     // switching to use puppeteer-cluster instead.
-    profile('--> assetDiscoveryService.discoverForWidths', {url: rootResourceUrl})
+    profile('--> assetDiscoveryService.discoverForWidths', { url: rootResourceUrl })
 
     let resources: any[] = [].concat(...(await Promise.all(
-      widths.map((width) => this.resourcesForWidth(
+      widths.map((width: number) => this.resourcesForWidth(
         // @ts-ignore - for some reason, ts thinks we're assigning null here
         this.pagePool,
         width,
         domSnapshot,
         rootResourceUrl,
         enableJavaScript,
+        requestHeaders,
         logger,
       )),
     )) as any[])
@@ -136,7 +141,7 @@ export class AssetDiscoveryService extends PercyClientService {
       return false
     })
 
-    profile('-> assetDiscoveryService.discoverResources', {resourcesDiscovered: resources.length})
+    profile('-> assetDiscoveryService.discoverResources', { resourcesDiscovered: resources.length })
 
     return resources
   }
@@ -168,15 +173,20 @@ export class AssetDiscoveryService extends PercyClientService {
     domSnapshot: string,
     rootResourceUrl: string,
     enableJavaScript: boolean,
+    requestHeaders: any = {},
     logger: any,
   ): Promise<any[]> {
     logger.debug(`discovering assets for width: ${width}`)
 
-    profile('--> assetDiscoveryService.pool.acquire', {url: rootResourceUrl})
+    profile('--> assetDiscoveryService.pool.acquire', { url: rootResourceUrl })
     const page = await pool.acquire()
     profile('--> assetDiscoveryService.pool.acquire')
     await page.setJavaScriptEnabled(enableJavaScript)
-    await page.setViewport(Object.assign(page.viewport(), {width}))
+    await page.setViewport(Object.assign(page.viewport(), { width }))
+    await page.setExtraHTTPHeaders(merge.all([
+      this.configuration['request-headers'],
+      requestHeaders,
+    ]) as {})
 
     page.on('request', async (request) => {
       try {
@@ -228,7 +238,7 @@ export class AssetDiscoveryService extends PercyClientService {
     })
 
     try {
-      profile('--> assetDiscoveryService.page.goto', {url: rootResourceUrl})
+      profile('--> assetDiscoveryService.page.goto', { url: rootResourceUrl })
       await page.goto(rootResourceUrl)
       profile('--> assetDiscoveryService.page.goto')
 
@@ -240,7 +250,7 @@ export class AssetDiscoveryService extends PercyClientService {
       const maybeResources: any[] = await Promise.all(maybeResourcePromises)
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
 
-      profile('--> assetDiscoveryService.pool.release', {url: rootResourceUrl})
+      profile('--> assetDiscoveryService.pool.release', { url: rootResourceUrl })
       await page.removeAllListeners('request')
       await page.removeAllListeners('requestfinished')
       await page.removeAllListeners('requestfailed')
