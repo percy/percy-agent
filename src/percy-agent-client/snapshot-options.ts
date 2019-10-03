@@ -1,4 +1,5 @@
 export interface SnapshotOptions {
+  requestHeaders?: string,
   enableJavaScript?: boolean,
   enableJavascript?: boolean, // deprecated. Use enableJavaScript
   widths?: number[],

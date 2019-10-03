@@ -87,7 +87,7 @@ export default class ResponseService extends PercyClientService {
       }
 
       const redirectedURL = `${rootUrl}${response.headers().location}` as string
-      return this.handleRedirectResouce(url, redirectedURL, width, logger)
+      return this.handleRedirectResouce(url, redirectedURL, request.headers(), width, logger)
     }
 
     return this.handlePuppeteerResource(url, response, width, logger)
@@ -99,11 +99,21 @@ export default class ResponseService extends PercyClientService {
    * requesting url. This works since axios follows the redirect chain
    * automatically.
    */
-  async handleRedirectResouce(originalURL: string, redirectedURL: string, width: number, logger: any) {
+  async handleRedirectResouce(
+    originalURL: string,
+    redirectedURL: string,
+    requestHeaders: any,
+    width: number,
+    logger: any,
+  ) {
     logger.debug(`Making local copy of redirected response: ${originalURL}`)
 
     try {
-      const { data, headers } = await Axios(originalURL, { responseType: 'arraybuffer' }) as any
+      const { data, headers } = await Axios(originalURL, {
+        responseType: 'arraybuffer',
+        headers: requestHeaders,
+      }) as any
+
       const buffer = Buffer.from(data)
       const sha = crypto.createHash('sha256').update(buffer).digest('hex')
       const localCopy = path.join(os.tmpdir(), sha)

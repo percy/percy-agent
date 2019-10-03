@@ -100,6 +100,7 @@ export class AgentService {
     const hasWidths = !!request.body.widths && request.body.widths.length
     const snapshotOptions: SnapshotOptions = {
       percyCSS: percySpecificCSS,
+      requestHeaders: request.body.requestHeaders,
       widths: hasWidths ? request.body.widths : this.snapshotConfig.widths,
       enableJavaScript: request.body.enableJavaScript != null
         ? request.body.enableJavaScript

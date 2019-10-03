@@ -22,6 +22,7 @@ export const DEFAULT_CONFIGURATION: Configuration = {
   'agent': {
     'port': DEFAULT_PORT,
     'asset-discovery': {
+      'request-headers': {},
       'allowed-hostnames': [],
       'network-idle-timeout': 50, // ms
       'page-pool-size-min': 1, // pages
