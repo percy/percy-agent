@@ -105,21 +105,22 @@ export default class ImageSnapshotService extends PercyClientService {
   }
 
   async snapshotAll() {
+    // intentially remove '' values from because that matches every file
+    const globs = this.configuration.files.split(',').filter(Boolean)
+    const ignore = this.configuration.ignore.split(',').filter(Boolean)
+    const paths = await globby(globs, { cwd: this.configuration.path, ignore })
+    let error
+
+    if (!paths.length) {
+      logger.error(`no matching files found in '${this.configuration.path}''`)
+      logger.info('exiting')
+      return process.exit(1)
+    }
+
+    await this.buildService.create()
+    logger.debug('uploading snapshots of static images')
+
     try {
-      // intentially remove '' values from because that matches every file
-      const globs = this.configuration.files.split(',').filter(Boolean)
-      const ignore = this.configuration.ignore.split(',').filter(Boolean)
-      const paths = await globby(globs, { cwd: this.configuration.path, ignore })
-
-      if (!paths.length) {
-        logger.error(`no matching files found in '${this.configuration.path}''`)
-        logger.info('exiting')
-        return process.exit(1)
-      }
-
-      await this.buildService.create()
-      logger.debug('uploading snapshots of static images')
-
       // wait for snapshots in parallel
       await Promise.all(paths.reduce((promises, pathname) => {
         logger.debug(`handling snapshot: '${pathname}'`)
@@ -140,12 +141,15 @@ export default class ImageSnapshotService extends PercyClientService {
 
         return promises
       }, [] as any[]))
-
-      // finalize build
-      await this.buildService.finalize()
-    } catch (error) {
-      logError(error)
-      process.exit(1)
+    } catch (err) {
+      error = err
+      logError(err)
     }
+
+    // finalize build
+    await this.buildService.finalize()
+
+    // if an error occurred, exit with non-zero
+    if (error) process.exit(1)
   }
 }
