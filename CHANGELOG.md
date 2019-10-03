@@ -1,3 +1,10 @@
+## [0.18.1](https://github.com/percy/percy-agent/compare/v0.18.0...v0.18.1) (2019-10-03)
+
+
+### Bug Fixes
+
+* Restrict try-catch in upload command so build can be finalized ([#387](https://github.com/percy/percy-agent/issues/387)) ([eed8798](https://github.com/percy/percy-agent/commit/eed8798))
+
 # [0.18.0](https://github.com/percy/percy-agent/compare/v0.17.1...v0.18.0) (2019-10-03)
 
 
