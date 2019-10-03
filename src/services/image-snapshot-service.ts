@@ -47,12 +47,13 @@ export default class ImageSnapshotService extends PercyClientService {
   buildResources(imagePath: string): any[] {
     const { name, ext } = path.parse(imagePath)
     const localCopy = this.makeLocalCopy(imagePath)
+    const imageUrl = `/${encodeURIComponent(imagePath)}`
     const mimetype = ext === '.png' ? 'image/png' : 'image/jpeg'
     const sha = path.basename(localCopy)
 
     const rootResource = this.percyClient.makeResource({
       isRoot: true,
-      resourceUrl: `/${name}`,
+      resourceUrl: `/${encodeURIComponent(name)}`,
       mimetype: 'text/html',
       content: `
         <!doctype html>
@@ -65,14 +66,14 @@ export default class ImageSnapshotService extends PercyClientService {
             </style>
           </head>
           <body>
-            <img src="/${imagePath}"/>
+            <img src="${imageUrl}"/>
           </body>
         </html>
       `,
     })
 
     const imgResource = this.percyClient.makeResource({
-      resourceUrl: `/${imagePath}`,
+      resourceUrl: imageUrl,
       localPath: localCopy,
       mimetype,
       sha,
