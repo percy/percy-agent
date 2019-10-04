@@ -150,6 +150,6 @@ export default class ImageSnapshotService extends PercyClientService {
     await this.buildService.finalize()
 
     // if an error occurred, exit with non-zero
-    if (error) process.exit(1)
+    if (error) { process.exit(1) }
   }
 }
