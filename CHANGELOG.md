@@ -1,3 +1,10 @@
+## [0.18.3](https://github.com/percy/percy-agent/compare/v0.18.2...v0.18.3) (2019-10-04)
+
+
+### Bug Fixes
+
+* :bug: Config array merging ([#391](https://github.com/percy/percy-agent/issues/391)) ([1574631](https://github.com/percy/percy-agent/commit/1574631))
+
 ## [0.18.2](https://github.com/percy/percy-agent/compare/v0.18.1...v0.18.2) (2019-10-03)
 
 
