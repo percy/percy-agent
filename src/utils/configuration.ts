@@ -81,5 +81,9 @@ export default function config({ config, ...flags }: any, args: any = {}) {
     logger.debug(`Using config: ${inspect(overrides, { depth: null })}`)
   }
 
-  return merge.all([DEFAULT_CONFIGURATION, overrides].filter(Boolean)) as Configuration
+  return merge.all(
+    [DEFAULT_CONFIGURATION, overrides].filter(Boolean),
+    // overwrite default arrays, do not merge
+    { arrayMerge: (_, arr) => arr },
+  ) as Configuration
 }
