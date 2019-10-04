@@ -1,5 +1,6 @@
 version: 1
 snapshot:
+  widths: [375, 1200]
   percy-css: |
     .percy-only-css-global {
       height: 300px;
