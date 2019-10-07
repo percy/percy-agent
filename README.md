@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.18.3 linux-x64 node-v10.16.3
+@percy/agent/0.18.4 linux-x64 node-v10.16.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -33,8 +33,8 @@ USAGE
 * [`percy exec`](#percy-exec)
 * [`percy finalize`](#percy-finalize)
 * [`percy help [COMMAND]`](#percy-help-command)
-* [`percy snapshot SNAPSHOTDIRECTORY`](#percy-snapshot-snapshotdirectory)
-* [`percy upload UPLOADDIRECTORY`](#percy-upload-uploaddirectory)
+* [`percy snapshot [SNAPSHOTDIRECTORY]`](#percy-snapshot-snapshotdirectory)
+* [`percy upload [UPLOADDIRECTORY]`](#percy-upload-uploaddirectory)
 
 ## `percy exec`
 
@@ -47,8 +47,8 @@ USAGE
 OPTIONS
   -c, --config=config                              Path to percy config file
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
-  -p, --port=port                                  [default: 5338] port
-  -t, --network-idle-timeout=network-idle-timeout  [default: 50] asset discovery network idle timeout (in milliseconds)
+  -p, --port=port                                  [default: 5338] Port
+  -t, --network-idle-timeout=network-idle-timeout  [default: 50] Asset discovery network idle timeout (in milliseconds)
 
 EXAMPLES
   $ percy exec -- echo "percy is running around this echo command"
@@ -88,28 +88,28 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
 
-## `percy snapshot SNAPSHOTDIRECTORY`
+## `percy snapshot [SNAPSHOTDIRECTORY]`
 
 Snapshot a directory containing a pre-built static website.
 
 ```
 USAGE
-  $ percy snapshot SNAPSHOTDIRECTORY
+  $ percy snapshot [SNAPSHOTDIRECTORY]
 
 ARGUMENTS
-  SNAPSHOTDIRECTORY  A path to the directory you would like to snapshot
+  SNAPSHOTDIRECTORY  [default: .] A path to the directory you would like to snapshot
 
 OPTIONS
   -b, --base-url=base-url                          [default: /] If your static files will be hosted in a subdirectory,
-                                                   instead
-                                                   of the webserver's root path, set that subdirectory with this flag.
+                                                   instead of the webserver's root path, set that subdirectory with this
+                                                   flag.
 
   -c, --config=config                              Path to percy config file
 
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
 
-  -i, --ignore-files=ignore-files                  Glob or comma-seperated string of globs for matching the files and
-                                                   directories to ignore.
+  -i, --ignore-files=ignore-files                  [default: ] Glob or comma-seperated string of globs for matching the
+                                                   files and directories to ignore.
 
   -p, --port=port                                  [default: 5338] Port
 
@@ -124,16 +124,16 @@ EXAMPLES
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
 ```
 
-## `percy upload UPLOADDIRECTORY`
+## `percy upload [UPLOADDIRECTORY]`
 
 Upload a directory containing static snapshot images.
 
 ```
 USAGE
-  $ percy upload UPLOADDIRECTORY
+  $ percy upload [UPLOADDIRECTORY]
 
 ARGUMENTS
-  UPLOADDIRECTORY  A path to the directory containing static snapshot images
+  UPLOADDIRECTORY  [default: .] A path to the directory containing static snapshot images
 
 OPTIONS
   -c, --config=config  Path to percy config file
@@ -141,7 +141,8 @@ OPTIONS
   -f, --files=files    [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
                        files and directories to snapshot.
 
-  -i, --ignore=ignore  Glob or comma-seperated string of globs for matching the files and directories to ignore.
+  -i, --ignore=ignore  [default: ] Glob or comma-seperated string of globs for matching the files and directories to
+                       ignore.
 
 EXAMPLES
   $ percy upload _images/

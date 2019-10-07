@@ -1,3 +1,10 @@
+## [0.18.4](https://github.com/percy/percy-agent/compare/v0.18.3...v0.18.4) (2019-10-07)
+
+
+### Bug Fixes
+
+* :bug: Default config overrides ([#394](https://github.com/percy/percy-agent/issues/394)) ([ca4ecd1](https://github.com/percy/percy-agent/commit/ca4ecd1))
+
 ## [0.18.3](https://github.com/percy/percy-agent/compare/v0.18.2...v0.18.3) (2019-10-04)
 
 
