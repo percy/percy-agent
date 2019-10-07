@@ -13,7 +13,7 @@ export default class Snapshot extends PercyCommand {
   static args = [{
     name: 'snapshotDirectory',
     description: 'A path to the directory you would like to snapshot',
-    required: true,
+    default: DEFAULT_CONFIGURATION['static-snapshots'].path,
   }]
 
   static examples = [

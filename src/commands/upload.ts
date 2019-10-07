@@ -10,7 +10,7 @@ export default class Upload extends Command {
   static args = [{
     name: 'uploadDirectory',
     description: 'A path to the directory containing static snapshot images',
-    required: true,
+    default: DEFAULT_CONFIGURATION['static-snapshots'].path,
   }]
 
   static examples = [
