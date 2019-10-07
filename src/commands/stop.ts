@@ -18,8 +18,10 @@ export default class Stop extends PercyCommand {
   static flags = {
     port: flags.integer({
       char: 'p',
-      default: DEFAULT_CONFIGURATION.agent.port,
-      description: 'port',
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent.port}]`,
+        'Port',
+      ].join(' '),
     }),
   }
 

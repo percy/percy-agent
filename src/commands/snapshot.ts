@@ -12,8 +12,10 @@ export default class Snapshot extends PercyCommand {
 
   static args = [{
     name: 'snapshotDirectory',
-    description: 'A path to the directory you would like to snapshot',
-    default: DEFAULT_CONFIGURATION['static-snapshots'].path,
+    description: [
+      `[default: ${DEFAULT_CONFIGURATION['static-snapshots'].path}]`,
+      'A path to the directory you would like to snapshot',
+    ].join(' '),
   }]
 
   static examples = [
@@ -25,35 +27,45 @@ export default class Snapshot extends PercyCommand {
   static flags = {
     'snapshot-files': flags.string({
       char: 's',
-      description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
-      default: DEFAULT_CONFIGURATION['static-snapshots']['snapshot-files'],
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION['static-snapshots']['snapshot-files']}]`,
+        'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
+      ].join(' '),
     }),
     'ignore-files': flags.string({
       char: 'i',
-      description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
-      default: DEFAULT_CONFIGURATION['static-snapshots']['ignore-files'],
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION['static-snapshots']['ignore-files']}]`,
+        'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
+      ].join(' '),
     }),
     'base-url': flags.string({
       char: 'b',
-      description: 'If your static files will be hosted in a subdirectory, instead \n' +
-      'of the webserver\'s root path, set that subdirectory with this flag.',
-      default: DEFAULT_CONFIGURATION['static-snapshots']['base-url'],
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION['static-snapshots']['base-url']}]`,
+        'If your static files will be hosted in a subdirectory, instead',
+        'of the webserver\'s root path, set that subdirectory with this flag.',
+      ].join(' '),
     }),
+    // from exec command. needed to start the agent service.
     'allowed-hostname': flags.string({
       char: 'h',
       description: 'Allowable hostname(s) to capture assets from',
       multiple: true,
     }),
-    // from exec command. needed to start the agent service.
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],
-      description: 'Asset discovery network idle timeout (in milliseconds)',
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout']}]`,
+        'Asset discovery network idle timeout (in milliseconds)',
+      ].join(' '),
     }),
     'port': flags.integer({
       char: 'p',
-      default: DEFAULT_CONFIGURATION.agent.port,
-      description: 'Port',
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent.port}]`,
+        'Port',
+      ].join(' '),
     }),
     'config': flags.string({
       char: 'c',

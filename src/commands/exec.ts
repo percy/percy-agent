@@ -22,13 +22,17 @@ export default class Exec extends PercyCommand {
     }),
     'network-idle-timeout': flags.integer({
       char: 't',
-      default: DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout'],
-      description: 'asset discovery network idle timeout (in milliseconds)',
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent['asset-discovery']['network-idle-timeout']}]`,
+        'Asset discovery network idle timeout (in milliseconds)',
+      ].join(' '),
     }),
     'port': flags.integer({
       char: 'p',
-      default: DEFAULT_CONFIGURATION.agent.port,
-      description: 'port',
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent.port}]`,
+        'Port',
+      ].join(' '),
     }),
     'config': flags.string({
       char: 'c',
