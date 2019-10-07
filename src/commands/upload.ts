@@ -9,8 +9,10 @@ export default class Upload extends Command {
 
   static args = [{
     name: 'uploadDirectory',
-    description: 'A path to the directory containing static snapshot images',
-    required: true,
+    description: [
+      `[default: ${DEFAULT_CONFIGURATION['static-snapshots'].path}]`,
+      'A path to the directory containing static snapshot images',
+    ].join(' '),
   }]
 
   static examples = [
@@ -21,13 +23,17 @@ export default class Upload extends Command {
   static flags = {
     files: flags.string({
       char: 'f',
-      description: 'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
-      default: DEFAULT_CONFIGURATION['image-snapshots'].files,
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION['image-snapshots'].files}]`,
+        'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
+      ].join(' '),
     }),
     ignore: flags.string({
       char: 'i',
-      description: 'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
-      default: DEFAULT_CONFIGURATION['image-snapshots'].ignore,
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION['image-snapshots'].ignore}]`,
+        'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
+      ].join(' '),
     }),
     config: flags.string({
       char: 'c',

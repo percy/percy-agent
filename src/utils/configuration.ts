@@ -7,7 +7,8 @@ import logger from './logger'
 
 const { isArray } = Array
 const { assign, keys } = Object
-const explorer = cosmiconfig('percy', {
+
+export const explorer = cosmiconfig('percy', {
   searchPlaces: [
     'package.json',
     '.percyrc',
