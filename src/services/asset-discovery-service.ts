@@ -264,7 +264,7 @@ export class AssetDiscoveryService extends PercyClientService {
     await pool.release(page)
     profile('--> assetDiscoveryService.pool.release')
 
-    return maybeResources.filter((maybeResource) => maybeResource != null)
+    return maybeResources.filter(Boolean)
   }
 
   private async cleanPagePool() {
