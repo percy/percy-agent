@@ -92,6 +92,7 @@ export default class ImageSnapshotService extends PercyClientService {
       name,
       widths: [width],
       minimumHeight: height,
+      clientInfo: 'percy-upload',
     }).then(async (response: any) => {
       await this.percyClient.uploadMissingResources(this.buildId, response, resources)
       return response
