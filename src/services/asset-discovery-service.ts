@@ -237,6 +237,8 @@ export class AssetDiscoveryService extends PercyClientService {
       logger.debug(`Failed to load ${request.url()} : ${request.failure()!.errorText}}`)
     })
 
+    let maybeResources: any[] = []
+
     try {
       profile('--> assetDiscoveryService.page.goto', { url: rootResourceUrl })
       await page.goto(rootResourceUrl)
@@ -247,23 +249,22 @@ export class AssetDiscoveryService extends PercyClientService {
       profile('--> assetDiscoveryService.waitForNetworkIdle')
 
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
-      const maybeResources: any[] = await Promise.all(maybeResourcePromises)
+      maybeResources = await Promise.all(maybeResourcePromises)
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
-
-      profile('--> assetDiscoveryService.pool.release', { url: rootResourceUrl })
-      await page.removeAllListeners('request')
-      await page.removeAllListeners('requestfinished')
-      await page.removeAllListeners('requestfailed')
-      await pool.release(page)
-      profile('--> assetDiscoveryService.pool.release')
-
-      return maybeResources.filter((maybeResource) => maybeResource != null)
     } catch (error) {
       logger.error(`${error.name} ${error.message}`)
       logger.debug(error)
     }
 
-    return []
+    // always release the page from the pool
+    profile('--> assetDiscoveryService.pool.release', { url: rootResourceUrl })
+    page.removeAllListeners('request')
+    page.removeAllListeners('requestfinished')
+    page.removeAllListeners('requestfailed')
+    await pool.release(page)
+    profile('--> assetDiscoveryService.pool.release')
+
+    return maybeResources.filter(Boolean)
   }
 
   private async cleanPagePool() {
