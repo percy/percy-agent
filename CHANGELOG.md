@@ -1,3 +1,10 @@
+## [0.19.1](https://github.com/percy/percy-agent/compare/v0.19.0...v0.19.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* Always release puppeteer page in asset discovery ([#396](https://github.com/percy/percy-agent/issues/396)) ([6e4cff1](https://github.com/percy/percy-agent/commit/6e4cff1))
+
 # [0.19.0](https://github.com/percy/percy-agent/compare/v0.18.4...v0.19.0) (2019-10-09)
 
 
