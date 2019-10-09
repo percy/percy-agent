@@ -1,3 +1,10 @@
+# [0.19.0](https://github.com/percy/percy-agent/compare/v0.18.4...v0.19.0) (2019-10-09)
+
+
+### Features
+
+* :sparkles: Add client info for upload command ([#395](https://github.com/percy/percy-agent/issues/395)) ([9625c4a](https://github.com/percy/percy-agent/commit/9625c4a))
+
 ## [0.18.4](https://github.com/percy/percy-agent/compare/v0.18.3...v0.18.4) (2019-10-07)
 
 
