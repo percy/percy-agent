@@ -1,13 +1,14 @@
 ---
-version: 2
-jobs:
-  node-10: &test
-    docker:
-      - image: circleci/node:10-browsers
+references:
+  test_config: &test_config
     working_directory: ~/cli
     environment:
       NYC: "yarn exec nyc -- --nycrc-path node_modules/@oclif/nyc-config/.nycrc"
       MOCHA_FILE: "reports/mocha.xml"
+      PERCY_PARALLEL_TOTAL: "-1"
+
+commands:
+  setup:
     steps:
       - checkout
       - restore_cache: &restore_cache
@@ -20,14 +21,10 @@ jobs:
           name: Install CI only dependencies
           command: yarn add -D --no-lockfile nyc@11 @oclif/nyc-config@1 mocha-junit-reporter@1
       - run:
-          name: Version command
-          command: ./bin/run --version
-      - run:
-          name: Help command
-          command: ./bin/run --help
-      - run:
           name: Build package
           command: yarn build
+  unit_client_integration:
+    steps:
       - run:
           name: Unit tests
           command: |
@@ -36,27 +33,70 @@ jobs:
       - run:
           name: Client tests
           command: $NYC yarn test-client --singleRun
-      # [skipped] this uploads 0 snapshots and needs to be fixed
-      # - run:
-      #     name: Snapshot command test
-      #     command: yarn test-snapshot-command
-      - run:
-          name: Upload command test
-          command: yarn test-upload-command
       - run:
           name: Integration tests
           command: $NYC yarn test-integration
+  cli_integration:
+    steps:
+      - run:
+          name: Snapshot command test
+          command: yarn test-snapshot-command
+      - run:
+          name: Upload command test
+          command: yarn test-upload-command
+  cli_commands:
+    steps:
+      - run:
+          name: Version command
+          command: ./bin/run --version
+      - run:
+          name: Help command
+          command: ./bin/run --help
+  store_artifacts:
+    steps:
       - run:
           name: Gather reports
           command: $NYC report --reporter text-lcov > coverage.lcov
       - store_test_results: &store_test_results
           path: ~/cli/reports
+
+version: 2.1
+jobs:
+  node-10:
+    <<: *test_config
+    docker:
+      - image: circleci/node:10-browsers
+    steps:
+      - setup
+      - cli_commands
+      - unit_client_integration
+      - run:
+          name: Disable Percy for CLI integration tests
+          command: export PERCY_ENABLE=0
+      - cli_integration
+      - store_artifacts
   node-8:
-    <<: *test
+    <<: *test_config
     docker:
       - image: circleci/node:8-browsers
+    steps:
+      - setup
+      - cli_commands
+      - unit_client_integration
+      - cli_integration
+      - store_artifacts
+  finalize_percy:
+    <<: *test_config
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - run: yarn && yarn build
+      - run: ./bin/run finalize --all
   release:
-    <<: *test
+    <<: *test_config
+    docker:
+      - image: circleci/node:8-browsers
     steps:
       - checkout
       - run: yarn
@@ -64,10 +104,14 @@ jobs:
       - run: ./release-percy.sh
 workflows:
   version: 2
-  "@percy/agent":
+  default:
     jobs:
       - node-10
       - node-8
+      - finalize_percy:
+          requires:
+          - node-10
+          - node-8
       - release:
           filters:
             branches:

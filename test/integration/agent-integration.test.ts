@@ -13,16 +13,17 @@ const expect = chai.expect
 declare var PercyAgent: any
 
 async function snapshot(page: puppeteer.Page, name: string, options: any = {}) {
+  const nodeName = `node-${process.version.replace('v', '').split('.')[0]} - ${name}`
   await page.addScriptTag({path: agentJsFilename()})
 
   const domSnapshot = await page.evaluate((name: string, options: any) => {
     const percyAgentClient = new PercyAgent({ handleAgentCommunication: false })
 
     return percyAgentClient.snapshot(name, options)
-  }, name, options)
+  }, nodeName, options)
 
   await postSnapshot({
-    name,
+    name: nodeName,
     domSnapshot,
     url: page.url(),
     clientInfo: 'integration-microSDK',
