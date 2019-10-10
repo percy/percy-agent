@@ -23,13 +23,19 @@ commands:
       - run:
           name: Build package
           command: yarn build
-  store_artifacts:
+  unit_client_integration:
     steps:
       - run:
-          name: Gather reports
-          command: $NYC report --reporter text-lcov > coverage.lcov
-      - store_test_results: &store_test_results
-          path: ~/cli/reports
+          name: Unit tests
+          command: |
+            mkdir -p reports
+            $NYC yarn test --reporter mocha-junit-reporter
+      - run:
+          name: Client tests
+          command: $NYC yarn test-client --singleRun
+      - run:
+          name: Integration tests
+          command: $NYC yarn test-integration
   cli_integration:
     steps:
       - run:
@@ -46,6 +52,13 @@ commands:
       - run:
           name: Help command
           command: ./bin/run --help
+  store_artifacts:
+    steps:
+      - run:
+          name: Gather reports
+          command: $NYC report --reporter text-lcov > coverage.lcov
+      - store_test_results: &store_test_results
+          path: ~/cli/reports
 
 version: 2.1
 jobs:
@@ -56,17 +69,7 @@ jobs:
     steps:
       - setup
       - cli_commands
-      - run:
-          name: Unit tests
-          command: |
-            mkdir -p reports
-            $NYC yarn test --reporter mocha-junit-reporter
-      - run:
-          name: Client tests
-          command: $NYC yarn test-client --singleRun
-      - run:
-          name: Integration tests
-          command: $NYC yarn test-integration
+      - unit_client_integration
       - run:
           name: Disable Percy for CLI integration tests
           command: export PERCY_ENABLE=0
@@ -79,17 +82,7 @@ jobs:
     steps:
       - setup
       - cli_commands
-      - run:
-          name: Unit tests
-          command: |
-            mkdir -p reports
-            $NYC yarn test --reporter mocha-junit-reporter
-      - run:
-          name: Client tests
-          command: $NYC yarn test-client --singleRun
-      - run:
-          name: Integration tests
-          command: $NYC yarn test-integration
+      - unit_client_integration
       - cli_integration
       - store_artifacts
   finalize_percy:
