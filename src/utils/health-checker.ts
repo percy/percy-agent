@@ -12,13 +12,11 @@ async function healthCheck(port: number, retryOptions?: object) {
     ...retryOptions,
   }
 
-  const interceptorId = retryAxios.attach()
+  const axiosInstance = Axios.create({ raxConfi: retryConfig } as any)
 
-  await Axios({
-    method: 'get',
-    url: healthcheckUrl,
-    raxConfig: retryConfig,
-  } as any).then(() => {
+  const interceptorId = retryAxios.attach(axiosInstance)
+
+  await axiosInstance.get(healthcheckUrl).then(() => {
     logger.info('percy is ready.')
   }).catch((error) => {
     logger.error(`Failed to establish a connection with ${healthcheckUrl}`)
