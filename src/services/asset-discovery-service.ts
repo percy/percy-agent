@@ -44,6 +44,7 @@ export class AssetDiscoveryService extends PercyClientService {
         '--no-sandbox',
         '--disable-web-security',
       ],
+      executablePath: process.env.CHROMIUM_PATH,
       ignoreHTTPSErrors: true,
       handleSIGINT : false,
     })

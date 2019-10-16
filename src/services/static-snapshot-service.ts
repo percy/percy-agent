@@ -38,6 +38,7 @@ export default class StaticSnapshotService {
 
     const browser = await puppeteer.launch({
       args: ['--no-sandbox'],
+      executablePath: process.env.CHROMIUM_PATH,
       handleSIGINT : false,
     })
 
