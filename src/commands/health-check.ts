@@ -9,6 +9,7 @@ export default class HealthCheck extends Command {
   static flags = {
     port: flags.integer({
       char: 'p',
+      default: DEFAULT_CONFIGURATION.agent.port,
       description: [
         `[default: ${DEFAULT_CONFIGURATION.agent.port}]`,
         'Port',
