@@ -20,7 +20,13 @@ examples:
 executors:
   default:
     docker:
-      - image: percyio/agent:latest
+      parameters:
+        tag:
+          type: string
+          description: Docker image tag
+          default: latest
+      docker:
+          - image: percyio/agent:<<parameters.tag>>
 
 commands:
   finalize_all:
