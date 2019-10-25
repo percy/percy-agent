@@ -53,13 +53,13 @@ export default class PercyCommand extends Command {
       this.logStart()
 
       // Receiving any of these events should stop the agent and exit
-      process.on('SIGHUP', () => this.stop())
-      process.on('SIGINT', () => this.stop())
-      process.on('SIGTERM', () => this.stop())
+      process.on('SIGHUP', () => this.stop(0, true))
+      process.on('SIGINT', () => this.stop(0, true))
+      process.on('SIGTERM', () => this.stop(0, true))
     }
   }
 
-  async stop(exitCode?: number | null) {
+  async stop(exitCode?: number | null, stopProcess?: boolean) {
     if (this.exiting) { return }
     this.exiting = true
 
@@ -67,6 +67,10 @@ export default class PercyCommand extends Command {
       await this.agentService.stop()
     }
 
-    process.exit(exitCode || 0)
+    if (stopProcess) {
+      process.exit(exitCode || 0)
+    } else {
+      this.exit(exitCode || 0)
+    }
   }
 }
