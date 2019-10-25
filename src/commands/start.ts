@@ -67,11 +67,20 @@ export default class Start extends PercyCommand {
   }
 
   private runDetached(flags: any) {
+    let args: string[] = []
+
+    if (flags.port) {
+      args = args.concat('-p', flags.port)
+    }
+
+    if (flags['network-idle-timeout']) {
+      args = args.concat('-t', flags['network-idle-timeout'])
+    }
+
     const pid = this.processService.runDetached([
       path.resolve(`${__dirname}/../../bin/run`),
       'start',
-      '-p', String(flags.port!),
-      '-t', String(flags['network-idle-timeout']),
+      ...args,
     ])
 
     if (pid) {
