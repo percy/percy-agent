@@ -58,11 +58,19 @@ export default class Exec extends PercyCommand {
     }
 
     // Even if Percy will not run, continue to run the subprocess
-    const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
-    spawnedProcess.on('exit', (code) => this.stop(code))
-    spawnedProcess.on('error', (error) => {
+    await new Promise((resolve, reject) => {
+      const spawnedProcess = spawn(command, argv, { stdio: 'inherit' })
+      spawnedProcess.on('exit', resolve)
+      spawnedProcess.on('error', reject)
+    }).catch((error) => {
+      // catch subprocess errors
       this.logger.error(error)
-      this.stop(1)
+      return 1
+    }).then((code: any) => {
+      // oclif exit raises an error to stop script execution, so the following
+      // stop method cannot be used inside of the subprocess event handlers
+      // which would warn about an uncaught promise
+      return this.stop(code)
     })
   }
 }
