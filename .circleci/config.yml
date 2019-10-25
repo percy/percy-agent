@@ -29,7 +29,7 @@ commands:
           name: Unit tests
           command: |
             mkdir -p reports
-            $NYC yarn test --reporter mocha-junit-reporter
+            $NYC yarn test
       - run:
           name: Client tests
           command: $NYC yarn test-client --singleRun
