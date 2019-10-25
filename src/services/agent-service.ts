@@ -113,7 +113,7 @@ export class AgentService {
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
-      return response.json({success: true})
+      return response.json({ success: true })
     }
 
     let resources = await this.snapshotService.buildResources(
@@ -157,7 +157,7 @@ export class AgentService {
 
   private async handleStop(_: express.Request, response: express.Response) {
     await this.stop()
-    new ProcessService().kill()
+    new ProcessService().cleanup()
     return response.json({ success: true })
   }
 
