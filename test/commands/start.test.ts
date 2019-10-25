@@ -90,17 +90,15 @@ describe('Start', () => {
     it('starts percy agent on a specific port', async () => {
       const agentServiceStub = AgentServiceStub()
 
-      const port = '55000'
-      const options = ['--port', port]
-
       const stdout = await captureStdOut(async () => {
-        await Start.run(options)
+        await Start.run(['--port', '55000'])
       })
 
-      const expectedConfiguration = DEFAULT_CONFIGURATION
-      expectedConfiguration.agent.port = +port
+      expect(agentServiceStub.start).to.calledWithMatch({
+        ...DEFAULT_CONFIGURATION,
+        agent: { ...DEFAULT_CONFIGURATION.agent, port: 55000 },
+      })
 
-      expect(agentServiceStub.start).to.calledWithMatch(expectedConfiguration)
       expect(stdout).to.contain('[percy] percy has started.')
     })
 
