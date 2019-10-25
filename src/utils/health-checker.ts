@@ -1,9 +1,10 @@
 import Axios from 'axios'
 import * as retryAxios from 'retry-axios'
+import { DEFAULT_PORT, HEALTHCHECK_PATH } from '../services/agent-service-constants'
 import logger from './logger'
 
-async function healthCheck(port: number, retryOptions?: object) {
-  const healthcheckUrl = `http://localhost:${port}/percy/healthcheck`
+async function healthCheck(port: number = DEFAULT_PORT, retryOptions?: object) {
+  const healthcheckUrl = `http://localhost:${port}${HEALTHCHECK_PATH}`
 
   const retryConfig = {
     retry: 5, // with exponential back off
