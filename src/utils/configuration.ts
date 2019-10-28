@@ -57,6 +57,16 @@ function transform(flags: any, args: any) {
   })
 }
 
+// splits on commas, but not within curly braces
+const SPLIT_REGEXP = /(?<=^|,)([^,]*{.*?}[^,]*|.*?)(?=,|$)/g
+export function parseGlobs(globStr: string): string[] {
+  return globStr.match(SPLIT_REGEXP)!
+  // trim whitespace
+    .map((str) => str.trim())
+  // empty globs would match every file
+    .filter(Boolean)
+}
+
 export default function config({ config, ...flags }: any, args: any = {}) {
   let loaded
 

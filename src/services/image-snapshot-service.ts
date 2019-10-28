@@ -7,6 +7,7 @@ import * as path from 'path'
 
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { ImageSnapshotsConfiguration } from '../configuration/image-snapshots-configuration'
+import { parseGlobs } from '../utils/configuration'
 import logger, { logError, profile } from '../utils/logger'
 import BuildService from './build-service'
 import PercyClientService from './percy-client-service'
@@ -106,9 +107,8 @@ export default class ImageSnapshotService extends PercyClientService {
   }
 
   async snapshotAll() {
-    // intentially remove '' values from because that matches every file
-    const globs = this.configuration.files.split(',').filter(Boolean)
-    const ignore = this.configuration.ignore.split(',').filter(Boolean)
+    const globs = parseGlobs(this.configuration.files)
+    const ignore = parseGlobs(this.configuration.ignore)
     const paths = await globby(globs, { cwd: this.configuration.path, ignore })
     let error
 

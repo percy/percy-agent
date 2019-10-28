@@ -6,6 +6,7 @@ import {Server} from 'http'
 import * as puppeteer from 'puppeteer'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { StaticSnapshotsConfiguration } from '../configuration/static-snapshots-configuration'
+import { parseGlobs } from '../utils/configuration'
 import logger from '../utils/logger'
 import {agentJsFilename} from '../utils/sdk-utils'
 
@@ -97,28 +98,11 @@ export default class StaticSnapshotService {
   }
 
   async _buildPageUrls() {
-    // We very intentially remove '' values from these globs because that matches every file
-    const ignoreGlobs = this.configuration['ignore-files']
-      .split(',')
-      .filter((value) => value !== '')
-
-    const snapshotGlobs = this.configuration['snapshot-files']
-      .split(',')
-      .filter((value) => value !== '')
-
-    const globOptions = {
-      cwd: this.configuration.path,
-      ignore: ignoreGlobs,
-    }
-
-    const paths = await globby(snapshotGlobs, globOptions)
-    const pageUrls = [] as any
+    const globs = parseGlobs(this.configuration['snapshot-files'])
+    const ignore = parseGlobs(this.configuration['ignore-files'])
+    const paths = await globby(globs, { cwd: this.configuration.path, ignore })
     const baseUrl = this._buildLocalUrl()
 
-    for (const path of paths) {
-      pageUrls.push(baseUrl + path)
-    }
-
-    return pageUrls
+    return paths.map((path) => baseUrl + path)
   }
 }
