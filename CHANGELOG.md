@@ -1,3 +1,10 @@
+## [0.19.2](https://github.com/percy/percy-agent/compare/v0.19.1...v0.19.2) (2019-10-28)
+
+
+### Bug Fixes
+
+* start detached and stop cleanup ([#403](https://github.com/percy/percy-agent/issues/403)) ([2b4662e](https://github.com/percy/percy-agent/commit/2b4662e))
+
 ## [0.19.1](https://github.com/percy/percy-agent/compare/v0.19.0...v0.19.1) (2019-10-09)
 
 
