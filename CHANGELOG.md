@@ -1,3 +1,10 @@
+## [0.19.3](https://github.com/percy/percy-agent/compare/v0.19.2...v0.19.3) (2019-10-28)
+
+
+### Bug Fixes
+
+* parsing glob strings ([#404](https://github.com/percy/percy-agent/issues/404)) ([d52e552](https://github.com/percy/percy-agent/commit/d52e552))
+
 ## [0.19.2](https://github.com/percy/percy-agent/compare/v0.19.1...v0.19.2) (2019-10-28)
 
 
