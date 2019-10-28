@@ -29,6 +29,15 @@ export function logError(error: any) {
 
 export function createFileLogger(filename: string) {
   const fileTransport = new winston.transports.File({ filename, level: 'debug' })
+  const consoleTransport = new winston.transports.Console({
+    level: LOG_LEVEL,
+    stderrLevels: ['error'],
+    format: winston.format.combine(
+      winston.format.label({ label: colors.magenta('percy') }),
+      winston.format.printf(({ label, message }) => `[${label}] ${message}`),
+    ),
+  })
+
   return winston.createLogger({ transports: [consoleTransport, fileTransport] })
 }
 
