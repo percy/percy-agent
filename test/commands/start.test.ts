@@ -1,4 +1,3 @@
-import * as chai from 'chai'
 import {describe} from 'mocha'
 import * as nock from 'nock'
 import * as path from 'path'
@@ -8,6 +7,7 @@ import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
 import {AgentService} from '../../src/services/agent-service'
 import ProcessService from '../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
+import chai from '../support/chai'
 
 const expect = chai.expect
 
@@ -66,8 +66,23 @@ describe('Start', () => {
         [
           path.resolve(`${__dirname}/../../bin/run`),
           'start',
-          '-p', String(DEFAULT_CONFIGURATION.agent.port),
-          '-t', '50',
+        ],
+      )
+    })
+
+    it('starts percy agent in detached mode with flags', async () => {
+      const processService = ProcessServiceStub()
+
+      await captureStdOut(async () => {
+        await Start.run(['--detached', '-p', '55000', '-t', '100'])
+      })
+
+      expect(processService.runDetached).to.calledWithMatch(
+        [
+          path.resolve(`${__dirname}/../../bin/run`),
+          'start',
+          '-p', 55000,
+          '-t', 100,
         ],
       )
     })
@@ -75,17 +90,15 @@ describe('Start', () => {
     it('starts percy agent on a specific port', async () => {
       const agentServiceStub = AgentServiceStub()
 
-      const port = '55000'
-      const options = ['--port', port]
-
       const stdout = await captureStdOut(async () => {
-        await Start.run(options)
+        await Start.run(['--port', '55000'])
       })
 
-      const expectedConfiguration = DEFAULT_CONFIGURATION
-      expectedConfiguration.agent.port = +port
+      expect(agentServiceStub.start).to.calledWithMatch({
+        ...DEFAULT_CONFIGURATION,
+        agent: { ...DEFAULT_CONFIGURATION.agent, port: 55000 },
+      })
 
-      expect(agentServiceStub.start).to.calledWithMatch(expectedConfiguration)
       expect(stdout).to.contain('[percy] percy has started.')
     })
 

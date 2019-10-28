@@ -1,17 +1,18 @@
-import * as chai from 'chai'
-import {describe} from 'mocha'
+import { describe } from 'mocha'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
 import Exec from '../../src/commands/exec'
-import {AgentService} from '../../src/services/agent-service'
-import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
-import {captureStdOut} from '../helpers/stdout'
+import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
+import { AgentService } from '../../src/services/agent-service'
+import { captureStdOut } from '../helpers/stdout'
+import chai from '../support/chai'
 
 const expect = chai.expect
 
 describe('Exec', () => {
-  xdescribe('#run', () => {
+  describe('#run', () => {
     const sandbox = sinon.createSandbox()
+    let agentServiceStub: AgentService
 
     function AgentServiceStub(): AgentService {
       const agentService = AgentService.prototype as AgentService
@@ -24,6 +25,7 @@ describe('Exec', () => {
     }
 
     beforeEach(() => {
+      agentServiceStub = AgentServiceStub()
       nock(/localhost/).get('/percy/healthcheck').reply(200)
     })
 
@@ -33,17 +35,23 @@ describe('Exec', () => {
     })
 
     it('starts and stops percy', async () => {
-      const agentServiceStub = AgentServiceStub()
-
       const stdout = await captureStdOut(async () => {
-        await Exec.run(['--', 'echo', 'hello'])
+        await Exec.run(['--', 'sleep', '0'])
       })
 
-      expect(agentServiceStub.start).to.calledWithMatch(DEFAULT_PORT)
-      expect(stdout).to.match(/\[percy\] percy has started on port \d+./)
+      expect(agentServiceStub.start).to.calledWithMatch(DEFAULT_CONFIGURATION)
+      expect(stdout).to.match(/\[percy\] percy has started./)
     })
 
-    xit('starts percy on a specific port')
-    xit('warns when percy is already running')
+    it('starts percy on a specific port', async () => {
+      await captureStdOut(async () => {
+        await Exec.run(['--port', '55000', '--', 'sleep', '0'])
+      })
+
+      expect(agentServiceStub.start).to.calledWithMatch({
+        ...DEFAULT_CONFIGURATION,
+        agent: { ...DEFAULT_CONFIGURATION.agent, port: 55000 },
+      })
+    })
   })
 })

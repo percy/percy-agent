@@ -1,12 +1,12 @@
-import {expect, test} from '@oclif/test'
-import * as chai from 'chai'
-import {describe} from 'mocha'
+import { expect, test } from '@oclif/test'
+import { describe } from 'mocha'
 import * as sinon from 'sinon'
 import Snapshot from '../../src/commands/snapshot'
 import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
-import {AgentService} from '../../src/services/agent-service'
+import { AgentService } from '../../src/services/agent-service'
 import StaticSnapshotService from '../../src/services/static-snapshot-service'
-import {captureStdOut} from '../helpers/stdout'
+import { captureStdErr, captureStdOut } from '../helpers/stdout'
+import chai from '../support/chai'
 
 describe('snapshot', () => {
   describe('#run', () => {
@@ -14,6 +14,8 @@ describe('snapshot', () => {
 
     afterEach(() => {
       sandbox.restore()
+      // restore token to fake value
+      process.env.PERCY_TOKEN = 'abc'
     })
 
     function AgentServiceStub(): AgentService {
@@ -47,23 +49,15 @@ describe('snapshot', () => {
       chai.expect(staticSnapshotServiceStub.snapshotAll).to.have.callCount(1)
       chai.expect(stdout).to.match(/\[percy\] percy has started./)
     })
-  })
 
-  describe('snapshot command', () => {
-    test
-      .stub(process, 'env', {PERCY_TOKEN: ''})
-      .stderr()
-      .command(['snapshot', './test_dir'])
-      .exit(0)
-      .do((output) => expect(output.stderr).to.contain(
-        'Warning: Skipping visual tests. PERCY_TOKEN was not provided.',
-      ))
-      .it('warns about PERCY_TOKEN not being set and exits gracefully')
+    it('warns about PERCY_TOKEN not being set and exits gracefully', async () => {
+      process.env.PERCY_TOKEN = ''
 
-    test
-      .env({PERCY_TOKEN: 'abc'})
-      .command(['snapshot'])
-      .exit(2)
-      .it('exits when the asset directory arg is missing')
+      const stderr = await captureStdErr(async () => {
+        await Snapshot.run(['.'])
+      })
+
+      chai.expect(stderr).to.match(/Warning: Skipping visual tests\. PERCY_TOKEN was not provided\./)
+    })
   })
 })
