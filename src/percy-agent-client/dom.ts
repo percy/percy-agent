@@ -172,8 +172,8 @@ class DOM {
       function isCSSOM() {
         const hasHref = styleSheet.href
         const ownerNode = styleSheet.ownerNode as HTMLElement
-        const hasStyleInDom =
-          ownerNode.innerText && ownerNode.innerText.length > 0
+        const ownerNodeInnerContent = ownerNode.innerText && ownerNode.innerText.trim()
+        const hasStyleInDom = ownerNodeInnerContent.length > 0
 
         return !hasHref && !hasStyleInDom && styleSheet.cssRules
       }
