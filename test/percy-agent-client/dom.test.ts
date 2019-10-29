@@ -30,11 +30,17 @@ function createExample(dom: string) {
 }
 
 // create a stylesheet in the DOM and add rules using the CSSOM
-function createCSSOM() {
+function createCSSOM(options = {} as any) {
+  const { whiteSpace } = options
   const style = document.createElement('style')
   const testingContainer = document.querySelector('.test-container') as HTMLElement
 
   style.type = 'text/css'
+
+  if (whiteSpace) {
+    style.innerText = '    '
+  }
+
   testingContainer.appendChild(style)
 
   const cssomStyleSheet = document.styleSheets[0] as CSSStyleSheet
@@ -136,6 +142,23 @@ describe('DOM -', () => {
           expect(cssomSheet.cssRules.length).to.equal(1)
           expect(cssomSheet.cssRules[0].cssText).to
             .equal('.box { height: 200px; width: 200px; background-color: blue; }')
+        })
+      })
+
+      describe('with white space in the style ownerNode', () => {
+        beforeEach(() => {
+          const exampleDOM = createExample('<div class="box"></div>')
+
+          createCSSOM({ whiteSpace: true })
+          dom = new DOM(exampleDOM)
+        })
+
+        it('does not break the CSSOM', () => {
+          const serializedCSSOM = dom.clonedDOM.querySelectorAll('[data-percy-cssom-serialized]') as HTMLElement[]
+
+          expect(serializedCSSOM.length).to.equal(1)
+          expect(serializedCSSOM[0].innerText)
+            .to.equal('.box { height: 500px; width: 500px; background-color: green; }')
         })
       })
     })
