@@ -1,3 +1,10 @@
+## [0.19.4](https://github.com/percy/percy-agent/compare/v0.19.3...v0.19.4) (2019-10-29)
+
+
+### Bug Fixes
+
+* Trim whitespace from CSS ownerNode innerText ([#406](https://github.com/percy/percy-agent/issues/406)) ([5a4f830](https://github.com/percy/percy-agent/commit/5a4f830))
+
 ## [0.19.3](https://github.com/percy/percy-agent/compare/v0.19.2...v0.19.3) (2019-10-28)
 
 
