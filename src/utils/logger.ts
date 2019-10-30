@@ -3,17 +3,19 @@ import * as winston from 'winston'
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
 
-const consoleTransport = new winston.transports.Console({
-  level: LOG_LEVEL,
-  stderrLevels: ['error'],
-  format: winston.format.combine(
-    winston.format.label({ label: colors.magenta('percy') }),
-    winston.format.printf(({ label, message }) => `[${label}] ${message}`),
-  ),
-})
+function createConsoleTransport() {
+  return new winston.transports.Console({
+    level: LOG_LEVEL,
+    stderrLevels: ['error'],
+    format: winston.format.combine(
+      winston.format.label({ label: colors.magenta('percy') }),
+      winston.format.printf(({ label, message }) => `[${label}] ${message}`),
+    ),
+  })
+}
 
 const logger = winston.createLogger({
-  transports: [consoleTransport],
+  transports: [createConsoleTransport()],
 })
 
 export function profile(id: string, meta?: any): winston.Logger | undefined {
@@ -29,7 +31,7 @@ export function logError(error: any) {
 
 export function createFileLogger(filename: string) {
   const fileTransport = new winston.transports.File({ filename, level: 'debug' })
-  return winston.createLogger({ transports: [consoleTransport, fileTransport] })
+  return winston.createLogger({ transports: [createConsoleTransport(), fileTransport] })
 }
 
 export default logger

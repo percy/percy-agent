@@ -29,21 +29,21 @@ commands:
           name: Unit tests
           command: |
             mkdir -p reports
-            $NYC yarn test --reporter mocha-multi --reporter-options spec=-,mocha-junit-reporter=-
+            $NYC yarn test:unit --reporter mocha-multi --reporter-options spec=-,mocha-junit-reporter=-
       - run:
           name: Client tests
-          command: $NYC yarn test-client --singleRun
+          command: $NYC yarn test:client --singleRun
       - run:
           name: Integration tests
-          command: $NYC yarn test-integration
+          command: $NYC yarn test:integration
   cli_integration:
     steps:
       - run:
           name: Snapshot command test
-          command: yarn test-snapshot-command
+          command: yarn test:command:snapshot
       - run:
           name: Upload command test
-          command: yarn test-upload-command
+          command: yarn test:command:upload
   cli_commands:
     steps:
       - run:
