@@ -1,10 +1,7 @@
+import { expect } from 'chai'
 import { existsSync, unlinkSync } from 'fs'
-// @ts-ignore
-import * as maxListenersExceededWarning from 'max-listeners-exceeded-warning'
 import { createFileLogger } from '../../src/utils/logger'
-
-// this will throw an error if a memeory leak is detected
-maxListenersExceededWarning()
+import { captureStdErr } from '../helpers/stdout'
 
 describe('logger utils', () => {
   describe('createFileLogger', () => {
@@ -16,14 +13,20 @@ describe('logger utils', () => {
       }
     })
 
-    it('does not leak memory', () => {
-      const loop = new Array(600).fill(0)
+    it('does not leak memory', async () => {
+      const output = await captureStdErr(async () => {
+        await new Promise((resolve) => {
+          new Array(600).fill(0).forEach((item, index) => {
+            const fileName = `test-file-${index}`
+            createFileLogger(fileName)
+            filesToCleanUp.push(fileName)
+          })
 
-      loop.forEach((item, index) => {
-        const fileName = `test-file-${index}`
-        createFileLogger(fileName)
-        filesToCleanUp.push(fileName)
+          resolve()
+        })
       })
+
+      expect(output).to.equal('')
     })
   })
 })
