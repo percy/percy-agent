@@ -1,3 +1,10 @@
+## [0.19.5](https://github.com/percy/percy-agent/compare/v0.19.4...v0.19.5) (2019-10-30)
+
+
+### Bug Fixes
+
+* Create a new console logger for each snapshot ([#407](https://github.com/percy/percy-agent/issues/407)) ([f63b832](https://github.com/percy/percy-agent/commit/f63b832))
+
 ## [0.19.4](https://github.com/percy/percy-agent/compare/v0.19.3...v0.19.4) (2019-10-29)
 
 
