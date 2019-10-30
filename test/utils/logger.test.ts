@@ -9,21 +9,22 @@ describe('logger utils', () => {
 
     afterEach(() => {
       if (filesToCleanUp) {
-        filesToCleanUp.forEach((file: string) => existsSync(`${process.cwd()}/${file}`) && unlinkSync(`${process.cwd()}/${file}`))
+        filesToCleanUp.forEach((file: string) => {
+          const filePath = `${process.cwd()}/${file}`
+          if (!existsSync(filePath)) { return }
+
+          unlinkSync(filePath)
+        })
       }
     })
 
     it('does not leak memory', async () => {
-      const output = await captureStdErr(async () => {
-        await new Promise((resolve) => {
-          new Array(600).fill(0).forEach((item, index) => {
-            const fileName = `test-file-${index}`
-            createFileLogger(fileName)
-            filesToCleanUp.push(fileName)
-          })
-
-          resolve()
-        })
+      const output = await captureStdErr(() => {
+        for (let index = 0; index < 600; index++) {
+          const fileName = `test-file-${index}`
+          createFileLogger(fileName)
+          filesToCleanUp.push(fileName)
+        }
       })
 
       expect(output).to.equal('')
