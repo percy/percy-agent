@@ -1,12 +1,12 @@
 import { unlinkSync } from 'fs'
-import { createFileLogger } from '../../src/utils/logger'
 // @ts-ignore
 import * as maxListenersExceededWarning from 'max-listeners-exceeded-warning'
+import { createFileLogger } from '../../src/utils/logger'
 
 // this will throw an error if a memeory leak is detected
-maxListenersExceededWarning();
+maxListenersExceededWarning()
 
-describe.only('logger utils', () => {
+describe('logger utils', () => {
   describe('createFileLogger', () => {
     const filesToCleanUp = [] as any
 
