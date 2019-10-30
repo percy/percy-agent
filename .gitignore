@@ -2,5 +2,6 @@
 /node_modules
 .percy.pid
 /tmp/*
+/dist
 /dist-test
 /.rpt2_cache
