@@ -1,4 +1,4 @@
-import { unlinkSync } from 'fs'
+import { existsSync, unlinkSync } from 'fs'
 // @ts-ignore
 import * as maxListenersExceededWarning from 'max-listeners-exceeded-warning'
 import { createFileLogger } from '../../src/utils/logger'
@@ -12,7 +12,7 @@ describe('logger utils', () => {
 
     afterEach(() => {
       if (filesToCleanUp) {
-        filesToCleanUp.forEach((file: string) => unlinkSync(`${process.cwd()}/${file}`))
+        filesToCleanUp.forEach((file: string) => existsSync(`${process.cwd()}/${file}`) && unlinkSync(`${process.cwd()}/${file}`))
       }
     })
 

@@ -55,8 +55,6 @@ EXAMPLES
   $ percy exec -- bash -c "echo foo && echo bar"
 ```
 
-_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.19.1/dist/commands/exec.ts)_
-
 ## `percy finalize`
 
 Finalize a build. Commonly used for parallelized builds, especially when the number of parallelized processes is unknown.
@@ -72,8 +70,6 @@ EXAMPLE
   $ percy finalize --all
   [percy] Finalized parallel build.
 ```
-
-_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.19.1/dist/commands/finalize.ts)_
 
 ## `percy help [COMMAND]`
 
@@ -128,8 +124,6 @@ EXAMPLES
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
 ```
 
-_See code: [dist/commands/snapshot.ts](https://github.com/percy/percy-agent/blob/v0.19.1/dist/commands/snapshot.ts)_
-
 ## `percy upload [UPLOADDIRECTORY]`
 
 Upload a directory containing static snapshot images.
@@ -154,6 +148,4 @@ EXAMPLES
   $ percy upload _images/
   $ percy upload _images/ --files **/*.png
 ```
-
-_See code: [dist/commands/upload.ts](https://github.com/percy/percy-agent/blob/v0.19.1/dist/commands/upload.ts)_
 <!-- commandsstop -->
