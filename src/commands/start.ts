@@ -61,9 +61,9 @@ export default class Start extends PercyCommand {
     await healthCheck(flags.port!)
   }
 
-  async stop(exitCode?: any) {
+  async stop(exitCode?: any, stopProcess?: boolean) {
     this.processService.cleanup()
-    await super.stop(exitCode)
+    await super.stop(exitCode, stopProcess)
   }
 
   private runDetached(flags: any) {
