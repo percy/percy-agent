@@ -1,3 +1,10 @@
+## [0.19.6](https://github.com/percy/percy-agent/compare/v0.19.5...v0.19.6) (2019-10-31)
+
+
+### Bug Fixes
+
+* Pass along second arg to PercyCommand's `stop` ([#409](https://github.com/percy/percy-agent/issues/409)) ([4d0c8a6](https://github.com/percy/percy-agent/commit/4d0c8a6))
+
 ## [0.19.5](https://github.com/percy/percy-agent/compare/v0.19.4...v0.19.5) (2019-10-30)
 
 
