@@ -1,3 +1,10 @@
+## [0.19.7](https://github.com/percy/percy-agent/compare/v0.19.6...v0.19.7) (2019-11-05)
+
+
+### Bug Fixes
+
+* ensure CSSOM ownerNode content is present ([#418](https://github.com/percy/percy-agent/issues/418)) ([7d1be16](https://github.com/percy/percy-agent/commit/7d1be16))
+
 ## [0.19.6](https://github.com/percy/percy-agent/compare/v0.19.5...v0.19.6) (2019-10-31)
 
 
