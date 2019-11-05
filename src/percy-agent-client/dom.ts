@@ -173,7 +173,7 @@ class DOM {
         const hasHref = styleSheet.href
         const ownerNode = styleSheet.ownerNode as HTMLElement
         const ownerNodeInnerContent = ownerNode.innerText && ownerNode.innerText.trim()
-        const hasStyleInDom = ownerNodeInnerContent.length > 0
+        const hasStyleInDom = !!ownerNodeInnerContent && ownerNodeInnerContent.length > 0
 
         return !hasHref && !hasStyleInDom && styleSheet.cssRules
       }
