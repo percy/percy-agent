@@ -12,21 +12,25 @@ import ResponseService from './response-service'
 export const MAX_SNAPSHOT_WIDTHS: number = 10
 const requestCache = {} as any
 
+/**
+ * Keep an in-memory cache of asset responses.
+ *
+ * When enabled, asset responses will be kept in memory. When the asset is
+ * re-requested, it will be responsed with what the cached response. This makes
+ * it so servers aren't being hounded for the same asset over and over again.
+ */
 async function cacheResponse(response: puppeteer.Response, logger: any) {
   const responseUrl = response.url()
   const statusCode = response.status()
 
   if (!!requestCache[responseUrl]) {
-    console.log('already in cache', responseUrl)
+    logger.debug(`Asset already in cache ${responseUrl}`)
     return
   }
 
   if (![200, 201].includes(statusCode)) {
-    console.log('Not a 200 response, skipping')
     return
   }
-
-  console.log('caching...', responseUrl)
 
   try {
     const buffer = await response.buffer()
@@ -238,8 +242,8 @@ export class AssetDiscoveryService extends PercyClientService {
           return
         }
 
-        if (requestCache[requestUrl] && this.configuration['cache-responses'] === true) {
-          console.log('cache hit!', requestUrl)
+        if (this.configuration['cache-responses'] === true && requestCache[requestUrl]) {
+          logger.debug(`Asset cache hit for ${requestUrl}`)
           await request.respond(requestCache[requestUrl])
 
           return
