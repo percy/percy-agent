@@ -28,10 +28,9 @@ export default class Exec extends PercyCommand {
       ].join(' '),
     }),
     'cache-responses': flags.boolean({
-      char: 'r', // ?????????
       description: [
         `[default: ${DEFAULT_CONFIGURATION.agent['asset-discovery']['cache-responses']}]`,
-        'Enable caching network responses for asset discovery',
+        'Enable caching network responses for asset discovery (experimental)',
       ].join(' '),
     }),
     'port': flags.integer({
