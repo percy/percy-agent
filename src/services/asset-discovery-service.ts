@@ -14,9 +14,15 @@ const requestCache = {} as any
 
 async function cacheResponse(response: puppeteer.Response, logger: any) {
   const responseUrl = response.url()
+  const statusCode = response.status()
 
   if (!!requestCache[responseUrl]) {
     console.log('already in cache', responseUrl)
+    return
+  }
+
+  if (![200, 201].includes(statusCode)) {
+    console.log('Not a 200 response, skipping')
     return
   }
 
