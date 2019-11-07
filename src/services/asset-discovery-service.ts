@@ -10,6 +10,32 @@ import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
 
 export const MAX_SNAPSHOT_WIDTHS: number = 10
+const requestCache = {} as any
+
+async function cacheResponse(response: puppeteer.Response, logger: any) {
+  const responseUrl = response.url()
+
+  if (!!requestCache[responseUrl]) {
+    console.log('already in cache', responseUrl)
+    return
+  }
+
+  console.log('caching...', responseUrl)
+
+  try {
+    const buffer = await response.buffer()
+
+    requestCache[responseUrl] = {
+      status: response.status(),
+      headers: response.headers(),
+      body: buffer,
+    }
+
+    logger.debug(`Added ${responseUrl} to asset discovery cache`)
+  } catch (error) {
+    logger.debug(`Could not cache response ${responseUrl}: ${error}`)
+  }
+}
 
 export class AssetDiscoveryService extends PercyClientService {
   responseService: ResponseService
@@ -189,18 +215,27 @@ export class AssetDiscoveryService extends PercyClientService {
     ]) as {})
 
     page.on('request', async (request) => {
+      const requestUrl = request.url()
+
       try {
         if (!this.shouldRequestResolve(request)) {
           await request.abort()
           return
         }
 
-        if (request.url() === rootResourceUrl) {
+        if (requestUrl === rootResourceUrl) {
           await request.respond({
             body: domSnapshot,
             contentType: 'text/html',
             status: 200,
           })
+          return
+        }
+
+        if (requestCache[requestUrl] && this.configuration['cache-responses'] === true) {
+          console.log('cache hit!', requestUrl)
+          await request.respond(requestCache[requestUrl])
+
           return
         }
 
@@ -215,7 +250,11 @@ export class AssetDiscoveryService extends PercyClientService {
     // We could also listen on 'response', but then we'd have to check if it was successful.
     page.on('requestfinished', async (request) => {
       const response = request.response()
+
       if (response) {
+        if (this.configuration['cache-responses'] === true) {
+          await cacheResponse(response, logger)
+        }
         // Parallelize the work in processResponse as much as possible, but make sure to
         // wait for it to complete before returning from the asset discovery phase.
         const promise = this.responseService.processResponse(

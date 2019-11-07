@@ -27,6 +27,7 @@ export const DEFAULT_CONFIGURATION: Configuration = {
       'network-idle-timeout': 50, // ms
       'page-pool-size-min': 1, // pages
       'page-pool-size-max': 5, // pages
+      'cache-responses': false,
     },
   },
   'static-snapshots': {
