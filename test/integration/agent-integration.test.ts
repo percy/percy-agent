@@ -88,8 +88,6 @@ describe('Integration test', () => {
       await page.goto('https://buildkite.com/')
       const domSnapshot = await snapshot(page, 'Buildkite snapshot')
       expect(domSnapshot).contains('Buildkite')
-      await snapshot(page, 'Buildkite snapshot #2')
-      await snapshot(page, 'Buildkite snapshot #3')
     })
 
     it('snapshots a site with redirected assets', async () => {
