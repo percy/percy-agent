@@ -8,7 +8,6 @@ const defaultResponse = {
   status() { return 200 },
   headers() { return 'fake headers' },
   buffer() { return 'hello' },
-  body: 'hello',
 } as any
 
 describe('Response cache util', () => {
