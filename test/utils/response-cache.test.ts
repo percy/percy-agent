@@ -37,7 +37,7 @@ describe('Response cache util', () => {
 
   it('calling the cache with the same URL does nothing', async () => {
     await cacheResponse(defaultResponse, logger)
-    await cacheResponse(defaultResponse, logger)
+    await cacheResponse({ ...defaultResponse, status() { return 201 } }, logger)
 
     expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 200,
