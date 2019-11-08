@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.19.7 linux-x64 node-v8.16.2
+@percy/agent/0.20.0 linux-x64 node-v8.16.2
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -49,6 +49,9 @@ OPTIONS
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
   -p, --port=port                                  [default: 5338] Port
   -t, --network-idle-timeout=network-idle-timeout  [default: 50] Asset discovery network idle timeout (in milliseconds)
+
+  --cache-responses                                [default: false] Enable caching network responses for asset discovery
+                                                   (experimental)
 
 EXAMPLES
   $ percy exec -- echo "percy is running around this echo command"

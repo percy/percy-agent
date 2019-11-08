@@ -1,3 +1,10 @@
+# [0.20.0](https://github.com/percy/percy-agent/compare/v0.19.7...v0.20.0) (2019-11-08)
+
+
+### Features
+
+* Introduce asset discovery response caching behind flag ([#419](https://github.com/percy/percy-agent/issues/419)) ([7d7dd52](https://github.com/percy/percy-agent/commit/7d7dd52))
+
 ## [0.19.7](https://github.com/percy/percy-agent/compare/v0.19.6...v0.19.7) (2019-11-05)
 
 
