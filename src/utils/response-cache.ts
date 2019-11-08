@@ -1,5 +1,5 @@
 import { Response } from 'puppeteer'
-const responseCache = {} as any
+let responseCache = {} as any
 
 /**
  * Keep an in-memory cache of asset responses.
@@ -37,5 +37,11 @@ export async function cacheResponse(response: Response, logger: any) {
 }
 
 export function getResponseCache() {
+  return responseCache
+}
+
+export function _setResponseCache(newResponseCache: any) {
+  responseCache = newResponseCache
+
   return responseCache
 }
