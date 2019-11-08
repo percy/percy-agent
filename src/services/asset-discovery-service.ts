@@ -207,9 +207,9 @@ export class AssetDiscoveryService extends PercyClientService {
           return
         }
 
-        if (this.configuration['cache-responses'] === true && getResponseCache()[requestUrl]) {
+        if (this.configuration['cache-responses'] === true && getResponseCache(requestUrl)) {
           logger.debug(`Asset cache hit for ${requestUrl}`)
-          await request.respond(getResponseCache()[requestUrl])
+          await request.respond(getResponseCache(requestUrl))
 
           return
         }

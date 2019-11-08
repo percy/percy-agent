@@ -19,11 +19,7 @@ describe('Response cache util', () => {
   it('200 status code response adds to the cache', async () => {
     await cacheResponse(defaultResponse, logger)
 
-    const responseCache = getResponseCache()
-    const cacheArray = Object.keys(responseCache)
-
-    expect(cacheArray.length).to.eql(1)
-    expect(responseCache['http://example.com/foo.txt']).to.eql({
+    expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 200,
       body: 'hello',
       headers: 'fake headers',
@@ -33,11 +29,7 @@ describe('Response cache util', () => {
   it('201 status code response adds to the cache', async () => {
     await cacheResponse({ ...defaultResponse, status() { return  201 } }, logger)
 
-    const responseCache = getResponseCache()
-    const cacheArray = Object.keys(responseCache)
-
-    expect(cacheArray.length).to.eql(1)
-    expect(responseCache['http://example.com/foo.txt']).to.eql({
+    expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 201,
       body: 'hello',
       headers: 'fake headers',
@@ -48,11 +40,7 @@ describe('Response cache util', () => {
     await cacheResponse(defaultResponse, logger)
     await cacheResponse(defaultResponse, logger)
 
-    const responseCache = getResponseCache()
-    const cacheArray = Object.keys(responseCache)
-
-    expect(cacheArray.length).to.eql(1)
-    expect(responseCache['http://example.com/foo.txt']).to.eql({
+    expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 200,
       body: 'hello',
       headers: 'fake headers',
@@ -65,9 +53,6 @@ describe('Response cache util', () => {
     await cacheResponse({ ...defaultResponse, status() { return 401 } }, logger)
     await cacheResponse({ ...defaultResponse, status() { return 404 } }, logger)
 
-    const responseCache = getResponseCache()
-    const cacheArray = Object.keys(responseCache)
-
-    expect(cacheArray.length).to.eql(0)
+    expect(getResponseCache('http://example.com/foo.txt')).to.eql(undefined)
   })
 })

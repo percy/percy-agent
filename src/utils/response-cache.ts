@@ -36,8 +36,8 @@ export async function cacheResponse(response: Response, logger: any) {
   }
 }
 
-export function getResponseCache() {
-  return responseCache
+export function getResponseCache(url: string) {
+  return responseCache[url]
 }
 
 export function _setResponseCache(newResponseCache: any) {
