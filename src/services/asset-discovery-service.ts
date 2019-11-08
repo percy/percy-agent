@@ -5,6 +5,7 @@ import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-co
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
 import { logError, profile } from '../utils/logger'
+import { cacheResponse, getResponseCache } from '../utils/response-cache'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
 import ResponseService from './response-service'
@@ -189,18 +190,27 @@ export class AssetDiscoveryService extends PercyClientService {
     ]) as {})
 
     page.on('request', async (request) => {
+      const requestUrl = request.url()
+
       try {
         if (!this.shouldRequestResolve(request)) {
           await request.abort()
           return
         }
 
-        if (request.url() === rootResourceUrl) {
+        if (requestUrl === rootResourceUrl) {
           await request.respond({
             body: domSnapshot,
             contentType: 'text/html',
             status: 200,
           })
+          return
+        }
+
+        if (this.configuration['cache-responses'] === true && getResponseCache(requestUrl)) {
+          logger.debug(`Asset cache hit for ${requestUrl}`)
+          await request.respond(getResponseCache(requestUrl))
+
           return
         }
 
@@ -215,7 +225,11 @@ export class AssetDiscoveryService extends PercyClientService {
     // We could also listen on 'response', but then we'd have to check if it was successful.
     page.on('requestfinished', async (request) => {
       const response = request.response()
+
       if (response) {
+        if (this.configuration['cache-responses'] === true) {
+          await cacheResponse(response, logger)
+        }
         // Parallelize the work in processResponse as much as possible, but make sure to
         // wait for it to complete before returning from the asset discovery phase.
         const promise = this.responseService.processResponse(

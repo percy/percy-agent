@@ -41,6 +41,7 @@ function transform(flags: any, args: any) {
       'asset-discovery': {
         'allowed-hostnames': flags['allowed-hostname'],
         'network-idle-timeout': flags['network-idle-timeout'],
+        'cache-responses': flags['cache-responses'],
       },
     },
     'static-snapshots': {

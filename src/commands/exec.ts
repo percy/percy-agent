@@ -27,6 +27,12 @@ export default class Exec extends PercyCommand {
         'Asset discovery network idle timeout (in milliseconds)',
       ].join(' '),
     }),
+    'cache-responses': flags.boolean({
+      description: [
+        `[default: ${DEFAULT_CONFIGURATION.agent['asset-discovery']['cache-responses']}]`,
+        'Enable caching network responses for asset discovery (experimental)',
+      ].join(' '),
+    }),
     'port': flags.integer({
       char: 'p',
       description: [
