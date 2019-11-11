@@ -14,12 +14,12 @@ const DEFAULT_MOCKS = {
       }
     }
   }],
-  '/builds/:id/snapshots': () => [200, {
+  '/builds/:id/snapshots': ({ data }) => [200, {
     data: {
       id: 456789,
       relationships: {
         'missing-resources': {
-          data: []
+          data: data.relationships.resources.data
         }
       }
     }

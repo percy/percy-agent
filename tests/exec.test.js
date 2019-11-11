@@ -1,5 +1,11 @@
 import expect from 'expect'
-import { run, setupApiProxy } from './helpers'
+
+import {
+  launch,
+  run,
+  setupApiProxy,
+  setupDummyApp
+} from './helpers'
 
 describe('percy exec', () => {
   let proxy = setupApiProxy()
@@ -64,5 +70,78 @@ describe('percy exec', () => {
 
     expect(proxy.requests['/builds']).toHaveLength(1)
     expect(proxy.requests['/builds/123/finalize']).toHaveLength(1)
+  })
+
+  describe('with snapshots', () => {
+    let dummy = setupDummyApp()
+
+    it('receives and finalizes snapshots', async () => {
+      let [stdout, stderr] = await run('percy exec -- node ./tests/dummy/snapshot.js')
+
+      expect(stderr).toHaveLength(0)
+      expect(stdout).toHaveEntries([
+        '[percy] created build #4: <<build-url>>',
+        '[percy] snapshot taken: \'Home Page\'',
+        '[percy] finalized build #4: <<build-url>>'
+      ])
+
+      expect(proxy.requests['/builds']).toHaveLength(1)
+      expect(proxy.requests['/builds/123/snapshots']).toHaveLength(1)
+      expect(proxy.requests['/builds/123/resources']).toHaveLength(3)
+      expect(proxy.requests['/snapshots/456789/finalize']).toHaveLength(1)
+      expect(proxy.requests['/builds/123/finalize']).toHaveLength(1)
+    })
+
+    it('uploads missing snapshot resources', async () => {
+      let [stdout, stderr] = await run('percy exec -- node ./tests/dummy/snapshot.js')
+
+      expect(proxy.requests['/builds/123/snapshots'][0].body)
+        .toHaveProperty('data.relationships.resources.data', expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(String),
+            attributes: expect.objectContaining({
+              'resource-url': expect.stringMatching('/style.css')
+            })
+          }),
+          expect.objectContaining({
+            id: expect.any(String),
+            attributes: expect.objectContaining({
+              'resource-url': expect.stringContaining('http://localhost:9999'),
+              'is-root': true
+            })
+          }),
+          expect.objectContaining({
+            id: expect.any(String),
+            attributes: expect.objectContaining({
+              'resource-url': expect.stringMatching(/\/percy\.\d+\.log/)
+            })
+          })
+        ]))
+
+      expect(proxy.requests['/builds/123/resources'][0].body)
+        .toHaveProperty('data', expect.objectContaining({
+          id: proxy.requests['/builds/123/snapshots'][0]
+            .body.data.relationships.resources.data[0].id,
+          attributes: expect.objectContaining({
+            'base64-content': expect.any(String)
+          })
+        }))
+      expect(proxy.requests['/builds/123/resources'][1].body)
+        .toHaveProperty('data', expect.objectContaining({
+          id: proxy.requests['/builds/123/snapshots'][0]
+            .body.data.relationships.resources.data[1].id,
+          attributes: expect.objectContaining({
+            'base64-content': expect.any(String)
+          })
+        }))
+      expect(proxy.requests['/builds/123/resources'][2].body)
+        .toHaveProperty('data', expect.objectContaining({
+          id: proxy.requests['/builds/123/snapshots'][0]
+            .body.data.relationships.resources.data[2].id,
+          attributes: expect.objectContaining({
+            'base64-content': expect.any(String)
+          })
+        }))
+    })
   })
 })
