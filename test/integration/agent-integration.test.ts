@@ -5,7 +5,7 @@ import { Server } from 'http'
 import { describe } from 'mocha'
 import * as puppeteer from 'puppeteer'
 import { agentJsFilename, postSnapshot } from '../../src/utils/sdk-utils'
-import chai from '../support/chai'
+import chai from '../unit/support/chai'
 
 const expect = chai.expect
 

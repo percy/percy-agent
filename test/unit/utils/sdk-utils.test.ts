@@ -1,6 +1,6 @@
 import {expect} from 'chai'
 import * as fs from 'fs'
-import { agentJsFilename} from '../../src/utils/sdk-utils'
+import { agentJsFilename} from '../../../src/utils/sdk-utils'
 
 describe('agentJsFilename', () => {
   it('returns a valid filename', () => {

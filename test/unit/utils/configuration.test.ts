@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import * as fs from 'fs'
 import * as path from 'path'
-import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
-import config, { explorer, parseGlobs } from '../../src/utils/configuration'
+import { DEFAULT_CONFIGURATION } from '../../../src/configuration/configuration'
+import config, { explorer, parseGlobs } from '../../../src/utils/configuration'
 
 function dedent(str: string) {
   const indent = str.match(/ +/g)![0].length

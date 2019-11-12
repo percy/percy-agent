@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import * as sinon from 'sinon'
-import PercyAgent from '../../src/percy-agent-client/percy-agent'
-import {DEFAULT_PORT, SNAPSHOT_PATH} from '../../src/services/agent-service-constants'
+import PercyAgent from '../../../src/percy-agent-client/percy-agent'
+import {DEFAULT_PORT, SNAPSHOT_PATH} from '../../../src/services/agent-service-constants'
 
 describe('PercyAgent', () => {
   let requests: sinon.SinonFakeXMLHttpRequest[] = []

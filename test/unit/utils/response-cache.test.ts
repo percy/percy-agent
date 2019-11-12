@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { _setResponseCache, cacheResponse, getResponseCache } from '../../src/utils/response-cache'
+import { _setResponseCache, cacheResponse, getResponseCache } from '../../../src/utils/response-cache'
 
 // Mock logger
 const logger = { debug() { return '' }}

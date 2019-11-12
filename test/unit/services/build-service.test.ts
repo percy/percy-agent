@@ -1,7 +1,7 @@
 import {expect} from 'chai'
 import {describe} from 'mocha'
 import * as nock from 'nock'
-import BuildService from '../../src/services/build-service'
+import BuildService from '../../../src/services/build-service'
 import {captureStdOut} from '../helpers/stdout'
 
 describe('BuildService', () => {

@@ -76,7 +76,7 @@ describe('percy exec', () => {
     let dummy = setupDummyApp()
 
     it('receives and finalizes snapshots', async () => {
-      let [stdout, stderr] = await run('percy exec -- node ./tests/dummy/snapshot.js')
+      let [stdout, stderr] = await run('percy exec -- node ./test/acceptance/dummy/snapshot.js')
 
       expect(stderr).toHaveLength(0)
       expect(stdout).toHaveEntries([
@@ -93,7 +93,7 @@ describe('percy exec', () => {
     })
 
     it('uploads missing snapshot resources', async () => {
-      let [stdout, stderr] = await run('percy exec -- node ./tests/dummy/snapshot.js')
+      let [stdout, stderr] = await run('percy exec -- node ./test/acceptance/dummy/snapshot.js')
 
       // expect each resource is associated with the snapshot
       expect(proxy.requests['/builds/123/snapshots'][0].body)

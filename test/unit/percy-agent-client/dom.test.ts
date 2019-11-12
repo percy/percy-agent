@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 // @ts-ignore
 import { check, select, type } from 'interactor.js'
 import * as sinon from 'sinon'
-import DOM from '../../src/percy-agent-client/dom'
+import DOM from '../../../src/percy-agent-client/dom'
 
 // Create valid DOM to pass to the DOM class.
 function createExample(dom: string) {

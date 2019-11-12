@@ -1,9 +1,9 @@
 import { describe } from 'mocha'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import Exec from '../../src/commands/exec'
-import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
-import { AgentService } from '../../src/services/agent-service'
+import Exec from '../../../src/commands/exec'
+import { DEFAULT_CONFIGURATION } from '../../../src/configuration/configuration'
+import { AgentService } from '../../../src/services/agent-service'
 import { captureStdOut } from '../helpers/stdout'
 import chai from '../support/chai'
 

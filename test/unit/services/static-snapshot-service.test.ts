@@ -1,7 +1,7 @@
 import {describe} from 'mocha'
-import { StaticSnapshotsConfiguration } from '../../src/configuration/static-snapshots-configuration'
-import {DEFAULT_PORT} from '../../src/services/agent-service-constants'
-import StaticSnapshotService from '../../src/services/static-snapshot-service'
+import { StaticSnapshotsConfiguration } from '../../../src/configuration/static-snapshots-configuration'
+import {DEFAULT_PORT} from '../../../src/services/agent-service-constants'
+import StaticSnapshotService from '../../../src/services/static-snapshot-service'
 import {captureStdOut} from '../helpers/stdout'
 import chai from '../support/chai'
 
@@ -12,7 +12,7 @@ describe('StaticSnapshotService', () => {
 
   const configuration: StaticSnapshotsConfiguration = {
     'port': staticSitePort,
-    'path': './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
+    'path': './test/unit/fixtures/services/static-snapshot-service/_dummy-testing-app/',
     'snapshot-files': '**/*.html,**/*.htm',
     'ignore-files': '**/blog/*',
     'base-url': '/',
@@ -67,7 +67,7 @@ describe('StaticSnapshotService', () => {
   describe('#_buildPageUrls without the ignore flag set', () => {
     const configuration: StaticSnapshotsConfiguration = {
       'port': staticSitePort,
-      'path': './test/fixtures/services/static-snapshot-service/_dummy-testing-app/',
+      'path': './test/unit/fixtures/services/static-snapshot-service/_dummy-testing-app/',
       'snapshot-files': '**/*.html,**/*.htm',
       'ignore-files': '',
       'base-url': '/',

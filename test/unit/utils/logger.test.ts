@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { existsSync, unlinkSync } from 'fs'
-import { createFileLogger } from '../../src/utils/logger'
+import { createFileLogger } from '../../../src/utils/logger'
 import { captureStdErr } from '../helpers/stdout'
 
 describe('logger utils', () => {

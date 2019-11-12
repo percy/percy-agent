@@ -2,10 +2,10 @@ import {describe} from 'mocha'
 import * as nock from 'nock'
 import * as path from 'path'
 import * as sinon from 'sinon'
-import Start from '../../src/commands/start'
-import { DEFAULT_CONFIGURATION } from '../../src/configuration/configuration'
-import {AgentService} from '../../src/services/agent-service'
-import ProcessService from '../../src/services/process-service'
+import Start from '../../../src/commands/start'
+import { DEFAULT_CONFIGURATION } from '../../../src/configuration/configuration'
+import {AgentService} from '../../../src/services/agent-service'
+import ProcessService from '../../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
 import chai from '../support/chai'
 
@@ -64,7 +64,7 @@ describe('Start', () => {
 
       expect(processService.runDetached).to.calledWithMatch(
         [
-          path.resolve(`${__dirname}/../../bin/run`),
+          path.resolve(`${__dirname}/../../../bin/run`),
           'start',
         ],
       )
@@ -79,7 +79,7 @@ describe('Start', () => {
 
       expect(processService.runDetached).to.calledWithMatch(
         [
-          path.resolve(`${__dirname}/../../bin/run`),
+          path.resolve(`${__dirname}/../../../bin/run`),
           'start',
           '-p', 55000,
           '-t', 100,

@@ -1,7 +1,7 @@
 import * as chai from 'chai'
 import {describe} from 'mocha'
 import * as nock from 'nock'
-import HealthCheck from '../../src/commands/health-check'
+import HealthCheck from '../../../src/commands/health-check'
 import {captureStdErr, captureStdOut} from '../helpers/stdout'
 
 const expect = chai.expect

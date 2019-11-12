@@ -2,8 +2,8 @@ import * as chai from 'chai'
 import {describe} from 'mocha'
 import * as nock from 'nock'
 import * as sinon from 'sinon'
-import Stop from '../../src/commands/stop'
-import ProcessService from '../../src/services/process-service'
+import Stop from '../../../src/commands/stop'
+import ProcessService from '../../../src/services/process-service'
 import {captureStdOut} from '../helpers/stdout'
 const expect = chai.expect
 

@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import ProcessService from '../../src/services/process-service'
+import ProcessService from '../../../src/services/process-service'
 
 export function createPidFile(pid = 123) {
   fs.writeFileSync(ProcessService.PID_PATH, pid)
