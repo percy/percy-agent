@@ -23,7 +23,7 @@ commands:
       - run:
           name: Build package
           command: yarn build
-  unit_client_integration:
+  unit_client_acceptance_integration:
     steps:
       - run:
           name: Unit tests
@@ -33,6 +33,9 @@ commands:
       - run:
           name: Client tests
           command: $NYC yarn test:client --singleRun
+      - run:
+          name: Acceptance tests
+          command: $NYC yarn test:acceptance
       - run:
           name: Integration tests
           command: $NYC yarn test:integration
@@ -69,7 +72,7 @@ jobs:
     steps:
       - setup
       - cli_commands
-      - unit_client_integration
+      - unit_client_acceptance_integration
       - run:
           name: Disable Percy for CLI integration tests
           command: export PERCY_ENABLE=0
@@ -82,7 +85,7 @@ jobs:
     steps:
       - setup
       - cli_commands
-      - unit_client_integration
+      - unit_client_acceptance_integration
       - cli_integration
       - store_artifacts
   finalize_percy:

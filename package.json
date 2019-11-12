@@ -154,6 +154,7 @@
     "test": "yarn test:unit && yarn test:client && yarn test:acceptance && yarn test:integration && yarn test:command:snapshot && yarn test:command:upload",
     "test:unit": "PERCY_TOKEN=abc mocha \"test/**/*.test.ts\" --exclude \"test/unit/percy-agent-client/**/*.test.ts\" --exclude \"test/integration/**/*\" --config test/unit/.mocha.yml",
     "test:client": "karma start ./test/unit/percy-agent-client/karma.conf.js",
+    "test:acceptance": "mocha test/acceptance --config test/acceptance/.mocha.yml",
     "test:integration": "yarn build-client && node ./bin/run exec --cache-responses -h *.localtest.me -c .ci.percy.yml -- mocha test/integration/**/*.test.ts --config test/unit/.mocha.yml",
     "test:command:snapshot": "./bin/run snapshot test/integration/test-static-site -b /dummy-base-url/ -i **/red-keep.** -s **/*.{html}",
     "test:command:upload": "./bin/run upload test/integration/test-static-images",
