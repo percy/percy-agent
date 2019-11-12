@@ -95,6 +95,7 @@ describe('percy exec', () => {
     it('uploads missing snapshot resources', async () => {
       let [stdout, stderr] = await run('percy exec -- node ./tests/dummy/snapshot.js')
 
+      // expect each resource is associated with the snapshot
       expect(proxy.requests['/builds/123/snapshots'][0].body)
         .toHaveProperty('data.relationships.resources.data', expect.arrayContaining([
           expect.objectContaining({
@@ -118,30 +119,23 @@ describe('percy exec', () => {
           })
         ]))
 
-      expect(proxy.requests['/builds/123/resources'][0].body)
-        .toHaveProperty('data', expect.objectContaining({
-          id: proxy.requests['/builds/123/snapshots'][0]
-            .body.data.relationships.resources.data[0].id,
-          attributes: expect.objectContaining({
-            'base64-content': expect.any(String)
+      let resources = proxy.requests['/builds/123/snapshots'][0]
+        .body.data.relationships.resources.data
+
+      // expect a request to upload each resource (unordered)
+      expect(proxy.requests['/builds/123/resources'])
+        .toEqual(expect.arrayContaining(resources.map(resource => (
+          expect.objectContaining({
+            body: expect.objectContaining({
+              data: expect.objectContaining({
+                id: resource.id,
+                attributes: expect.objectContaining({
+                  'base64-content': expect.any(String)
+                })
+              })
+            })
           })
-        }))
-      expect(proxy.requests['/builds/123/resources'][1].body)
-        .toHaveProperty('data', expect.objectContaining({
-          id: proxy.requests['/builds/123/snapshots'][0]
-            .body.data.relationships.resources.data[1].id,
-          attributes: expect.objectContaining({
-            'base64-content': expect.any(String)
-          })
-        }))
-      expect(proxy.requests['/builds/123/resources'][2].body)
-        .toHaveProperty('data', expect.objectContaining({
-          id: proxy.requests['/builds/123/snapshots'][0]
-            .body.data.relationships.resources.data[2].id,
-          attributes: expect.objectContaining({
-            'base64-content': expect.any(String)
-          })
-        }))
+        ))))
     })
   })
 })
