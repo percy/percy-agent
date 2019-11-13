@@ -1,0 +1,8 @@
+require:
+  - "test/unit/helpers/init.ts"
+  - "ts-node/register"
+  - "source-map-support/register"
+watch-extensions: "ts"
+recursive: true
+reporter: "spec"
+timeout: 5000
