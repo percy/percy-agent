@@ -1,4 +1,6 @@
+import { execSync } from 'child_process'
 import expect from 'expect'
+import { when } from 'interactor.js'
 
 import {
   launch,
@@ -54,10 +56,8 @@ describe('percy exec', () => {
   it('finalizes the build when the process is killed', async () => {
     // if the process does not terminate, this should time out mocha
     let percy = run('percy exec -- sleep 10')
-    // wait a bit to give the server a chance to start
-    await new Promise(r => setTimeout(r, 1500))
-    // kill processes spawned by exec
-    await run('pkill -2 sleep')
+    // kill the process spawned by exec as soon as it runs
+    await when(() => execSync('pkill -2 sleep'), 3000)
 
     // wait for stdio to close
     let [stdout, stderr] = await percy;
