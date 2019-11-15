@@ -18,6 +18,26 @@ describe('percy exec', () => {
     expect(stdout).toHaveEntry('test')
   })
 
+  it('logs a message when missing a command', async () => {
+    let [stdout, stderr, code] = await run('percy exec')
+
+    expect(code).toEqual(1)
+    expect(stderr).toHaveLength(0)
+    expect(stdout).toHaveEntries([
+      '[percy] You must supply a command to run after --',
+      '[percy] Example:',
+      '[percy] $ percy exec -- echo "run your test suite"'
+    ])
+  })
+
+  it('errors when the command cannot be found', async () => {
+    let [stdout, stderr, code] = await run('percy exec -- foobar')
+
+    expect(code).toEqual(127)
+    expect(stderr).toHaveEntry('[percy] Error: command not found "foobar"')
+    expect(stdout).toHaveLength(0)
+  })
+
   it('creates and finalizes a new build', async () => {
     let [stdout, stderr] = await run('percy exec -- echo test')
 

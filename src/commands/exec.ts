@@ -1,5 +1,6 @@
 import { flags } from '@oclif/command'
 import * as spawn from 'cross-spawn'
+import * as which from 'which'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import config from '../utils/configuration'
 import PercyCommand from './percy-command'
@@ -56,7 +57,12 @@ export default class Exec extends PercyCommand {
       this.logger.info('You must supply a command to run after --')
       this.logger.info('Example:')
       this.logger.info('$ percy exec -- echo "run your test suite"')
-      return
+      return this.exit(1)
+    }
+
+    if (which.sync(command, { nothrow: true }) == null) {
+      this.logger.error(`Error: command not found "${command}"`)
+      return this.exit(127)
     }
 
     if (this.percyWillRun()) {
@@ -70,7 +76,7 @@ export default class Exec extends PercyCommand {
       spawnedProcess.on('error', reject)
     }).catch((error) => {
       // catch subprocess errors
-      this.logger.error(error)
+      this.logger.error(error.toString())
       return 1
     }).then((code: any) => {
       // oclif exit raises an error to stop script execution, so the following
