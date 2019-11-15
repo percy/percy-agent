@@ -1,3 +1,10 @@
+## [0.20.1](https://github.com/percy/percy-agent/compare/v0.20.0...v0.20.1) (2019-11-15)
+
+
+### Bug Fixes
+
+* Add better logging for command not found errors ([#421](https://github.com/percy/percy-agent/issues/421)) ([689a869](https://github.com/percy/percy-agent/commit/689a869))
+
 # [0.20.0](https://github.com/percy/percy-agent/compare/v0.19.7...v0.20.0) (2019-11-08)
 
 
