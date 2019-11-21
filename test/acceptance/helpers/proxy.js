@@ -50,7 +50,7 @@ export function createApiProxy() {
   app.all('*', (req, res, next) => {
     let path = req.path.replace(/\/$/, '')
     requests[path] = requests[path] || []
-    requests[path].push({ requestDate: new Date(), ...req })
+    requests[path].push({ timestamp: Date.now(), ...req })
     next()
   })
 
