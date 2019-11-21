@@ -75,6 +75,10 @@ export class AgentService {
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
     profile('agentService.handleSnapshot')
+    let resolve
+    let reject
+    const deferred = new Promise((...args) => [resolve, reject] = args)
+    this.snapshotCreationPromises.push(deferred)
 
     // truncate domSnapshot for the logs if it's very large
     const rootURL = request.body.url
@@ -140,15 +144,14 @@ export class AgentService {
       this.snapshotService.buildLogResource(snapshotLog),
     )
 
-    const snapshotCreation = this.snapshotService.create(
+    this.snapshotService.create(
       request.body.name,
       resources,
       snapshotOptions,
       request.body.clientInfo,
       request.body.environmentInfo,
-    )
+    ).then(resolve).catch(reject)
 
-    this.snapshotCreationPromises.push(snapshotCreation)
     logger.info(`snapshot taken: '${request.body.name}'`)
 
     profile('agentService.handleSnapshot')
