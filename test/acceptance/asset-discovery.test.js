@@ -12,7 +12,7 @@ describe('Asset discovery', () => {
   it('does not create snapshots while stopping a build', async () => {
     let [stdout] = await run('percy exec -- node ./test/acceptance/dummy/snapshot-error.js');
 
-    // TODO: Assert the "waitig for x" output & for no snapshot logs to occur *after*
+    // TODO: Assert the "waiting for x" output & for no snapshot logs to occur *after*
     expect(stdout).toHaveEntries([
       '[percy] percy has started.',
       "[percy] snapshot taken: 'Home Page - 0'",

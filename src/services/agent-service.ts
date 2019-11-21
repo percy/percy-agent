@@ -75,10 +75,6 @@ export class AgentService {
 
   private async handleSnapshot(request: express.Request, response: express.Response) {
     profile('agentService.handleSnapshot')
-    let resolve
-    let reject
-    const deferred = new Promise((...args) => [resolve, reject] = args)
-    this.snapshotCreationPromises.push(deferred)
 
     // truncate domSnapshot for the logs if it's very large
     const rootURL = request.body.url
@@ -119,6 +115,10 @@ export class AgentService {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
       return response.json({ success: true })
     }
+    // tslint:disable-next-line
+    let resolve, reject
+    const deferred = new Promise((...args) => [resolve, reject] = args)
+    this.snapshotCreationPromises.push(deferred)
 
     let resources = await this.snapshotService.buildResources(
       rootURL,
