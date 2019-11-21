@@ -1,9 +1,5 @@
 import expect from 'expect'
-import { execSync } from 'child_process'
-import { when } from 'interactor.js'
-
 import {
-  launch,
   run,
   setupApiProxy,
   setupDummyApp
