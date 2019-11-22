@@ -1,3 +1,10 @@
+## [0.20.2](https://github.com/percy/percy-agent/compare/v0.20.1...v0.20.2) (2019-11-22)
+
+
+### Bug Fixes
+
+* Wait for asset discovery finish when awaiting on snapshot resources in finalize ([#423](https://github.com/percy/percy-agent/issues/423)) ([4a6deea](https://github.com/percy/percy-agent/commit/4a6deea))
+
 ## [0.20.1](https://github.com/percy/percy-agent/compare/v0.20.0...v0.20.1) (2019-11-15)
 
 
