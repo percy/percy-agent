@@ -47,7 +47,7 @@ export default class ResourceService extends PercyClientService {
         snapshotResponse.response,
         snapshotResponse.resources,
       )
-      profile('-> resourceService.uploadMissingResources', {resources: resources.length})
+      profile(`-> resourceService.uploadMissingResources ${resources.length}`)
 
       return true
     } catch (error) {

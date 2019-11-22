@@ -115,6 +115,10 @@ export class AgentService {
       logger.info(`snapshot skipped[max_file_size_exceeded]: '${request.body.name}'`)
       return response.json({ success: true })
     }
+    // tslint:disable-next-line
+    let resolve, reject
+    const deferred = new Promise((...args) => [resolve, reject] = args)
+    this.snapshotCreationPromises.push(deferred)
 
     let resources = await this.snapshotService.buildResources(
       rootURL,
@@ -140,15 +144,14 @@ export class AgentService {
       this.snapshotService.buildLogResource(snapshotLog),
     )
 
-    const snapshotCreation = this.snapshotService.create(
+    this.snapshotService.create(
       request.body.name,
       resources,
       snapshotOptions,
       request.body.clientInfo,
       request.body.environmentInfo,
-    )
+    ).then(resolve).catch(reject)
 
-    this.snapshotCreationPromises.push(snapshotCreation)
     logger.info(`snapshot taken: '${request.body.name}'`)
 
     profile('agentService.handleSnapshot')
