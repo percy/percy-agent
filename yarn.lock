@@ -8247,9 +8247,9 @@ pend@~1.2.0:
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
 percy-client@^3.2.0:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/percy-client/-/percy-client-3.2.3.tgz#f954db185508a68264e30cfffa9d54b86e884005"
-  integrity sha512-p0UTMy5kx6/V85vYBa5h1gN0QKMcdEKfwrUN2pHvQml/jBefYPkJCjp7pS/2ECP1PkBSGM12qb6nuFYJSjQwJg==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/percy-client/-/percy-client-3.3.0.tgz#1f3c29d3c7e309a763ab8087f55a5adb3c663bed"
+  integrity sha512-KkY6jzUf5s03bHmV6cuaGMXTF7+eYUJIQpB+QXMNlw+V1XWpfzf/8v+xz8M1gxd17S9W5yNVWLYCvvnPQgZ9ag==
   dependencies:
     bluebird "^3.5.1"
     bluebird-retry "^0.11.0"
