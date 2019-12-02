@@ -3,7 +3,6 @@ import expect from 'expect'
 import { when } from 'interactor.js'
 
 import {
-  launch,
   run,
   setupApiProxy,
   setupDummyApp
@@ -13,9 +12,10 @@ describe('percy exec', () => {
   let proxy = setupApiProxy()
 
   it('warns when PERCY_TOKEN is missing', async () => {
-    let [stdout, stderr] = await run('percy exec -- echo test', { PERCY_TOKEN: '' })
+    let [stdout, stderr, code] = await run('percy exec -- echo test', { PERCY_TOKEN: '' })
     expect(stderr).toHaveEntry('Warning: Skipping visual tests. PERCY_TOKEN was not provided.')
     expect(stdout).toHaveEntry('test')
+    expect(code).toEqual(0)
   })
 
   it('logs a message when missing a command', async () => {
