@@ -69,6 +69,7 @@ export class AgentService {
       await this.snapshotService.assetDiscoveryService.teardown()
     }
 
+    new ProcessService().cleanup()
     await this.buildService.finalize()
     if (this.server) { await this.server.close() }
   }
@@ -157,7 +158,6 @@ export class AgentService {
 
   private async handleStop(_: express.Request, response: express.Response) {
     await this.stop()
-    new ProcessService().cleanup()
     return response.json({ success: true })
   }
 
