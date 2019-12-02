@@ -50,6 +50,37 @@ async function snapshot(page, name, options = {}) {
 }
 
 /**
+ * Returns a promise that resolves when the healthcheck endpoint responds;
+ * rejects after a number of retries (10 by default).
+ *
+ * @param {object} [options={}] - Healthcheck and retry options
+ * @param {number} [options.retries=10] - Number of retries before rejecting
+ * @param {number} [options.timeout=500] - Timeout between retries
+ * @returns {promise}
+ */
+export function agentIsReady({
+  retries = 10,
+  timeout = 500
+} = {}) {
+  return new Promise(function retry(resolve, reject) {
+    retry.tries = (retry.tries ?? 0) + 1
+
+    http.get('http://localhost:5338/percy/healthcheck')
+      .on('response', response => {
+        response.on('end', resolve)
+        response.resume()
+      })
+      .on('error', error => {
+        if (retry.tries <= retries) {
+          setTimeout(retry, timeout, resolve, reject)
+        } else {
+          reject(error)
+        }
+      })
+  })
+}
+
+/**
  * Launches a Puppeteer browser, creates a new page, and calls the provided
  * `callback` with the page object and bound snapshot helper. Will always close
  * the browser even if the callback throws an error.
