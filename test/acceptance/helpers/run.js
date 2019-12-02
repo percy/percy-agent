@@ -17,13 +17,20 @@ import stripAnsi from 'strip-ansi'
  *
  * @param {string} cmd - Command to run
  * @param {object} [env={}] - Additional environment variables
+ * @param {boolean} [debug] - Pipe stdio to the current process stdio
  * @returns {[str[], str[], number]} - stdout, stderr, & exit code
  */
-export default function run(cmd, env = {}) {
+export default function run(cmd, env = {}, debug) {
   let deferred = {}
   let promise = new Promise((resolve, reject) => {
     Object.assign(deferred, { resolve, reject })
   })
+
+  // debug was second arg
+  if (env === true) {
+    debug = env
+    env = {}
+  }
 
   // replace "percy " with the local path
   let child = exec(cmd.replace(/^percy /, './bin/run '), {
@@ -35,13 +42,18 @@ export default function run(cmd, env = {}) {
     }
   })
 
-  let stdio = [, [], []]
-  child.stdio[1].on('data', chunk => stdio[1].push(stripAnsi(chunk.replace(/\n$/, ''))))
-  child.stdio[2].on('data', chunk => stdio[2].push(stripAnsi(chunk.replace(/\n$/, ''))))
+  let stdio = [, '', '']
+  child.stdio[1].on('data', chunk => stdio[1] += stripAnsi(chunk))
+  child.stdio[2].on('data', chunk => stdio[2] += stripAnsi(chunk))
   child.on('close', code => deferred.resolve([stdio[1], stdio[2], code]))
   child.on('error', err => deferred.reject(err))
 
-  return Object.assign(promise, { child })
+  if (debug) {
+    child.stdout.pipe(process.stdout)
+    child.stderr.pipe(process.stderr)
+  }
+
+  return Object.assign(promise, { child, stdio })
 }
 
 /**
@@ -54,12 +66,14 @@ export default function run(cmd, env = {}) {
  * @returns {boolean}
  */
 function toHaveEntries(actual, expected) {
+  let entries = actual.split('\n')
+
   return ([].concat(expected).reduce((last, match) => {
     // already determined failure
     if (last == null) return match
 
     // find the first index of a match
-    let index = actual.findIndex(entry => (
+    let index = entries.findIndex(entry => (
       match instanceof RegExp ? entry.match(match)
         : (entry === match || entry.indexOf(match) > -1)
     ))
