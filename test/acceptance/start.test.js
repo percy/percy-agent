@@ -18,15 +18,14 @@ describe('percy start', () => {
   })
 
   it('starts the agent server and stops it when the process is killed', async () => {
-    let start = run('percy start')
-
+    let start = run('percy start', true)
     // kill the process as soon as it's ready
-    await agentIsReady()
-    // puppeteer will complain if we kill the process while it is launching chrome; wait 100ms
-    setTimeout(() => start.child.kill(), 100)
+    await when(() => expect(start.stdio[1]).toHaveEntry('percy is ready.'), 3000)
+    require('child_process').execSync(`kill ${start.child.pid}`)
 
-    let [stdout, stderr] = await start
+    let [stdout, stderr, code] = await start
 
+    console.log('finished!', code)
     expect(stderr).toHaveLength(0)
     expect(stdout).toHaveEntries([
       '[percy] created build #4: <<build-url>>',
