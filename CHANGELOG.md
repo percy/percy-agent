@@ -1,3 +1,10 @@
+## [0.20.3](https://github.com/percy/percy-agent/compare/v0.20.2...v0.20.3) (2019-12-09)
+
+
+### Bug Fixes
+
+* assets loading issues ([#434](https://github.com/percy/percy-agent/issues/434)) ([4028538](https://github.com/percy/percy-agent/commit/4028538))
+
 ## [0.20.2](https://github.com/percy/percy-agent/compare/v0.20.1...v0.20.2) (2019-11-22)
 
 
