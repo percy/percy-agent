@@ -90,6 +90,12 @@ export default class ResponseService extends PercyClientService {
       return this.handleRedirectResouce(url, redirectedURL, request.headers(), width, logger)
     }
 
+    if (request.resourceType() === 'other' && (await response.text()).length === 0) {
+      // Skip empty other resource types (browser resource hints)
+      logger.debug(`Skipping [is_empty_other]: ${request.url()}`)
+      return
+    }
+
     return this.handlePuppeteerResource(url, response, width, logger)
   }
 
