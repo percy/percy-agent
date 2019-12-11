@@ -1,3 +1,10 @@
+## [0.20.5](https://github.com/percy/percy-agent/compare/v0.20.4...v0.20.5) (2019-12-11)
+
+
+### Bug Fixes
+
+* add context to log output on finalize error ([#436](https://github.com/percy/percy-agent/issues/436)) ([f582027](https://github.com/percy/percy-agent/commit/f582027))
+
 ## [0.20.4](https://github.com/percy/percy-agent/compare/v0.20.3...v0.20.4) (2019-12-11)
 
 
