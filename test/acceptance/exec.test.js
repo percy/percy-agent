@@ -98,6 +98,7 @@ describe('percy exec', () => {
     let [stdout, stderr] = await run('percy exec -- echo test')
 
     expect(stdout).toHaveEntry('[percy] created build #4: <<build-url>>')
+    expect(stderr).toHaveEntry('[percy] error finalizing build')
     expect(stderr).toHaveEntry('[percy] StatusCodeError 404 - {"success":false}')
     expect(stdout).not.toHaveEntry('[percy] finalized build #4: <<build-url>>')
   })
