@@ -1,3 +1,10 @@
+## [0.20.4](https://github.com/percy/percy-agent/compare/v0.20.3...v0.20.4) (2019-12-11)
+
+
+### Bug Fixes
+
+* don't log success on error ([#435](https://github.com/percy/percy-agent/issues/435)) ([84ac23f](https://github.com/percy/percy-agent/commit/84ac23f))
+
 ## [0.20.3](https://github.com/percy/percy-agent/compare/v0.20.2...v0.20.3) (2019-12-09)
 
 
