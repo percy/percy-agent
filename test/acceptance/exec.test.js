@@ -92,6 +92,16 @@ describe('percy exec', () => {
     expect(proxy.requests['/builds/123/finalize']).toHaveLength(1)
   })
 
+  it('logs finalization errors', async () => {
+    proxy.mock('/builds/:id/finalize', () => [404, { success: false }])
+
+    let [stdout, stderr] = await run('percy exec -- echo test')
+
+    expect(stdout).toHaveEntry('[percy] created build #4: <<build-url>>')
+    expect(stderr).toHaveEntry('[percy] StatusCodeError 404 - {"success":false}')
+    expect(stdout).not.toHaveEntry('[percy] finalized build #4: <<build-url>>')
+  })
+
   describe('with snapshots', () => {
     let dummy = setupDummyApp()
 
