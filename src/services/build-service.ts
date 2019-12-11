@@ -31,8 +31,12 @@ export default class BuildService extends PercyClientService {
   async finalize() {
     if (!this.buildId) { return }
 
-    await this.percyClient.finalizeBuild(this.buildId).catch(logError)
-    this.logEvent('finalized')
+    try {
+      await this.percyClient.finalizeBuild(this.buildId)
+      this.logEvent('finalized')
+    } catch (err) {
+      logError(err)
+    }
   }
 
   async finalizeAll(): Promise<any> {
