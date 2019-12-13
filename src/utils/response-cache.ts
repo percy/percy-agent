@@ -9,6 +9,7 @@ let responseCache = {} as any
  * it so servers aren't being hounded for the same asset over and over again.
  */
 export async function cacheResponse(response: Response, logger: any) {
+  const request = response.request()
   const responseUrl = response.url()
   const statusCode = response.status()
 
@@ -18,6 +19,12 @@ export async function cacheResponse(response: Response, logger: any) {
   }
 
   if (![200, 201].includes(statusCode)) {
+    return
+  }
+
+  if (request.resourceType() === 'other' && (await response.text()).length === 0) {
+    // Skip empty other resource types (browser resource hints)
+    logger.debug(`Skipping caching [is_empty_other]: ${request.url()}`)
     return
   }
 
