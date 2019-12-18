@@ -1,3 +1,10 @@
+## [0.20.6](https://github.com/percy/percy-agent/compare/v0.20.5...v0.20.6) (2019-12-18)
+
+
+### Bug Fixes
+
+* remove TypeScript types from dependencies ([#439](https://github.com/percy/percy-agent/issues/439)) ([37bf691](https://github.com/percy/percy-agent/commit/37bf691))
+
 ## [0.20.5](https://github.com/percy/percy-agent/compare/v0.20.4...v0.20.5) (2019-12-11)
 
 
