@@ -1,3 +1,10 @@
+## [0.20.7](https://github.com/percy/percy-agent/compare/v0.20.6...v0.20.7) (2020-01-13)
+
+
+### Bug Fixes
+
+* Ensure static image sizes are explicit ([#453](https://github.com/percy/percy-agent/issues/453)) ([085421c](https://github.com/percy/percy-agent/commit/085421c))
+
 ## [0.20.6](https://github.com/percy/percy-agent/compare/v0.20.5...v0.20.6) (2019-12-18)
 
 
