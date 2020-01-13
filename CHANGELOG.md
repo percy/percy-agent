@@ -1,3 +1,10 @@
+## [0.20.8](https://github.com/percy/percy-agent/compare/v0.20.7...v0.20.8) (2020-01-13)
+
+
+### Bug Fixes
+
+* Inject Percy CSS before very last closing body tag ([#454](https://github.com/percy/percy-agent/issues/454)) ([6253c26](https://github.com/percy/percy-agent/commit/6253c26))
+
 ## [0.20.7](https://github.com/percy/percy-agent/compare/v0.20.6...v0.20.7) (2020-01-13)
 
 
