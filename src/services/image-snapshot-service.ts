@@ -45,7 +45,7 @@ export default class ImageSnapshotService extends PercyClientService {
     return filename
   }
 
-  buildResources(imagePath: string): any[] {
+  buildResources(imagePath: string, width: number, height: number): any[] {
     const { name, ext } = path.parse(imagePath)
     const localCopy = this.makeLocalCopy(imagePath)
     const imageUrl = `/${encodeURIComponent(imagePath)}`
@@ -63,11 +63,13 @@ export default class ImageSnapshotService extends PercyClientService {
             <meta charset="utf-8">
             <title>${imagePath}</title>
             <style>
-              html, body, img { width: 100%; margin: 0; padding: 0; font-size: 0; }
+              *, *::before, *::after { margin: 0; padding: 0; font-size: 0; }
+              html, body { width: 100%; }
+              img { max-width: 100%; }
             </style>
           </head>
           <body>
-            <img src="${imageUrl}"/>
+            <img src="${imageUrl}" width="${width}px" height="${height}px"/>
           </body>
         </html>
       `,
@@ -135,7 +137,7 @@ export default class ImageSnapshotService extends PercyClientService {
         // @ts-ignore - if dimensions are undefined, the library throws an error
         const { width, height } = imageSize(path.resolve(this.configuration.path, pathname))
 
-        const resources = this.buildResources(pathname)
+        const resources = this.buildResources(pathname, width, height)
         const snapshotPromise = this.createSnapshot(pathname, resources, width, height)
         logger.info(`snapshot uploaded: '${pathname}'`)
         promises.push(snapshotPromise)
