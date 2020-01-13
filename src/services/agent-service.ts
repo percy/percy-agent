@@ -134,7 +134,7 @@ export class AgentService {
     // serving a response for this CSS we're injecting into the DOM
     if (snapshotOptions.percyCSS) {
       const cssLink = `<link data-percy-specific-css rel="stylesheet" href="/${percyCSSFileName}" />`
-      domSnapshot = domSnapshot.replace(/<\/body>/i, cssLink + '$&')
+      domSnapshot = domSnapshot.replace(/(<\/body>)(?!.*\1)/is, cssLink + '$&')
     }
 
     resources = resources.concat(
