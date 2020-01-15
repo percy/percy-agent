@@ -1,4 +1,5 @@
 import { Response } from 'puppeteer'
+import { addLogDate } from './logger'
 let responseCache = {} as any
 
 /**
@@ -13,7 +14,7 @@ export async function cacheResponse(response: Response, logger: any) {
   const statusCode = response.status()
 
   if (!!responseCache[responseUrl]) {
-    logger.debug(`Asset already in cache ${responseUrl}`)
+    logger.debug(addLogDate(`Asset already in cache ${responseUrl}`))
     return
   }
 
@@ -30,9 +31,9 @@ export async function cacheResponse(response: Response, logger: any) {
       body: buffer,
     }
 
-    logger.debug(`Added ${responseUrl} to asset discovery cache`)
+    logger.debug(addLogDate(`Added ${responseUrl} to asset discovery cache`))
   } catch (error) {
-    logger.debug(`Could not cache response ${responseUrl}: ${error}`)
+    logger.debug(addLogDate(`Could not cache response ${responseUrl}: ${error}`))
   }
 }
 

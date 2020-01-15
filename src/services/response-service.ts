@@ -8,6 +8,7 @@ import * as path from 'path'
 import * as puppeteer from 'puppeteer'
 import { URL } from 'url'
 import domainMatch from '../utils/domain-match'
+import { addLogDate } from '../utils/logger'
 import Constants from './constants'
 import PercyClientService from './percy-client-service'
 import ResourceService from './resource-service'
@@ -47,7 +48,7 @@ export default class ResponseService extends PercyClientService {
     width: number,
     logger: any,
   ): Promise<any | null> {
-    logger.debug(`processing response: ${response.url()} for width: ${width}`)
+    logger.debug(addLogDate(`processing response: ${response.url()} for width: ${width}`))
     const url = this.parseRequestPath(response.url())
 
     // skip responses already processed
@@ -61,19 +62,19 @@ export default class ResponseService extends PercyClientService {
 
     if (request.url() === rootResourceUrl) {
       // Always skip the root resource
-      logger.debug(`Skipping [is_root_resource]: ${request.url()}`)
+      logger.debug(addLogDate(`Skipping [is_root_resource]: ${request.url()}`))
       return
     }
 
     if (!ALLOWED_RESPONSE_STATUSES.includes(response.status())) {
       // Only allow 2XX responses:
-      logger.debug(`Skipping [disallowed_response_status_${response.status()}] [${width} px]: ${response.url()}`)
+      logger.debug(addLogDate(`Skipping [disallowed_response_status_${response.status()}] [${width} px]: ${response.url()}`))
       return
     }
 
     if (!this.shouldCaptureResource(rootUrl, request.url())) {
       // Disallow remote resource requests.
-      logger.debug(`Skipping [is_remote_resource] [${width} px]: ${request.url()}`)
+      logger.debug(addLogDate(`Skipping [is_remote_resource] [${width} px]: ${request.url()}`))
       return
     }
 
@@ -82,7 +83,7 @@ export default class ResponseService extends PercyClientService {
       // `followRedirects` is the npm package axios uses to follow redirected requests
       // we'll use their max redirect setting as a guard here
       if (request.redirectChain().length > followRedirects.maxRedirects) {
-        logger.debug(`Skipping [redirect_too_deep: ${request.redirectChain().length}] [${width} px]: ${response.url()}`)
+        logger.debug(addLogDate(`Skipping [redirect_too_deep: ${request.redirectChain().length}] [${width} px]: ${response.url()}`))
         return
       }
 
@@ -92,7 +93,7 @@ export default class ResponseService extends PercyClientService {
 
     if (request.resourceType() === 'other' && (await response.text()).length === 0) {
       // Skip empty other resource types (browser resource hints)
-      logger.debug(`Skipping [is_empty_other]: ${request.url()}`)
+      logger.debug(addLogDate(`Skipping [is_empty_other]: ${request.url()}`))
       return
     }
 
@@ -112,7 +113,7 @@ export default class ResponseService extends PercyClientService {
     width: number,
     logger: any,
   ) {
-    logger.debug(`Making local copy of redirected response: ${originalURL}`)
+    logger.debug(addLogDate(`Making local copy of redirected response: ${originalURL}`))
 
     try {
       const { data, headers } = await Axios(originalURL, {
@@ -127,11 +128,11 @@ export default class ResponseService extends PercyClientService {
       const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
 
       if (!didWriteFile) {
-        logger.debug(`Skipping file copy [already_copied]: ${originalURL}`)
+        logger.debug(addLogDate(`Skipping file copy [already_copied]: ${originalURL}`))
       }
 
       if (fileIsTooLarge) {
-        logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${originalURL}`)
+        logger.debug(addLogDate(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${originalURL}`))
         return
       }
 
@@ -144,7 +145,7 @@ export default class ResponseService extends PercyClientService {
       return resource
     } catch (err) {
       logger.debug(`${err}`)
-      logger.debug(`Failed to make a local copy of redirected response: ${originalURL}`)
+      logger.debug(addLogDate(`Failed to make a local copy of redirected response: ${originalURL}`))
 
       return
     }
@@ -155,7 +156,7 @@ export default class ResponseService extends PercyClientService {
    * take the response object from Puppeteer and save the asset locally.
    */
   async handlePuppeteerResource(url: string, response: puppeteer.Response, width: number, logger: any) {
-    logger.debug(`Making local copy of response: ${response.url()}`)
+    logger.debug(addLogDate(`Making local copy of response: ${response.url()}`))
 
     const buffer = await response.buffer()
     const sha = crypto.createHash('sha256').update(buffer).digest('hex')
@@ -163,14 +164,14 @@ export default class ResponseService extends PercyClientService {
     const didWriteFile = this.maybeWriteFile(localCopy, buffer)
 
     if (!didWriteFile) {
-      logger.debug(`Skipping file copy [already_copied]: ${response.url()}`)
+      logger.debug(addLogDate(`Skipping file copy [already_copied]: ${response.url()}`))
     }
 
     const contentType = response.headers()['content-type']
     const { fileIsTooLarge, responseBodySize } = this.checkFileSize(localCopy)
 
     if (fileIsTooLarge) {
-      logger.debug(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`)
+      logger.debug(addLogDate(`Skipping [max_file_size_exceeded_${responseBodySize}] [${width} px]: ${response.url()}`))
       return
     }
 

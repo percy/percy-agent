@@ -1,5 +1,5 @@
 import * as path from 'path'
-import { logError, profile } from '../utils/logger'
+import { addLogDate, logError, profile } from '../utils/logger'
 import PercyClientService from './percy-client-service'
 
 export default class ResourceService extends PercyClientService {
@@ -16,7 +16,7 @@ export default class ResourceService extends PercyClientService {
     const sha = path.basename(copyFilePath)
     const resourceUrl = responseUrl
 
-    logger.debug('creating resource')
+    logger.debug(addLogDate('creating resource'))
     logger.debug(`-> response: ${responseUrl}`)
     logger.debug(`-> copyFilePath: ${copyFilePath}`)
     logger.debug(`-> resourceUrl: ${resourceUrl}`)

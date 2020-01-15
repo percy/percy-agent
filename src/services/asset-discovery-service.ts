@@ -4,7 +4,7 @@ import * as puppeteer from 'puppeteer'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
-import { logError, profile } from '../utils/logger'
+import { addLogDate, logError, profile } from '../utils/logger'
 import { cacheResponse, getResponseCache } from '../utils/response-cache'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
 import PercyClientService from './percy-client-service'
@@ -102,7 +102,7 @@ export class AssetDiscoveryService extends PercyClientService {
 
     rootResourceUrl = this.parseRequestPath(rootResourceUrl)
 
-    logger.debug(`discovering assets for URL: ${rootResourceUrl}`)
+    logger.debug(addLogDate(`discovering assets for URL: ${rootResourceUrl}`))
 
     const {
       enableJavaScript = false,
@@ -177,7 +177,7 @@ export class AssetDiscoveryService extends PercyClientService {
     requestHeaders: any = {},
     logger: any,
   ): Promise<any[]> {
-    logger.debug(`discovering assets for width: ${width}`)
+    logger.debug(addLogDate(`discovering assets for width: ${width}`))
 
     profile('--> assetDiscoveryService.pool.acquire', { url: rootResourceUrl })
     const page = await pool.acquire()
@@ -208,7 +208,7 @@ export class AssetDiscoveryService extends PercyClientService {
         }
 
         if (this.configuration['cache-responses'] === true && getResponseCache(requestUrl)) {
-          logger.debug(`Asset cache hit for ${requestUrl}`)
+          logger.debug(addLogDate(`Asset cache hit for ${requestUrl}`))
           await request.respond(getResponseCache(requestUrl))
 
           return
@@ -242,13 +242,13 @@ export class AssetDiscoveryService extends PercyClientService {
         promise.catch(logError)
         maybeResourcePromises.push(promise)
       } else {
-        logger.debug(`No response for ${request.url()}. Skipping.`)
+        logger.debug(addLogDate(`No response for ${request.url()}. Skipping.`))
       }
     })
 
     // Debug log failed requests.
     page.on('requestfailed', async (request) => {
-      logger.debug(`Failed to load ${request.url()} : ${request.failure()!.errorText}}`)
+      logger.debug(addLogDate(`Failed to load ${request.url()} : ${request.failure()!.errorText}}`))
     })
 
     let maybeResources: any[] = []
