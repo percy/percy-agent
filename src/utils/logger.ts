@@ -3,6 +3,10 @@ import * as winston from 'winston'
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
 
+export function addLogDate(log: string) {
+  return `${log} | ${new Date().toString()}`
+}
+
 function createConsoleTransport() {
   return new winston.transports.Console({
     level: LOG_LEVEL,
