@@ -1,6 +1,7 @@
 import * as merge from 'deepmerge'
 import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
+import { URL } from 'url'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
