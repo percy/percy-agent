@@ -1,3 +1,10 @@
+## [0.20.10](https://github.com/percy/percy-agent/compare/v0.20.9...v0.20.10) (2020-01-16)
+
+
+### Bug Fixes
+
+* Add timestamps to error logs ([#456](https://github.com/percy/percy-agent/issues/456)) ([b8c0683](https://github.com/percy/percy-agent/commit/b8c0683))
+
 ## [0.20.9](https://github.com/percy/percy-agent/compare/v0.20.8...v0.20.9) (2020-01-15)
 
 
