@@ -266,8 +266,8 @@ export class AssetDiscoveryService extends PercyClientService {
       maybeResources = await Promise.all(maybeResourcePromises)
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
     } catch (error) {
-      logger.error(`${error.name} ${error.message}`)
-      logger.debug(error)
+      logger.error(addLogDate(`${error.name} ${error.message}`))
+      logger.debug(addLogDate(error))
     }
 
     // always release the page from the pool

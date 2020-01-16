@@ -29,8 +29,8 @@ export function profile(id: string, meta?: any): winston.Logger | undefined {
 }
 
 export function logError(error: any) {
-  logger.error(`${error.name} ${error.message}`)
-  logger.debug(error)
+  logger.error(addLogDate(`${error.name} ${error.message}`))
+  logger.debug(addLogDate(error))
 }
 
 export function createFileLogger(filename: string) {
