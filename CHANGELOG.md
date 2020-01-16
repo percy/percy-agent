@@ -1,3 +1,10 @@
+## [0.20.11](https://github.com/percy/percy-agent/compare/v0.20.10...v0.20.11) (2020-01-16)
+
+
+### Bug Fixes
+
+* Skip requests in asset discovery that will never be saved ([#457](https://github.com/percy/percy-agent/issues/457)) ([ce36cf2](https://github.com/percy/percy-agent/commit/ce36cf2))
+
 ## [0.20.10](https://github.com/percy/percy-agent/compare/v0.20.9...v0.20.10) (2020-01-16)
 
 
