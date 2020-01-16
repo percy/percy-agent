@@ -1,9 +1,11 @@
 import * as merge from 'deepmerge'
 import * as pool from 'generic-pool'
 import * as puppeteer from 'puppeteer'
+import { URL } from 'url'
 import { AssetDiscoveryConfiguration } from '../configuration/asset-discovery-configuration'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
+import domainMatch from '../utils/domain-match'
 import { addLogDate, logError, profile } from '../utils/logger'
 import { cacheResponse, getResponseCache } from '../utils/response-cache'
 import waitForNetworkIdle from '../utils/wait-for-network-idle'
@@ -168,6 +170,25 @@ export class AssetDiscoveryService extends PercyClientService {
     await this.closeBrowser()
   }
 
+  // We shouldn't bother passing on requests that will never be saved
+  shouldProcessRequest(resourceUrl: string, rootResourceUrl: string): boolean {
+    const parsedRootResourceUrl = new URL(rootResourceUrl)
+    const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
+
+    // Process if the resourceUrl has a hostname in the allowedHostnames
+    if (this.configuration['allowed-hostnames'].some((hostname) => domainMatch(hostname, resourceUrl))) {
+      return true
+    }
+
+    // Capture if the resourceUrl is the same as the rootUrL
+    if (resourceUrl.startsWith(rootUrl)) {
+      return true
+    }
+
+    // We won't be capturing this asset, no need to wait for it to respond
+    return false
+  }
+
   private async resourcesForWidth(
     pool: pool.Pool<puppeteer.Page>,
     width: number,
@@ -207,12 +228,20 @@ export class AssetDiscoveryService extends PercyClientService {
           return
         }
 
+        if (!this.shouldProcessRequest(requestUrl, rootResourceUrl)) {
+          logger.debug(addLogDate(`Aborting ${requestUrl} -- will never be saved`))
+          await request.abort()
+          return
+        }
+
         if (this.configuration['cache-responses'] === true && getResponseCache(requestUrl)) {
           logger.debug(addLogDate(`Asset cache hit for ${requestUrl}`))
           await request.respond(getResponseCache(requestUrl))
 
           return
         }
+
+        logger.debug(addLogDate(`Starting processing for: ${requestUrl}`))
 
         await request.continue()
       } catch (error) {
