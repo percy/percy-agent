@@ -78,12 +78,6 @@ describe('Integration test', () => {
       expect(domSnapshot).contains('badssl.com')
     })
 
-    it('snapshots a complex website with responsive images', async () => {
-      await page.goto('https://polaris.shopify.com/')
-      const domSnapshot = await snapshot(page, 'Polaris snapshot', {widths: [300, 1200]})
-      expect(domSnapshot).contains('Shopify Polaris')
-    })
-
     it('snapshots a complex website with CSSOM', async () => {
       await page.goto('https://buildkite.com/')
       const domSnapshot = await snapshot(page, 'Buildkite snapshot')
