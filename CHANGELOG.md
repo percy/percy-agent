@@ -1,3 +1,10 @@
+## [0.20.12](https://github.com/percy/percy-agent/compare/v0.20.11...v0.20.12) (2020-01-21)
+
+
+### Bug Fixes
+
+* skip caching empty resources ([#458](https://github.com/percy/percy-agent/issues/458)) ([c2cb769](https://github.com/percy/percy-agent/commit/c2cb769))
+
 ## [0.20.11](https://github.com/percy/percy-agent/compare/v0.20.10...v0.20.11) (2020-01-16)
 
 
