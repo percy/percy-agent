@@ -1,3 +1,10 @@
+## [0.20.13](https://github.com/percy/percy-agent/compare/v0.20.12...v0.20.13) (2020-01-31)
+
+
+### Bug Fixes
+
+* clamp image dimensions to min and max ([#460](https://github.com/percy/percy-agent/issues/460)) ([ca68b0f](https://github.com/percy/percy-agent/commit/ca68b0f))
+
 ## [0.20.12](https://github.com/percy/percy-agent/compare/v0.20.11...v0.20.12) (2020-01-21)
 
 
