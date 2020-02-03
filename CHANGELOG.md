@@ -1,3 +1,10 @@
+# [0.21.0](https://github.com/percy/percy-agent/compare/v0.20.13...v0.21.0) (2020-02-03)
+
+
+### Features
+
+* Use node v10 ([#467](https://github.com/percy/percy-agent/issues/467)) ([920868f](https://github.com/percy/percy-agent/commit/920868f))
+
 ## [0.20.13](https://github.com/percy/percy-agent/compare/v0.20.12...v0.20.13) (2020-01-31)
 
 
