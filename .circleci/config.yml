@@ -78,10 +78,10 @@ jobs:
           command: export PERCY_ENABLE=0
       - cli_integration
       - store_artifacts
-  node-8:
+  node-12:
     <<: *test_config
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:12-browsers
     steps:
       - setup
       - cli_commands
@@ -91,7 +91,7 @@ jobs:
   finalize_percy:
     <<: *test_config
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - run: yarn && yarn build
@@ -99,7 +99,7 @@ jobs:
   release:
     <<: *test_config
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:12-browsers
     steps:
       - checkout
       - run: yarn
@@ -110,11 +110,11 @@ workflows:
   default:
     jobs:
       - node-10
-      - node-8
+      - node-12
       - finalize_percy:
           requires:
           - node-10
-          - node-8
+          - node-12
       - release:
           filters:
             branches:
@@ -122,4 +122,4 @@ workflows:
                 - master
           requires:
             - node-10
-            - node-8
+            - node-12
