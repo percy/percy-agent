@@ -93,6 +93,7 @@ class DOM {
    */
   private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
     this.serializeInputElements(clonedDOM)
+    this.serializeFrameElements(clonedDOM)
 
     // We only want to serialize the CSSOM if JS isn't enabled.
     if (!this.options.enableJavaScript) {
@@ -155,6 +156,35 @@ class DOM {
     })
   }
 
+  private serializeFrameElements(clonedDOM: HTMLDocument) {
+    for (const frame of this.originalDOM.querySelectorAll('iframe')) {
+      const percyElementId = frame.getAttribute('data-percy-element-id')
+      const cloned = clonedDOM.querySelector(`[data-percy-element-id="${percyElementId}"]`)
+
+      // delete frames within the head since they usually break pages when
+      // rerendered and do not effect the visuals of a page
+      if (clonedDOM.head.contains(cloned)) {
+        cloned!.remove()
+
+      // if the frame document is accessible, we can serialize it
+      } else if (frame.contentDocument) {
+        const builtWithJs = !frame.srcdoc && (!frame.src || frame.src.split(':')[0] === 'javascript')
+
+        // js is enabled and this frame was built with js, don't serialize it
+        if (this.options.enableJavaScript && builtWithJs) { continue }
+
+        // the frame has yet to load and wasn't built with js, it is unsafe to serialize
+        if (!builtWithJs && !frame.contentWindow!.performance.timing.loadEventEnd) { continue }
+
+        // recersively serialize contents and assign to srcdoc
+        const frameDOM = new DOM(frame.contentDocument, this.options)
+        cloned!.setAttribute('srcdoc', frameDOM.snapshotString())
+        // srcdoc cannot exist in tandem with src
+        cloned!.removeAttribute('src')
+      }
+    }
+  }
+
   /**
    * Capture in-memory styles & serialize those styles into the cloned DOM.
    *
@@ -202,18 +232,15 @@ class DOM {
    *
    */
   private mutateOriginalDOM() {
-    function createUID($el: Element) {
-      const ID = `_${Math.random().toString(36).substr(2, 9)}`
-
-      $el.setAttribute('data-percy-element-id', ID)
-    }
-
+    const createUID = () => `_${Math.random().toString(36).substr(2, 9)}`
     const formNodes = this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR)
-    const formElements = Array.from(formNodes) as HTMLFormElement[]
-    // loop through each form element and apply an ID for serialization later
-    formElements.forEach((elem) => {
+    const frameNodes = this.originalDOM.querySelectorAll('iframe')
+    const elements = [...formNodes, ...frameNodes] as HTMLElement[]
+
+    // loop through each element and apply an ID for serialization later
+    elements.forEach((elem) => {
       if (!elem.getAttribute('data-percy-element-id')) {
-        createUID(elem)
+        elem.setAttribute('data-percy-element-id', createUID())
       }
     })
   }
