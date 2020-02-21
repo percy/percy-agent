@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import * as cheerio from 'cheerio'
 // @ts-ignore
-import { check, select, type } from 'interactor.js'
+import { check, select, type, when } from 'interactor.js'
 import * as sinon from 'sinon'
 import DOM from '../../../src/percy-agent-client/dom'
 
@@ -326,6 +326,66 @@ describe('DOM -', () => {
 
         expect(serializedCSSOM.length).to.equal(1)
         expect(serializedCSSOM[0].innerText).to.equal('.box { height: 500px; width: 500px; background-color: green; }')
+      })
+    })
+
+    describe('iframes', () => {
+      let $dom: CheerioStatic
+
+      beforeEach(async () => {
+        createExample(`
+          <iframe id="frame-external" src="https://example.com"></iframe>
+          <iframe id="frame-input" srcdoc="<input/>"></iframe>
+          <iframe id="frame-js" src="javascript:void(
+            this.document.body.innerHTML = '<p>made with js src</p>'
+          )"></iframe>
+          <iframe id="frame-js-no-src"></iframe>
+        `)
+
+        const $frameInput = document.getElementById('frame-input') as HTMLIFrameElement
+        await when(() => !!$frameInput.contentWindow!.performance.timing.loadEventEnd)
+        await type($frameInput.contentDocument!.querySelector('input'), 'iframe with an input')
+
+        const $frameJS = document.getElementById('frame-js-no-src') as HTMLIFrameElement
+        $frameJS.contentDocument!.body.innerHTML = '<p>generated iframe</p>'
+
+        $dom = cheerio.load(new DOM(document).snapshotString())
+      })
+
+      it('serializes iframes created with JS', () => {
+        expect($dom('#frame-js').attr('src')).to.be.undefined
+        expect($dom('#frame-js').attr('srcdoc')).to.equal([
+          '<!DOCTYPE html><html><head></head><body>',
+          '<p>made with js src</p>',
+          '</body></html>',
+        ].join(''))
+
+        expect($dom('#frame-js-no-src').attr('src')).to.be.undefined
+        expect($dom('#frame-js-no-src').attr('srcdoc')).to.equal([
+          '<!DOCTYPE html><html><head></head><body>',
+          '<p>generated iframe</p>',
+          '</body></html>',
+        ].join(''))
+      })
+
+      it('serializes iframes that have been interacted with', () => {
+        expect($dom('#frame-input').attr('srcdoc')).to.match(new RegExp([
+          '^<!DOCTYPE html><html><head></head><body>',
+          '<input data-percy-element-id=".+?" value="iframe with an input">',
+          '</body></html>$',
+        ].join('')))
+      })
+
+      it('does not serialize iframes with CORS', () => {
+        expect($dom('#frame-external').attr('src')).to.equal('https://example.com')
+        expect($dom('#frame-external').attr('srcdoc')).to.be.undefined
+      })
+
+      it('does not serialize iframes created by JS when JS is enabled', () => {
+        $dom = cheerio.load(new DOM(document, { enableJavaScript: true }).snapshotString())
+        expect($dom('#frame-js').attr('src')).to.not.be.undefined
+        expect($dom('#frame-js').attr('srcdoc')).to.be.undefined
+        expect($dom('#frame-js-no-src').attr('srcdoc')).to.be.undefined
       })
     })
   })
