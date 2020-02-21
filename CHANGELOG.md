@@ -1,3 +1,10 @@
+# [0.22.0](https://github.com/percy/percy-agent/compare/v0.21.0...v0.22.0) (2020-02-21)
+
+
+### Features
+
+* iframe serialization ([#468](https://github.com/percy/percy-agent/issues/468)) ([0bf23af](https://github.com/percy/percy-agent/commit/0bf23af))
+
 # [0.21.0](https://github.com/percy/percy-agent/compare/v0.20.13...v0.21.0) (2020-02-03)
 
 
