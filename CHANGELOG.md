@@ -1,3 +1,10 @@
+# [0.23.0](https://github.com/percy/percy-agent/compare/v0.22.0...v0.23.0) (2020-02-28)
+
+
+### Features
+
+* Enable asset discovery network caching by default ([#469](https://github.com/percy/percy-agent/issues/469)) ([6b36aab](https://github.com/percy/percy-agent/commit/6b36aab))
+
 # [0.22.0](https://github.com/percy/percy-agent/compare/v0.21.0...v0.22.0) (2020-02-21)
 
 
