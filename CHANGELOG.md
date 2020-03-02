@@ -1,3 +1,10 @@
+# [0.24.0](https://github.com/percy/percy-agent/compare/v0.23.0...v0.24.0) (2020-03-02)
+
+
+### Features
+
+* **:sparkles::** add meta information to healthcheck endpoint ([#470](https://github.com/percy/percy-agent/issues/470)) ([c67ed5a](https://github.com/percy/percy-agent/commit/c67ed5a))
+
 # [0.23.0](https://github.com/percy/percy-agent/compare/v0.22.0...v0.23.0) (2020-02-28)
 
 
