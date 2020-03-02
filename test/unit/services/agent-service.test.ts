@@ -32,12 +32,29 @@ describe('AgentService', () => {
     it('starts serving dist/public on supplied port', async () => {
       await captureStdOut(() => subject.start(configuration))
 
-      chai.request(`http://localhost:${configuration.agent.port}`)
+      await chai.request(`http://localhost:${configuration.agent.port}`)
         .get('/percy-agent.js')
-        .end((error, response) => {
-          expect(error).to.be.eq(null)
+        .then((response) => {
           expect(response).to.have.status(200)
           expect(response).to.have.header('content-type', /application\/javascript/)
+        })
+    })
+
+    it('sends meta information with the healthcheck endpoint', async () => {
+      await captureStdOut(() => subject.start(configuration))
+
+      await chai.request(`http://localhost:${configuration.agent.port}`)
+        .get('/percy/healthcheck')
+        .then((response) => {
+          expect(response).to.have.status(200)
+          expect(response).to.be.json
+          expect(response.body).to.deep.equal({
+            success: true,
+            build: {
+              number: 1322,
+              url: 'https://percy.io/test/test/builds/659575',
+            },
+          })
         })
     })
 
@@ -54,20 +71,16 @@ describe('AgentService', () => {
         await subject.stop()
       })
 
-      chai.request(`http://localhost:${configuration.agent.port}`)
+      await chai.request(`http://localhost:${configuration.agent.port}`)
         .get('/percy-agent.js')
-        .catch(async (error) => {
-          await expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${configuration.agent.port}`)
+        .catch((error) => {
+          expect(error).to.have.property('message', `connect ECONNREFUSED 127.0.0.1:${configuration.agent.port}`)
         })
     })
 
     it('logs to stdout that it finalized a build', async () => {
       await captureStdOut(() => subject.start(configuration))
-
-      const stdout = await captureStdOut(async () => {
-        await subject.stop()
-      })
-
+      const stdout = await captureStdOut(() => subject.stop())
       expect(stdout).to.match(/\[percy\] finalized build #\d+: https:\/\/percy\.io\/test\/test\/builds\/\d+/)
     })
   })

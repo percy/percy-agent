@@ -165,6 +165,12 @@ export class AgentService {
   }
 
   private async handleHealthCheck(_: express.Request, response: express.Response) {
-    return response.json({ success: true })
+    return response.json({
+      success: true,
+      build: {
+        number: this.buildService.buildNumber,
+        url: this.buildService.buildUrl,
+      },
+    })
   }
 }
