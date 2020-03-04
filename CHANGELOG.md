@@ -1,3 +1,10 @@
+## [0.24.1](https://github.com/percy/percy-agent/compare/v0.24.0...v0.24.1) (2020-03-04)
+
+
+### Bug Fixes
+
+* Log DOM transform error so it doesn't end up as [Object object] ([#478](https://github.com/percy/percy-agent/issues/478)) ([1757bf0](https://github.com/percy/percy-agent/commit/1757bf0))
+
 # [0.24.0](https://github.com/percy/percy-agent/compare/v0.23.0...v0.24.0) (2020-03-02)
 
 
