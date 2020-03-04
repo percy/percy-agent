@@ -104,7 +104,7 @@ describe('DOM -', () => {
       expect(consoleStub.called).to.equal(false)
       // invoke the transform function again to try and remove a non-existent element
       expect(dom.snapshotString()).to.contain('Hello DOM testing')
-      expect(consoleStub.calledOnce).to.equal(true)
+      expect(consoleStub.calledTwice).to.equal(true)
     })
   })
 
