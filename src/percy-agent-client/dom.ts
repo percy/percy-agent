@@ -42,7 +42,8 @@ class DOM {
       try {
         dom = this.options.domTransformation(dom)
       } catch (error) {
-        console.error('Could not transform the dom: ', error)
+        console.error('Could not transform the dom:')
+        console.error(error)
       }
     }
 
