@@ -1,3 +1,10 @@
+## [0.24.2](https://github.com/percy/percy-agent/compare/v0.24.1...v0.24.2) (2020-03-05)
+
+
+### Bug Fixes
+
+* Call `toString` on error ([#479](https://github.com/percy/percy-agent/issues/479)) ([175a3eb](https://github.com/percy/percy-agent/commit/175a3eb)), closes [#478](https://github.com/percy/percy-agent/issues/478)
+
 ## [0.24.1](https://github.com/percy/percy-agent/compare/v0.24.0...v0.24.1) (2020-03-04)
 
 
