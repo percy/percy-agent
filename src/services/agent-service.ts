@@ -109,6 +109,12 @@ export class AgentService {
       minHeight: request.body.minHeight || this.snapshotConfig['min-height'],
     }
 
+    snapshotLogger.debug(`-> widths: ${snapshotOptions.widths}`)
+    snapshotLogger.debug(`-> minHeight: ${snapshotOptions.minHeight}`)
+    snapshotLogger.debug(`-> enableJavaScript: ${snapshotOptions.enableJavaScript}`)
+    snapshotLogger.debug(`-> requestHeaders: ${snapshotOptions.requestHeaders}`)
+    snapshotLogger.debug(`-> percyCSS: ${snapshotOptions.percyCSS}`)
+
     let domSnapshot = request.body.domSnapshot
 
     if (domSnapshot.length > Constants.MAX_FILE_SIZE_BYTES) {
