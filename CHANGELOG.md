@@ -1,3 +1,10 @@
+## [0.24.3](https://github.com/percy/percy-agent/compare/v0.24.2...v0.24.3) (2020-03-06)
+
+
+### Bug Fixes
+
+* Log out snapshot options in debug logs ([#480](https://github.com/percy/percy-agent/issues/480)) ([c524926](https://github.com/percy/percy-agent/commit/c524926))
+
 ## [0.24.2](https://github.com/percy/percy-agent/compare/v0.24.1...v0.24.2) (2020-03-05)
 
 
