@@ -233,5 +233,16 @@ describe('Integration test', () => {
 
       })
     })
+
+    describe('canvas', () => {
+      it('captures canvas elements', async () => {
+        await page.goto(`http://localhost:${PORT}/serialize-canvas.html`)
+        await page.waitFor('#webgl canvas')
+        // I cannot think of a nicer way to let the canvas animations/drawing settle
+        // so sadly, use a timeout
+        await page.waitFor(1000)
+        await snapshot(page, 'Canvas elements')
+      })
+    })
   })
 })
