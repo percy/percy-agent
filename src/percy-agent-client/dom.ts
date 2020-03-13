@@ -95,9 +95,10 @@ class DOM {
     this.serializeInputElements(clonedDOM)
     this.serializeFrameElements(clonedDOM)
 
-    // We only want to serialize the CSSOM if JS isn't enabled.
+    // We only want to serialize the CSSOM or canvas if JS isn't enabled.
     if (!this.options.enableJavaScript) {
       this.serializeCSSOM(clonedDOM)
+      this.serializeCanvasElements(clonedDOM)
     }
 
     return clonedDOM.documentElement
@@ -226,6 +227,36 @@ class DOM {
   }
 
   /**
+   * Capture in-memory canvas elements & serialize them to images into the
+   * cloned DOM.
+   *
+   * Without this, applications that have canvas elements will be missing and
+   * appear broken. The Canvas DOM API allows you to covert them to images, which
+   * is what we're doing here to capture that in-memory state & serialize it
+   * into the DOM Percy captures.
+   *
+   * It's important to note the `.toDataURL` API requires WebGL canvas elements
+   * to use `preserveDrawingBuffer: true`. This is because `.toDataURL` captures
+   * from the drawing buffer, which is cleared after each render by default for
+   * performance.
+   *
+   */
+  private serializeCanvasElements(clonedDOM: HTMLDocument): void {
+    for (const $canvas of this.originalDOM.querySelectorAll('canvas')) {
+      const $image = clonedDOM.createElement('img')
+      const canvasId = $canvas.getAttribute('data-percy-element-id')
+      const $clonedCanvas = clonedDOM.querySelector(`[data-percy-element-id=${canvasId}]`) as any
+
+      $image.setAttribute('style', 'max-width: 100%')
+      $image.classList.add('percy-canvas-image')
+
+      $image.src = $canvas.toDataURL()
+      $image.setAttribute('data-percy-canvas-serialized', 'true')
+      $clonedCanvas.parentElement.insertBefore($image, $clonedCanvas)
+      $clonedCanvas.remove()
+    }
+  }
+  /**
    * A single place to mutate the original DOM. This should be the last resort!
    * This will change the customer's DOM and have a possible impact on the
    * customer's application.
@@ -235,7 +266,8 @@ class DOM {
     const createUID = () => `_${Math.random().toString(36).substr(2, 9)}`
     const formNodes = this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR)
     const frameNodes = this.originalDOM.querySelectorAll('iframe')
-    const elements = [...formNodes, ...frameNodes] as HTMLElement[]
+    const canvasNodes = this.originalDOM.querySelectorAll('canvas')
+    const elements = [...formNodes, ...frameNodes, ...canvasNodes] as HTMLElement[]
 
     // loop through each element and apply an ID for serialization later
     elements.forEach((elem) => {
