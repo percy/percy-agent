@@ -1,3 +1,10 @@
+# [0.25.0](https://github.com/percy/percy-agent/compare/v0.24.3...v0.25.0) (2020-03-13)
+
+
+### Features
+
+* Capture Canvas elements ([#483](https://github.com/percy/percy-agent/issues/483)) ([7b45c12](https://github.com/percy/percy-agent/commit/7b45c12))
+
 ## [0.24.3](https://github.com/percy/percy-agent/compare/v0.24.2...v0.24.3) (2020-03-06)
 
 
