@@ -242,7 +242,7 @@ class DOM {
    *
    */
   private serializeCanvasElements(clonedDOM: HTMLDocument): void {
-    function canvasToImage($canvas: any) {
+    for (const $canvas of this.originalDOM.querySelectorAll('canvas')) {
       const $image = clonedDOM.createElement('img')
       const canvasId = $canvas.getAttribute('data-percy-element-id')
       const $clonedCanvas = clonedDOM.querySelector(`[data-percy-element-id=${canvasId}]`) as any
@@ -250,13 +250,11 @@ class DOM {
       $image.setAttribute('style', 'max-width: 100%')
       $image.classList.add('percy-canvas-image')
 
-      $clonedCanvas.style = 'display: none'
       $image.src = $canvas.toDataURL()
-      $clonedCanvas.setAttribute('data-percy-canvas-serialized', true)
+      $image.setAttribute('data-percy-canvas-serialized', 'true')
       $clonedCanvas.parentElement.appendChild($image)
+      $clonedCanvas.remove()
     }
-
-    this.originalDOM.querySelectorAll('canvas').forEach(canvasToImage)
   }
   /**
    * A single place to mutate the original DOM. This should be the last resort!
