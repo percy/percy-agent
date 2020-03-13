@@ -252,7 +252,7 @@ class DOM {
 
       $image.src = $canvas.toDataURL()
       $image.setAttribute('data-percy-canvas-serialized', 'true')
-      $clonedCanvas.parentElement.appendChild($image)
+      $clonedCanvas.parentElement.insertBefore($image, $clonedCanvas)
       $clonedCanvas.remove()
     }
   }
