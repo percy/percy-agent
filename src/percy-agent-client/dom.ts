@@ -94,11 +94,11 @@ class DOM {
   private stabilizeDOM(clonedDOM: HTMLDocument): HTMLElement {
     this.serializeInputElements(clonedDOM)
     this.serializeFrameElements(clonedDOM)
-    this.serializeCanvasElements(clonedDOM)
 
-    // We only want to serialize the CSSOM if JS isn't enabled.
+    // We only want to serialize the CSSOM or canvas if JS isn't enabled.
     if (!this.options.enableJavaScript) {
       this.serializeCSSOM(clonedDOM)
+      this.serializeCanvasElements(clonedDOM)
     }
 
     return clonedDOM.documentElement

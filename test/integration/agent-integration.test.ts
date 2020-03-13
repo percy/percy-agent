@@ -241,7 +241,20 @@ describe('Integration test', () => {
         // I cannot think of a nicer way to let the canvas animations/drawing settle
         // so sadly, use a timeout
         await page.waitFor(1000)
-        await snapshot(page, 'Canvas elements')
+        const domSnapshot = await snapshot(page, 'Canvas elements')
+        const $ = cheerio.load(domSnapshot)
+
+        expect($('[data-percy-canvas-serialized]').length).to.equal(2)
+      })
+
+      it("doesn't serialize with JS enabled", async () => {
+        await page.goto(`http://localhost:${PORT}/serialize-canvas.html`)
+        await page.waitFor('#webgl canvas')
+        await page.waitFor(1000)
+        const domSnapshot = await snapshot(page, 'Canvas elements -- with JS', { enableJavaScript: true })
+        const $ = cheerio.load(domSnapshot)
+
+        expect($('[data-percy-canvas-serialized]').length).to.equal(0)
       })
     })
   })
