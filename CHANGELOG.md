@@ -1,3 +1,10 @@
+# [0.26.0](https://github.com/percy/percy-agent/compare/v0.25.0...v0.26.0) (2020-03-17)
+
+
+### Features
+
+* snapshot and upload --dry-run flag ([#486](https://github.com/percy/percy-agent/issues/486)) ([6e259a3](https://github.com/percy/percy-agent/commit/6e259a3))
+
 # [0.25.0](https://github.com/percy/percy-agent/compare/v0.24.3...v0.25.0) (2020-03-13)
 
 

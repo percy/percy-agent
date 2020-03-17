@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.25.0 linux-x64 node-v12.16.1
+@percy/agent/0.26.0 linux-x64 node-v12.16.1
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -109,6 +109,8 @@ OPTIONS
 
   -c, --config=config                              Path to percy config file
 
+  -d, --dry-run                                    Print the list of paths to snapshot without creating a new build
+
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
 
   -i, --ignore-files=ignore-files                  [default: ] Glob or comma-seperated string of globs for matching the
@@ -140,6 +142,7 @@ ARGUMENTS
 
 OPTIONS
   -c, --config=config  Path to percy config file
+  -d, --dry-run        Print the list of images to upload without uploading them
 
   -f, --files=files    [default: **/*.png,**/*.jpg,**/*.jpeg] Glob or comma-seperated string of globs for matching the
                        files and directories to snapshot.
