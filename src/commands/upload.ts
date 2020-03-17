@@ -21,21 +21,25 @@ export default class Upload extends Command {
   ]
 
   static flags = {
-    files: flags.string({
+    'files': flags.string({
       char: 'f',
       description: [
         `[default: ${DEFAULT_CONFIGURATION['image-snapshots'].files}]`,
         'Glob or comma-seperated string of globs for matching the files and directories to snapshot.',
       ].join(' '),
     }),
-    ignore: flags.string({
+    'ignore': flags.string({
       char: 'i',
       description: [
         `[default: ${DEFAULT_CONFIGURATION['image-snapshots'].ignore}]`,
         'Glob or comma-seperated string of globs for matching the files and directories to ignore.',
       ].join(' '),
     }),
-    config: flags.string({
+    'dry-run': flags.boolean({
+      char: 'd',
+      description: 'Print the list of images to upload without uploading them',
+    }),
+    'config': flags.string({
       char: 'c',
       description: 'Path to percy config file',
     }),
@@ -59,6 +63,6 @@ export default class Upload extends Command {
 
     // upload snapshot images
     const imageSnapshotService = new ImageSnapshotService(configuration['image-snapshots'])
-    await imageSnapshotService.snapshotAll()
+    await imageSnapshotService.snapshotAll({ dry: flags['dry-run'] })
   }
 }
