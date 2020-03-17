@@ -1,8 +1,10 @@
 import { flags } from '@oclif/command'
 import { existsSync } from 'fs'
+import * as globby from 'globby'
 import { DEFAULT_CONFIGURATION } from '../configuration/configuration'
+import { StaticSnapshotsConfiguration } from '../configuration/static-snapshots-configuration'
 import StaticSnapshotService from '../services/static-snapshot-service'
-import config from '../utils/configuration'
+import config, { parseGlobs } from '../utils/configuration'
 import logger from '../utils/logger'
 import PercyCommand from './percy-command'
 
@@ -47,6 +49,10 @@ export default class Snapshot extends PercyCommand {
         'of the webserver\'s root path, set that subdirectory with this flag.',
       ].join(' '),
     }),
+    'dry-run': flags.boolean({
+      char: 'd',
+      description: 'Print the list of paths to snapshot without creating a new build',
+    }),
     // from exec command. needed to start the agent service.
     'allowed-hostname': flags.string({
       char: 'h',
@@ -79,6 +85,11 @@ export default class Snapshot extends PercyCommand {
     const { args, flags } = this.parse(Snapshot)
     const configuration = config(flags, args)
 
+    if (flags['dry-run']) {
+      await this.dryrun(configuration['static-snapshots'])
+      this.exit(0)
+    }
+
     // exit gracefully if percy will not run
     if (!this.percyWillRun()) { this.exit(0) }
 
@@ -110,5 +121,17 @@ export default class Snapshot extends PercyCommand {
      // stop the static snapshot and agent services
     await staticSnapshotService.stop()
     await this.stop()
+  }
+
+  // will print the paths that would have been snapshotted
+  async dryrun(configuration: StaticSnapshotsConfiguration) {
+    // this cannot be done in the static snapshot service because not only does
+    // it map paths to localhost URLs, but it also starts the localhost server
+    // and creates a new Percy build before parsing any globs
+    const globs = parseGlobs(configuration['snapshot-files'])
+    const ignore = parseGlobs(configuration['ignore-files'])
+    const paths = await globby(globs, { cwd: configuration.path, ignore })
+
+    console.log(paths.map((p) => configuration['base-url'] + p).join('\n'))
   }
 }

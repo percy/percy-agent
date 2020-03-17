@@ -109,7 +109,7 @@ export default class ImageSnapshotService extends PercyClientService {
     }).catch(logError)
   }
 
-  async snapshotAll() {
+  async snapshotAll({ dry = false }: { dry?: boolean } = {}) {
     const globs = parseGlobs(this.configuration.files)
     const ignore = parseGlobs(this.configuration.ignore)
     const paths = await globby(globs, { cwd: this.configuration.path, ignore })
@@ -117,8 +117,12 @@ export default class ImageSnapshotService extends PercyClientService {
 
     if (!paths.length) {
       logger.error(`no matching files found in '${this.configuration.path}''`)
-      logger.info('exiting')
       return process.exit(1)
+    }
+
+    if (dry) {
+      console.log(paths.join('\n'))
+      return
     }
 
     await this.buildService.create()

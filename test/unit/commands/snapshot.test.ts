@@ -59,5 +59,46 @@ describe('snapshot', () => {
 
       chai.expect(stderr).to.match(/Warning: Skipping visual tests\. PERCY_TOKEN was not provided\./)
     })
+
+    describe('with --dry-run', () => {
+      let agentServiceStub: AgentService
+      let staticSnapshotServiceStub: StaticSnapshotService
+
+      beforeEach(() => {
+        agentServiceStub = AgentServiceStub()
+        staticSnapshotServiceStub = StaticSnapshotServiceStub()
+      })
+
+      it('does not start the static snapshot service', async () => {
+        const stdout = await captureStdOut(async () => {
+          await Snapshot.run(['./test/integration/test-static-site', '--dry-run'])
+        })
+
+        chai.expect(agentServiceStub.start).to.have.callCount(0)
+        chai.expect(staticSnapshotServiceStub.start).to.have.callCount(0)
+        chai.expect(stdout).not.to.match(/\[percy\] percy has started./)
+      })
+
+      it('prints paths to snapshot matching the provided options', async () => {
+        const stdout = await captureStdOut(async () => {
+          await Snapshot.run([
+            './test/integration/test-static-site',
+            '--base-url=/base-url/',
+            '--snapshot-files=families/**/*.html',
+            '--ignore-files=families/targaryen/**/*',
+            '--dry-run',
+          ])
+        })
+
+        chai.expect(stdout).to.equal([
+          '/base-url/families/greyjoy/members.html',
+          '/base-url/families/greyjoy/pyke.html',
+          '/base-url/families/lannister/casterly-rock.html',
+          '/base-url/families/lannister/members.html',
+          '/base-url/families/stark/members.html',
+          '/base-url/families/stark/winterfell.html',
+        ].join('\n') + '\n')
+      })
+    })
   })
 })
