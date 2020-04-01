@@ -112,7 +112,7 @@ export default class ImageSnapshotService extends PercyClientService {
   async snapshotAll({ dry = false }: { dry?: boolean } = {}) {
     const globs = parseGlobs(this.configuration.files)
     const ignore = parseGlobs(this.configuration.ignore)
-    const paths = await globby(globs, { cwd: this.configuration.path, ignore })
+    const paths = (await globby(globs, { cwd: this.configuration.path, ignore })).sort()
     let error
 
     if (!paths.length) {

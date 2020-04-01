@@ -132,6 +132,6 @@ export default class Snapshot extends PercyCommand {
     const ignore = parseGlobs(configuration['ignore-files'])
     const paths = await globby(globs, { cwd: configuration.path, ignore })
 
-    console.log(paths.map((p) => configuration['base-url'] + p).join('\n'))
+    console.log(paths.map((p) => configuration['base-url'] + p).sort().join('\n'))
   }
 }
