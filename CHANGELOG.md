@@ -1,3 +1,10 @@
+## [0.26.1](https://github.com/percy/percy-agent/compare/v0.26.0...v0.26.1) (2020-04-01)
+
+
+### Bug Fixes
+
+* sort dry-run output ([#494](https://github.com/percy/percy-agent/issues/494)) ([ae36f5a](https://github.com/percy/percy-agent/commit/ae36f5a))
+
 # [0.26.0](https://github.com/percy/percy-agent/compare/v0.25.0...v0.26.0) (2020-03-17)
 
 
