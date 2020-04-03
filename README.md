@@ -48,7 +48,7 @@ OPTIONS
   -c, --config=config                              Path to percy config file
   -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
   -p, --port=port                                  [default: 5338] Port
-  -t, --network-idle-timeout=network-idle-timeout  [default: 50] Asset discovery network idle timeout (in milliseconds)
+  -t, --network-idle-timeout=network-idle-timeout  [default: 125] Asset discovery network idle timeout (in milliseconds)
 
   --cache-responses                                [default: true] Caches successful network responses in asset
                                                    discovery
@@ -57,6 +57,8 @@ EXAMPLES
   $ percy exec -- echo "percy is running around this echo command"
   $ percy exec -- bash -c "echo foo && echo bar"
 ```
+
+_See code: [dist/commands/exec.ts](https://github.com/percy/percy-agent/blob/v0.26.1/dist/commands/exec.ts)_
 
 ## `percy finalize`
 
@@ -73,6 +75,8 @@ EXAMPLE
   $ percy finalize --all
   [percy] Finalized parallel build.
 ```
+
+_See code: [dist/commands/finalize.ts](https://github.com/percy/percy-agent/blob/v0.26.1/dist/commands/finalize.ts)_
 
 ## `percy help [COMMAND]`
 
@@ -121,13 +125,15 @@ OPTIONS
   -s, --snapshot-files=snapshot-files              [default: **/*.html,**/*.htm] Glob or comma-seperated string of globs
                                                    for matching the files and directories to snapshot.
 
-  -t, --network-idle-timeout=network-idle-timeout  [default: 50] Asset discovery network idle timeout (in milliseconds)
+  -t, --network-idle-timeout=network-idle-timeout  [default: 125] Asset discovery network idle timeout (in milliseconds)
 
 EXAMPLES
   $ percy snapshot _site/
   $ percy snapshot _site/ --base-url "/blog/"
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
 ```
+
+_See code: [dist/commands/snapshot.ts](https://github.com/percy/percy-agent/blob/v0.26.1/dist/commands/snapshot.ts)_
 
 ## `percy upload [UPLOADDIRECTORY]`
 
@@ -154,4 +160,6 @@ EXAMPLES
   $ percy upload _images/
   $ percy upload _images/ --files **/*.png
 ```
+
+_See code: [dist/commands/upload.ts](https://github.com/percy/percy-agent/blob/v0.26.1/dist/commands/upload.ts)_
 <!-- commandsstop -->
