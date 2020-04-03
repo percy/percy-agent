@@ -1,3 +1,10 @@
+## [0.26.2](https://github.com/percy/percy-agent/compare/v0.26.1...v0.26.2) (2020-04-03)
+
+
+### Bug Fixes
+
+* Up default network idle timeout to 125 ([#495](https://github.com/percy/percy-agent/issues/495)) ([1048848](https://github.com/percy/percy-agent/commit/1048848))
+
 ## [0.26.1](https://github.com/percy/percy-agent/compare/v0.26.0...v0.26.1) (2020-04-01)
 
 
