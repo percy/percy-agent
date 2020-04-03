@@ -83,7 +83,6 @@
     "express-basic-auth": "^1.2.0",
     "hoxy": "^3.3.1",
     "http-proxy": "^1.18.0",
-    "husky": "^3.0.0",
     "interactor.js": "^1.3.1",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^3.0.0",
@@ -123,11 +122,6 @@
     "/dist"
   ],
   "homepage": "https://github.com/percy/percy-agent",
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
-  },
   "keywords": [
     "oclif",
     "percy",
@@ -148,7 +142,7 @@
     "build": "yarn clean && rm -rf dist && tsc && yarn build-client",
     "build-client": "webpack",
     "clean": "rm -f .oclif.manifest.json",
-    "lint": "tsc -p test/unit --noEmit && tslint -p test/unit -t stylish --fix",
+    "lint": "tsc -p test/unit --noEmit && tslint -p test/unit -t stylish",
     "postpublish": "yarn clean",
     "posttest": "yarn lint",
     "prepublishOnly": "yarn build && oclif-dev manifest && oclif-dev readme",

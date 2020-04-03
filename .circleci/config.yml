@@ -26,6 +26,9 @@ commands:
   unit_client_acceptance_integration:
     steps:
       - run:
+          name: Lint
+          command: yarn lint
+      - run:
           name: Unit tests
           command: |
             mkdir -p reports

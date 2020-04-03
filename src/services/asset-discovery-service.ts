@@ -249,7 +249,7 @@ export class AssetDiscoveryService extends PercyClientService {
       }
     })
 
-    const maybeResourcePromises: Array<Promise<any>> = []
+    const maybeResourcePromises: Promise<any>[] = []
     // Listen on 'requestfinished', which tells us a request completed successfully.
     // We could also listen on 'response', but then we'd have to check if it was successful.
     page.on('requestfinished', async (request) => {
