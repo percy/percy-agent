@@ -39,7 +39,8 @@
     "puppeteer": "^2.0.0",
     "retry-axios": "^1.0.1",
     "which": "^2.0.1",
-    "winston": "^3.0.0"
+    "winston": "^3.0.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
@@ -155,7 +156,9 @@
     "test:command:snapshot": "./bin/run snapshot test/integration/test-static-site -b /dummy-base-url/ -i **/red-keep.** -s **/*.{html}",
     "test:command:upload": "./bin/run upload test/integration/test-static-images",
     "version": "oclif-dev readme && git add README.md",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "types": "dist/index.d.ts",
   "release": {
@@ -171,5 +174,6 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
-  }
+  },
+  "snyk": true
 }
