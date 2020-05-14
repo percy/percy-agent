@@ -1,3 +1,10 @@
+## [0.26.3](https://github.com/percy/percy-agent/compare/v0.26.2...v0.26.3) (2020-05-14)
+
+
+### Bug Fixes
+
+* Ignore any protocols that aren't `http` or `https` ([#507](https://github.com/percy/percy-agent/issues/507)) ([8a121b6](https://github.com/percy/percy-agent/commit/8a121b6))
+
 ## [0.26.2](https://github.com/percy/percy-agent/compare/v0.26.1...v0.26.2) (2020-04-03)
 
 
