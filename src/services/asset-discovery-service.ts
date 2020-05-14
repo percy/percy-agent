@@ -175,6 +175,11 @@ export class AssetDiscoveryService extends PercyClientService {
     const parsedRootResourceUrl = new URL(rootResourceUrl)
     const rootUrl = `${parsedRootResourceUrl.protocol}//${parsedRootResourceUrl.host}`
 
+    // Only capture resources with a proper protocol we support capturing
+    if ((/^https?:/).test(resourceUrl)) {
+      return true
+    }
+
     // Process if the resourceUrl has a hostname in the allowedHostnames
     if (this.configuration['allowed-hostnames'].some((hostname) => domainMatch(hostname, resourceUrl))) {
       return true
