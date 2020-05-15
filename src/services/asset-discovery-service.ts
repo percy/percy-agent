@@ -251,6 +251,7 @@ export class AssetDiscoveryService extends PercyClientService {
         await request.continue()
       } catch (error) {
         logError(error)
+        await request.abort()
       }
     })
 
