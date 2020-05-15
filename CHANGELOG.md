@@ -1,3 +1,10 @@
+## [0.26.4](https://github.com/percy/percy-agent/compare/v0.26.3...v0.26.4) (2020-05-15)
+
+
+### Bug Fixes
+
+* Abort requests when caught in an error ([#508](https://github.com/percy/percy-agent/issues/508)) ([1c2585d](https://github.com/percy/percy-agent/commit/1c2585d))
+
 ## [0.26.3](https://github.com/percy/percy-agent/compare/v0.26.2...v0.26.3) (2020-05-14)
 
 
