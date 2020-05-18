@@ -34,7 +34,15 @@ export async function cacheResponse(response: Response, logger: any) {
 
     responseCache[responseUrl] = {
       status: response.status(),
-      headers: response.headers(),
+      // CDP returns multiple headers joined by newlines, however
+      // `request.respond` (used for cached responses) will hang if there are
+      // newlines in headers. The following reduction normalizes header values
+      // as arrays split on newlines
+      headers: Object.entries(response.headers())
+        .reduce((norm, [key, value]) => (
+          // tslint:disable-next-line
+          Object.assign(norm, { [key]: value.split('\n') })
+        ), {}),
       body: buffer,
     }
 

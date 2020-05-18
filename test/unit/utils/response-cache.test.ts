@@ -6,7 +6,7 @@ const logger = { debug: () => '' }
 const defaultResponse = {
   url: () => 'http://example.com/foo.txt',
   status: () => 200,
-  headers: () => 'fake headers',
+  headers: () => ({ 'fake': 'foo=bar' }),
   buffer: () => 'hello',
   text() { return this.buffer() },
   request() {
@@ -28,7 +28,7 @@ describe('Response cache util', () => {
     expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 200,
       body: 'hello',
-      headers: 'fake headers',
+      headers: { fake: [ 'foo=bar' ] },
     })
   })
 
@@ -38,7 +38,7 @@ describe('Response cache util', () => {
     expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 201,
       body: 'hello',
-      headers: 'fake headers',
+      headers: { fake: [ 'foo=bar' ] },
     })
   })
 
@@ -49,7 +49,7 @@ describe('Response cache util', () => {
     expect(getResponseCache('http://example.com/foo.txt')).to.eql({
       status: 200,
       body: 'hello',
-      headers: 'fake headers',
+      headers: { fake: [ 'foo=bar' ] },
     })
   })
 
@@ -66,5 +66,16 @@ describe('Response cache util', () => {
     await cacheResponse({ ...defaultResponse, buffer: () => '' }, logger)
 
     expect(getResponseCache('http://example.com/foo.txt')).to.eql(undefined)
+  })
+
+  it('newlines are removed from headers', async () => {
+    await cacheResponse({
+      ...defaultResponse,
+      headers: () => ({ 'fake': 'foo=bar\nthing=baz' })
+    }, logger)
+
+    expect(getResponseCache('http://example.com/foo.txt').headers).to.eql({
+      fake: [ 'foo=bar', 'thing=baz' ],
+    })
   })
 })
