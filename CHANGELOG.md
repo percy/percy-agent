@@ -1,3 +1,10 @@
+## [0.26.5](https://github.com/percy/percy-agent/compare/v0.26.4...v0.26.5) (2020-05-18)
+
+
+### Bug Fixes
+
+* Capture resources even when Puppeteer tab times out ([#510](https://github.com/percy/percy-agent/issues/510)) ([8a39366](https://github.com/percy/percy-agent/commit/8a39366))
+
 ## [0.26.4](https://github.com/percy/percy-agent/compare/v0.26.3...v0.26.4) (2020-05-15)
 
 
