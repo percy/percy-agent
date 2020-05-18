@@ -1,3 +1,10 @@
+## [0.26.6](https://github.com/percy/percy-agent/compare/v0.26.5...v0.26.6) (2020-05-18)
+
+
+### Bug Fixes
+
+* Properly forward headers in asset cache ([#511](https://github.com/percy/percy-agent/issues/511)) ([aa3ac45](https://github.com/percy/percy-agent/commit/aa3ac45))
+
 ## [0.26.5](https://github.com/percy/percy-agent/compare/v0.26.4...v0.26.5) (2020-05-18)
 
 
