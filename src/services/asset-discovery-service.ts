@@ -296,7 +296,12 @@ export class AssetDiscoveryService extends PercyClientService {
       profile('--> assetDiscoveryService.waitForNetworkIdle')
       await waitForNetworkIdle(page, this.configuration['network-idle-timeout'])
       profile('--> assetDiscoveryService.waitForNetworkIdle')
+    } catch (error) {
+      logger.error(addLogDate(`${error.name} ${error.message}`))
+      logger.debug(addLogDate(error))
+    }
 
+    try {
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
       maybeResources = await Promise.all(maybeResourcePromises)
       profile('--> assetDiscoveryServer.waitForResourceProcessing')
