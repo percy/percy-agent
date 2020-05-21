@@ -1,3 +1,10 @@
+## [0.26.7](https://github.com/percy/percy-agent/compare/v0.26.6...v0.26.7) (2020-05-21)
+
+
+### Bug Fixes
+
+* **🐛:** Remove inaccessible JS frames when serializing ([#512](https://github.com/percy/percy-agent/issues/512)) ([86cd887](https://github.com/percy/percy-agent/commit/86cd887))
+
 ## [0.26.6](https://github.com/percy/percy-agent/compare/v0.26.5...v0.26.6) (2020-05-18)
 
 
