@@ -349,6 +349,11 @@ describe('DOM -', () => {
         const $frameJS = document.getElementById('frame-js-no-src') as HTMLIFrameElement
         $frameJS.contentDocument!.body.innerHTML = '<p>generated iframe</p>'
 
+        const $frameInject = document.createElement('iframe') as HTMLIFrameElement
+        $frameInject.setAttribute('src', 'javascript:false')
+        $frameInject.setAttribute('id', 'frame-js-inject')
+        document.querySelector('.container').appendChild($frameInject)
+
         $dom = cheerio.load(new DOM(document).snapshotString())
       })
 
@@ -359,6 +364,7 @@ describe('DOM -', () => {
           '<p>made with js src</p>',
           '</body></html>',
         ].join(''))
+
 
         expect($dom('#frame-js-no-src').attr('src')).to.be.undefined
         expect($dom('#frame-js-no-src').attr('srcdoc')).to.equal([
@@ -375,6 +381,10 @@ describe('DOM -', () => {
           '</body></html>$',
         ].join('')))
       })
+
+      it('removes inaccessible JS iframes', () => {
+        expect($dom('#frame-js-inject')).to.not.have.length
+      });
 
       it('does not serialize iframes with CORS', () => {
         expect($dom('#frame-external').attr('src')).to.equal('https://example.com')

@@ -158,9 +158,12 @@ class DOM {
   }
 
   private serializeFrameElements(clonedDOM: HTMLDocument) {
+    const { enableJavaScript } = this.options
+
     for (const frame of this.originalDOM.querySelectorAll('iframe')) {
       const percyElementId = frame.getAttribute('data-percy-element-id')
       const cloned = clonedDOM.querySelector(`[data-percy-element-id="${percyElementId}"]`)
+      const builtWithJs = !frame.srcdoc && (!frame.src || frame.src.split(':')[0] === 'javascript')
 
       // delete frames within the head since they usually break pages when
       // rerendered and do not effect the visuals of a page
@@ -169,11 +172,8 @@ class DOM {
 
       // if the frame document is accessible, we can serialize it
       } else if (frame.contentDocument) {
-        const builtWithJs = !frame.srcdoc && (!frame.src || frame.src.split(':')[0] === 'javascript')
-
         // js is enabled and this frame was built with js, don't serialize it
-        if (this.options.enableJavaScript && builtWithJs) { continue }
-
+        if (enableJavaScript && builtWithJs) { continue }
         // the frame has yet to load and wasn't built with js, it is unsafe to serialize
         if (!builtWithJs && !frame.contentWindow!.performance.timing.loadEventEnd) { continue }
 
@@ -182,6 +182,11 @@ class DOM {
         cloned!.setAttribute('srcdoc', frameDOM.snapshotString())
         // srcdoc cannot exist in tandem with src
         cloned!.removeAttribute('src')
+
+      // delete inaccessible frames built with js when js is disabled because
+      // they break asset discovery by creating non-captured requests that hang
+      } else if (!enableJavaScript && builtWithJs) {
+        cloned!.remove()
       }
     }
   }
