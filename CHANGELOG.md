@@ -1,3 +1,10 @@
+## [0.26.8](https://github.com/percy/percy-agent/compare/v0.26.7...v0.26.8) (2020-05-29)
+
+
+### Bug Fixes
+
+* **📌:** Pin Puppeteer to 3.1.x ([#516](https://github.com/percy/percy-agent/issues/516)) ([ab7dd29](https://github.com/percy/percy-agent/commit/ab7dd29))
+
 ## [0.26.7](https://github.com/percy/percy-agent/compare/v0.26.6...v0.26.7) (2020-05-21)
 
 
