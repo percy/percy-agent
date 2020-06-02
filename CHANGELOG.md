@@ -1,3 +1,10 @@
+## [0.26.9](https://github.com/percy/percy-agent/compare/v0.26.8...v0.26.9) (2020-06-02)
+
+
+### Bug Fixes
+
+* **📦:** Unpin puppeteer ([#522](https://github.com/percy/percy-agent/issues/522)) ([e196d3d](https://github.com/percy/percy-agent/commit/e196d3d))
+
 ## [0.26.8](https://github.com/percy/percy-agent/compare/v0.26.7...v0.26.8) (2020-05-29)
 
 
