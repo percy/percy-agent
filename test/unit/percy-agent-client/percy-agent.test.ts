@@ -29,7 +29,8 @@ describe('PercyAgent', () => {
     requests = []
   })
 
-  describe('#snapshot', () => {
+  // this feature should never be used in new SDKs since it causes lots of issues (like CORS)
+  describe.skip('#snapshot', () => {
     it('posts the percy agent process', () => {
       subject.snapshot('<html><head><title>hi</title></head><body><h1>test snapshot</h1></body></html>')
 
