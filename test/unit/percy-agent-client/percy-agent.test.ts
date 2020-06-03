@@ -31,14 +31,14 @@ describe('PercyAgent', () => {
 
   describe('#snapshot', () => {
     it('posts the percy agent process', () => {
-      subject.snapshot('test snapshot')
+      subject.snapshot('<html><head><title>hi</title></head><body><h1>test snapshot</h1></body></html>')
 
       const request = requests[0]
       const requestBody = JSON.parse(request.requestBody)
 
       expect(request.url).to.equal(`http://localhost:${DEFAULT_PORT}${SNAPSHOT_PATH}`)
       expect(request.method).to.equal('post')
-      expect(requestBody.name).to.equal('test snapshot')
+      expect(requestBody.name).to.equal('<html><head><title>hi</title></head><body><h1>test snapshot</h1></body></html>')
     })
 
     it('posts the percy agent process with options', () => {
