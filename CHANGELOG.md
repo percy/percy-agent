@@ -1,3 +1,10 @@
+# [0.27.0](https://github.com/percy/percy-agent/compare/v0.26.9...v0.27.0) (2020-07-10)
+
+
+### Features
+
+* Unhide `start` and `stop` commands ([#534](https://github.com/percy/percy-agent/issues/534)) ([7914a74](https://github.com/percy/percy-agent/commit/7914a74))
+
 ## [0.26.9](https://github.com/percy/percy-agent/compare/v0.26.8...v0.26.9) (2020-06-02)
 
 

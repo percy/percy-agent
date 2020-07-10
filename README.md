@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.26.9 linux-x64 node-v12.17.0
+@percy/agent/0.27.0 linux-x64 node-v12.18.2
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -34,6 +34,8 @@ USAGE
 * [`percy finalize`](#percy-finalize)
 * [`percy help [COMMAND]`](#percy-help-command)
 * [`percy snapshot [SNAPSHOTDIRECTORY]`](#percy-snapshot-snapshotdirectory)
+* [`percy start`](#percy-start)
+* [`percy stop`](#percy-stop)
 * [`percy upload [UPLOADDIRECTORY]`](#percy-upload-uploaddirectory)
 
 ## `percy exec`
@@ -127,6 +129,42 @@ EXAMPLES
   $ percy snapshot _site/
   $ percy snapshot _site/ --base-url "/blog/"
   $ percy snapshot _site/ --ignore-files "/blog/drafts/**"
+```
+
+## `percy start`
+
+Starts the percy process.
+
+```
+USAGE
+  $ percy start
+
+OPTIONS
+  -c, --config=config                              Path to percy config file
+  -d, --detached                                   start as a detached process
+  -h, --allowed-hostname=allowed-hostname          Allowable hostname(s) to capture assets from
+  -p, --port=port                                  [default: 5338] Port
+  -t, --network-idle-timeout=network-idle-timeout  [default: 125] Asset discovery network idle timeout (in milliseconds)
+
+EXAMPLE
+  $ percy start
+  info: percy has started on port 5338.
+```
+
+## `percy stop`
+
+Stops the percy process.
+
+```
+USAGE
+  $ percy stop
+
+OPTIONS
+  -p, --port=port  [default: 5338] Port
+
+EXAMPLE
+  $ percy stop
+  info: percy has stopped.
 ```
 
 ## `percy upload [UPLOADDIRECTORY]`
