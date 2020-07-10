@@ -7,7 +7,7 @@ import PercyCommand from './percy-command'
 
 export default class Start extends PercyCommand {
   static description = 'Starts the percy process.'
-  static hidden = true
+  static hidden = false
 
   static examples = [
     '$ percy start\n' +

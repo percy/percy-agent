@@ -8,7 +8,7 @@ import PercyCommand from './percy-command'
 
 export default class Stop extends PercyCommand {
   static description = 'Stops the percy process.'
-  static hidden = true
+  static hidden = false
 
   static examples = [
     '$ percy stop\n' +
