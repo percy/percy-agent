@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.27.0 linux-x64 node-v12.18.2
+@percy/agent/0.27.1 linux-x64 node-v12.18.2
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND

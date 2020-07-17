@@ -1,3 +1,10 @@
+## [0.27.1](https://github.com/percy/percy-agent/compare/v0.27.0...v0.27.1) (2020-07-17)
+
+
+### Bug Fixes
+
+* Capture assets using the same hostname, regardless of port ([#535](https://github.com/percy/percy-agent/issues/535)) ([d490fa9](https://github.com/percy/percy-agent/commit/d490fa9))
+
 # [0.27.0](https://github.com/percy/percy-agent/compare/v0.26.9...v0.27.0) (2020-07-10)
 
 
