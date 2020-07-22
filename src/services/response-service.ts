@@ -21,10 +21,11 @@ export default class ResponseService extends PercyClientService {
   responsesProcessed: Map<string, string> = new Map()
   allowedHostnames: string[]
 
-  constructor(buildId: number, allowedHostnames: string[]) {
+  constructor(buildId: number, allowedHostnames: string[], cacheResponses: boolean) {
     super()
     this.resourceService = new ResourceService(buildId)
     this.allowedHostnames = allowedHostnames
+    this.cacheResponses = cacheResponses
   }
 
   shouldCaptureResource(rootUrl: string, resourceUrl: string): boolean {
@@ -51,9 +52,9 @@ export default class ResponseService extends PercyClientService {
     logger.debug(addLogDate(`processing response: ${response.url()} for width: ${width}`))
     const url = this.parseRequestPath(response.url())
 
-    // skip responses already processed
+    // skip responses already processed unless the response cache is disabled
     const processResponse = this.responsesProcessed.get(url)
-    if (processResponse) { return processResponse }
+    if (this.cacheResponses && processResponse) { return processResponse }
 
     const request = response.request()
     const parsedRootResourceUrl = new URL(rootResourceUrl)

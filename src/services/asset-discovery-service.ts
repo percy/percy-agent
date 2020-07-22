@@ -25,8 +25,15 @@ export class AssetDiscoveryService extends PercyClientService {
     super()
     this.browser = null
     this.pagePool = null
-    this.configuration = configuration || DEFAULT_CONFIGURATION.agent['asset-discovery']
-    this.responseService = new ResponseService(buildId, this.configuration['allowed-hostnames'])
+
+    this.configuration = configuration ||
+      DEFAULT_CONFIGURATION.agent['asset-discovery']
+
+    this.responseService = new ResponseService(
+      buildId,
+      this.configuration['allowed-hostnames'],
+      this.configuration['cache-responses']
+    )
   }
 
   async setup() {
