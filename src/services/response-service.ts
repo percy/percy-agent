@@ -20,6 +20,7 @@ export default class ResponseService extends PercyClientService {
   resourceService: ResourceService
   responsesProcessed: Map<string, string> = new Map()
   allowedHostnames: string[]
+  cacheResponses: boolean
 
   constructor(buildId: number, allowedHostnames: string[], cacheResponses: boolean) {
     super()
