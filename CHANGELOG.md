@@ -1,3 +1,10 @@
+## [0.27.2](https://github.com/percy/percy-agent/compare/v0.27.1...v0.27.2) (2020-07-22)
+
+
+### Bug Fixes
+
+* **🐛:** Skip all response caches when response caching is disabled ([#537](https://github.com/percy/percy-agent/issues/537)) ([6ddb9a0](https://github.com/percy/percy-agent/commit/6ddb9a0))
+
 ## [0.27.1](https://github.com/percy/percy-agent/compare/v0.27.0...v0.27.1) (2020-07-17)
 
 
