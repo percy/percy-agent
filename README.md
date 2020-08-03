@@ -21,7 +21,7 @@ $ npm install -g @percy/agent
 $ percy COMMAND
 running command...
 $ percy (-v|--version|version)
-@percy/agent/0.27.2 linux-x64 node-v12.18.2
+@percy/agent/0.28.0 linux-x64 node-v12.18.3
 $ percy --help [COMMAND]
 USAGE
   $ percy COMMAND
@@ -91,7 +91,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.3/src/commands/help.ts)_
 
 ## `percy snapshot [SNAPSHOTDIRECTORY]`
 

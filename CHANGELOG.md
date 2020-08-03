@@ -1,3 +1,9 @@
+# [0.28.0](https://github.com/percy/percy-agent/compare/v0.27.2...v0.28.0) (2020-08-03)
+
+### Bug Fixes
+
+* **🐛:** upgrade puppeteer to try fixing page crashes ([#539](https://github.com/percy/percy-agent/issues/539)) ([cf33170](https://github.com/percy/percy-agent/commit/cf33170))
+
 ## [0.27.2](https://github.com/percy/percy-agent/compare/v0.27.1...v0.27.2) (2020-07-22)
 
 
