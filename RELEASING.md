@@ -1,3 +1,6 @@
 # Releasing
 
-Releasing of the `@percy/agent` package is handled automatically with the [semantic-release](https://github.com/semantic-release/semantic-release) package.
+- Bump the version in package.json and commit the change
+- Create a git tag for the new version
+- Push the commit and tag to GitHub
+- CircleCI will publish new versions of the package

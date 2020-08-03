@@ -106,7 +106,6 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: npx semantic-release
       - run: ./release-percy.sh
 workflows:
   version: 2
