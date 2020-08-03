@@ -53,8 +53,6 @@
     "@oclif/test": "^1",
     "@oclif/tslint": "^3",
     "@percy/tslint": "^1.0.0",
-    "@semantic-release/changelog": "^3.0.2",
-    "@semantic-release/git": "^7.0.8",
     "@types/chai": "^4.1.4",
     "@types/chai-http": "^3.0.5",
     "@types/cheerio": "^0.22.11",
@@ -98,7 +96,6 @@
     "prettier": "2.0.5",
     "pryjs": "^1.0.3",
     "regenerator-runtime": "^0.13.3",
-    "semantic-release": "^15.13.3",
     "sinon": "7.5.0",
     "sinon-chai": "^3.2.0",
     "stdout-stderr": "^0.1.9",
@@ -157,19 +154,5 @@
     "version": "oclif-dev readme && git add README.md",
     "watch": "npm-watch"
   },
-  "types": "dist/index.d.ts",
-  "release": {
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/changelog",
-        {
-          "changelogFile": "CHANGELOG.md"
-        }
-      ],
-      "@semantic-release/npm",
-      "@semantic-release/git"
-    ]
-  }
+  "types": "dist/index.d.ts"
 }
