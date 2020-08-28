@@ -336,6 +336,7 @@ describe('DOM -', () => {
         createExample(`
           <iframe id="frame-external" src="https://example.com"></iframe>
           <iframe id="frame-input" srcdoc="<input/>"></iframe>
+          <iframe id="frame-lazy" srcdoc="<input/>" loading="lazy"></iframe>
           <iframe id="frame-js" src="javascript:void(
             this.document.body.innerHTML = '<p>made with js src</p>'
           )"></iframe>
@@ -384,6 +385,10 @@ describe('DOM -', () => {
 
       it('removes inaccessible JS iframes', () => {
         expect($dom('#frame-js-inject')).to.not.have.length
+      })
+
+      it('removes loading attributes on iframes', () => {
+        expect($dom('#frame-lazy').attr('loading')).to.be.undefined
       })
 
       it('does not serialize iframes with CORS', () => {
