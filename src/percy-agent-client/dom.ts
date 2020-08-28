@@ -169,7 +169,6 @@ class DOM {
       // rerendered and do not effect the visuals of a page
       if (clonedDOM.head.contains(cloned)) {
         cloned!.remove()
-
       // if the frame document is accessible, we can serialize it
       } else if (frame.contentDocument) {
         // js is enabled and this frame was built with js, don't serialize it
@@ -188,6 +187,9 @@ class DOM {
       } else if (!enableJavaScript && builtWithJs) {
         cloned!.remove()
       }
+
+      // Remove any lazy loading attributes, since they hang asset discovery
+      cloned!.removeAttribute('loading')
     }
   }
 
