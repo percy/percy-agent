@@ -215,12 +215,6 @@ export class AssetDiscoveryService extends PercyClientService {
     profile('--> assetDiscoveryService.pool.acquire', { url: rootResourceUrl })
     const page = await pool.acquire()
     profile('--> assetDiscoveryService.pool.acquire')
-    await page.setJavaScriptEnabled(enableJavaScript)
-    await page.setViewport(Object.assign(page.viewport(), { width }))
-    await page.setExtraHTTPHeaders(merge.all([
-      this.configuration['request-headers'],
-      requestHeaders,
-    ]) as {})
 
     page.on('request', async (request) => {
       const requestUrl = request.url()
@@ -296,6 +290,13 @@ export class AssetDiscoveryService extends PercyClientService {
     let maybeResources: any[] = []
 
     try {
+      await page.setJavaScriptEnabled(enableJavaScript)
+      await page.setViewport(Object.assign(page.viewport(), { width }))
+      await page.setExtraHTTPHeaders(merge.all([
+        this.configuration['request-headers'],
+        requestHeaders,
+      ]) as {})
+
       profile('--> assetDiscoveryService.page.goto', { url: rootResourceUrl })
       await page.goto(rootResourceUrl)
       profile('--> assetDiscoveryService.page.goto')

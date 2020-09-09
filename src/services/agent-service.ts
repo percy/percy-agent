@@ -7,7 +7,7 @@ import * as path from 'path'
 import { Configuration } from '../configuration/configuration'
 import { SnapshotConfiguration } from '../configuration/snapshot-configuration'
 import { SnapshotOptions } from '../percy-agent-client/snapshot-options'
-import logger, { createFileLogger, profile } from '../utils/logger'
+import logger, { createFileLogger, addLogDate, profile } from '../utils/logger'
 import { HEALTHCHECK_PATH, SNAPSHOT_PATH, STOP_PATH } from './agent-service-constants'
 import BuildService from './build-service'
 import Constants from './constants'
@@ -33,7 +33,14 @@ export class AgentService {
     this.app.use(bodyParser.json({ limit: '50mb' }))
     this.app.use(express.static(this.publicDirectory))
 
-    this.app.post(SNAPSHOT_PATH, this.handleSnapshot.bind(this))
+    this.app.post(SNAPSHOT_PATH, async (request, response) => {
+      try { await this.handleSnapshot.call(this, request, response) } catch (error) {
+        logger.error(addLogDate(`${error.name} ${error.message}`))
+        logger.debug(addLogDate(error))
+        return response.json({ success: false })
+      }
+    })
+
     this.app.post(STOP_PATH, this.handleStop.bind(this))
     this.app.get(HEALTHCHECK_PATH, this.handleHealthCheck.bind(this))
 
