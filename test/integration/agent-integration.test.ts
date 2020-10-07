@@ -240,6 +240,7 @@ describe('Integration test', () => {
         await page.waitForSelector('#webgl canvas')
         // I cannot think of a nicer way to let the canvas animations/drawing settle
         // so sadly, use a timeout
+        // @ts-ignore - this type doesn't exist, but the method does
         await page.waitForTimeout(1000)
         const domSnapshot = await snapshot(page, 'Canvas elements')
         const $ = cheerio.load(domSnapshot)
@@ -250,6 +251,7 @@ describe('Integration test', () => {
       it("doesn't serialize with JS enabled", async () => {
         await page.goto(`http://localhost:${PORT}/serialize-canvas.html`)
         await page.waitForSelector('#webgl canvas')
+        // @ts-ignore - this type doesn't exist, but the method does
         await page.waitForTimeout(1000)
         const domSnapshot = await snapshot(page, 'Canvas elements -- with JS', { enableJavaScript: true })
         const $ = cheerio.load(domSnapshot)
