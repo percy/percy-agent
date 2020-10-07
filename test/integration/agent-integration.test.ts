@@ -86,7 +86,7 @@ describe('Integration test', () => {
 
     it('snapshots a site with redirected assets', async () => {
       await page.goto('https://sdk-test.percy.dev/redirects/')
-      await page.waitFor('h2')
+      await page.waitForSelector('h2')
       const domSnapshot = await snapshot(page, 'Redirects snapshot')
 
       // This will fail the test if the redirected JS fails to work
@@ -237,10 +237,10 @@ describe('Integration test', () => {
     describe('canvas', () => {
       it('captures canvas elements', async () => {
         await page.goto(`http://localhost:${PORT}/serialize-canvas.html`)
-        await page.waitFor('#webgl canvas')
+        await page.waitForSelector('#webgl canvas')
         // I cannot think of a nicer way to let the canvas animations/drawing settle
         // so sadly, use a timeout
-        await page.waitFor(1000)
+        await page.waitForTimeout(1000)
         const domSnapshot = await snapshot(page, 'Canvas elements')
         const $ = cheerio.load(domSnapshot)
 
@@ -249,8 +249,8 @@ describe('Integration test', () => {
 
       it("doesn't serialize with JS enabled", async () => {
         await page.goto(`http://localhost:${PORT}/serialize-canvas.html`)
-        await page.waitFor('#webgl canvas')
-        await page.waitFor(1000)
+        await page.waitForSelector('#webgl canvas')
+        await page.waitForTimeout(1000)
         const domSnapshot = await snapshot(page, 'Canvas elements -- with JS', { enableJavaScript: true })
         const $ = cheerio.load(domSnapshot)
 
