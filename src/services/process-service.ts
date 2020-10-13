@@ -49,6 +49,6 @@ export default class ProcessService {
   }
 
   private writePidFile(pid: number) {
-    fs.writeFileSync(ProcessService.PID_PATH, pid)
+    fs.writeFileSync(ProcessService.PID_PATH, pid.toString())
   }
 }
