@@ -34,11 +34,7 @@ export default class Stop extends PercyCommand {
     const { flags } = this.parse(Stop)
     const configuration = config(flags)
 
-    if (this.processService.isRunning()) {
-      await this.postToRunningAgent(STOP_PATH, configuration.agent.port)
-    } else {
-      this.logger.warn('percy is already stopped.')
-    }
+    await this.postToRunningAgent(STOP_PATH, configuration.agent.port)
   }
 
   private async postToRunningAgent(path: string, port: number) {
@@ -46,6 +42,8 @@ export default class Stop extends PercyCommand {
       .catch((error: any) => {
         if (error.message === 'socket hang up') { // We expect a hangup
           this.logger.info('percy stopped.')
+        } else if (error.code === 'ECONNREFUSED') {
+          this.logger.info('percy is already stopped.')
         } else {
           logError(error)
         }
