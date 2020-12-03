@@ -132,13 +132,13 @@ $ yarn test
 You can test Percy Agent Client with
 
 ```bash
-$ yarn test-client
+$ yarn test:client
 ```
 
 And the integration tests can be run with:
 
 ```bash
-$ PERCY_TOKEN=xxx yarn test-integration
+$ PERCY_TOKEN=xxx yarn test:integration
 ```
 
 You can find `PERCY_TOKEN` on your Percy project settings.
