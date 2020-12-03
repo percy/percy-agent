@@ -160,7 +160,7 @@ class DOM {
   private serializeFrameElements(clonedDOM: HTMLDocument) {
     const { enableJavaScript } = this.options
 
-    for (const frame of this.originalDOM.querySelectorAll('iframe')) {
+    for (const frame of Array.from(this.originalDOM.querySelectorAll('iframe'))) {
       const percyElementId = frame.getAttribute('data-percy-element-id')
       const cloned = clonedDOM.querySelector(`[data-percy-element-id="${percyElementId}"]`)
       const builtWithJs = !frame.srcdoc && (!frame.src || frame.src.split(':')[0] === 'javascript')
@@ -249,7 +249,7 @@ class DOM {
    *
    */
   private serializeCanvasElements(clonedDOM: HTMLDocument): void {
-    for (const $canvas of this.originalDOM.querySelectorAll('canvas')) {
+    for (const $canvas of Array.from(this.originalDOM.querySelectorAll('canvas'))) {
       const $image = clonedDOM.createElement('img')
       const canvasId = $canvas.getAttribute('data-percy-element-id')
       const $clonedCanvas = clonedDOM.querySelector(`[data-percy-element-id=${canvasId}]`) as any
@@ -271,9 +271,9 @@ class DOM {
    */
   private mutateOriginalDOM() {
     const createUID = () => `_${Math.random().toString(36).substr(2, 9)}`
-    const formNodes = this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR)
-    const frameNodes = this.originalDOM.querySelectorAll('iframe')
-    const canvasNodes = this.originalDOM.querySelectorAll('canvas')
+    const formNodes = Array.from(this.originalDOM.querySelectorAll(FORM_ELEMENTS_SELECTOR))
+    const frameNodes = Array.from(this.originalDOM.querySelectorAll('iframe'))
+    const canvasNodes = Array.from(this.originalDOM.querySelectorAll('canvas'))
     const elements = [...formNodes, ...frameNodes, ...canvasNodes] as HTMLElement[]
 
     // loop through each element and apply an ID for serialization later
