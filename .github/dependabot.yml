@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "03:00"
+    timezone: US/Central
+  ignore:
+  - dependency-name: puppeteer
+    versions:
+    - ">= 1.12.a, < 1.13"
+  - dependency-name: globby
+    versions:
+    - 11.0.2
+  - dependency-name: "@babel/plugin-proposal-object-rest-spread"
+    versions:
+    - 7.12.1
