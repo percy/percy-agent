@@ -1,6 +1,8 @@
 @percy/agent
 ============
 
+⚠️ This package is no longer activly maintained. All current SDKs have been migrated to use `@percy/cli`: https://docs.percy.io/docs/migrating-to-percy-cli 
+
 A low-level Node process for interacting with Percy.
 
 [![Version](https://img.shields.io/npm/v/@percy/agent.svg)](https://npmjs.org/package/@percy/agent)
