@@ -39,9 +39,9 @@ commands:
       - run:
           name: Acceptance tests
           command: $NYC yarn test:acceptance
-      - run:
-          name: Integration tests
-          command: $NYC yarn test:integration
+      # - run:
+      #     name: Integration tests
+      #     command: $NYC yarn test:integration
   cli_integration:
     steps:
       - run:
