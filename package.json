@@ -18,9 +18,9 @@
   },
   "bugs": "https://github.com/percy/percy-agent/issues",
   "dependencies": {
-    "@oclif/command": "1.5.19",
+    "@oclif/command": "1.6.0",
     "@oclif/config": "^1",
-    "@oclif/plugin-help": "^2",
+    "@oclif/plugin-help": "^3.2.4",
     "@oclif/plugin-not-found": "^1.2",
     "axios": "^0.21.1",
     "body-parser": "^1.18.3",
