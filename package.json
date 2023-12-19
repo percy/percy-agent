@@ -21,7 +21,7 @@
     "@oclif/command": "1.5.19",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "@oclif/plugin-not-found": "^1.2",
+    "@oclif/plugin-not-found": "^2.3.0",
     "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "colors": "1.4.0",
@@ -36,7 +36,7 @@
     "image-size": "^0.8.2",
     "js-yaml": "^3.13.1",
     "percy-client": "^3.2.0",
-    "puppeteer": "^5.3.1",
+    "puppeteer": "^21.3.7",
     "retry-axios": "^1.0.1",
     "which": "^2.0.1",
     "winston": "^3.0.0"
