@@ -22,7 +22,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "@oclif/plugin-not-found": "^1.2",
-    "axios": "^0.21.1",
+    "axios": "^1.6.3",
     "body-parser": "^1.18.3",
     "colors": "1.4.0",
     "cors": "^2.8.4",
