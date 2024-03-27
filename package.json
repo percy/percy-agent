@@ -29,7 +29,7 @@
     "cosmiconfig": "^5.2.1",
     "cross-spawn": "^7.0.2",
     "deepmerge": "^4.0.0",
-    "express": "^4.16.3",
+    "express": "^4.19.2",
     "follow-redirects": "1.12.1",
     "generic-pool": "^3.7.1",
     "globby": "^10.0.1",
