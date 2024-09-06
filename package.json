@@ -20,9 +20,9 @@
   "dependencies": {
     "@oclif/command": "1.5.19",
     "@oclif/config": "^1",
-    "@oclif/plugin-help": "^2",
-    "@oclif/plugin-not-found": "^1.2",
-    "axios": "^0.21.1",
+    "@oclif/plugin-help": "^4.0.0",
+    "@oclif/plugin-not-found": "^2.0.0",
+    "axios": "^1.6.8",
     "body-parser": "^1.18.3",
     "colors": "1.4.0",
     "cors": "^2.8.4",
@@ -32,14 +32,14 @@
     "express": "^4.16.3",
     "follow-redirects": "1.12.1",
     "generic-pool": "^3.7.1",
-    "globby": "^10.0.1",
+    "globby": "^11.1.0",
     "image-size": "^0.8.2",
     "js-yaml": "^3.13.1",
     "percy-client": "^3.2.0",
     "puppeteer": "^5.3.1",
     "retry-axios": "^1.0.1",
     "which": "^2.0.1",
-    "winston": "^3.0.0"
+    "winston": "^3.3.4"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
